@@ -7,5 +7,6 @@
     ./vim
     ./gnome-customizations
     ./terminator
+    ./packages
   ];
 }

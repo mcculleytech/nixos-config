@@ -35,20 +35,6 @@
     homeDirectory = "/home/alex";
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  home.packages = with pkgs; 
-  [ 
-    spotify
-    bitwarden
-    element-desktop
-    terminator
-    # Unstable packages
-    unstable.obsidian
-    unstable.sublime4
-    unstable.rpcs3
-  ];
-
   # Enable home-manager and git
   programs.home-manager.enable = true;
 

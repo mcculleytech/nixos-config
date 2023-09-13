@@ -10,6 +10,7 @@
     unstable.obsidian
     unstable.sublime4
     unstable.rpcs3
+    unstable.beeper
   ];
 
 }

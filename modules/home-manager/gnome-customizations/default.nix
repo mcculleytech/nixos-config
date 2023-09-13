@@ -5,7 +5,7 @@
 
     iconTheme = {
       name = "Zafiro-icons-Dark";
-      package = pkgs.zafiro-icons;
+      package = pkgs.unstable.zafiro-icons;
     };
 
     theme = {
@@ -29,6 +29,7 @@
         "obsidian.desktop"
         "virt-manager.desktop"
         "element-desktop.desktop"
+        "beeper.desktop"
         "sublime_text.desktop" 
         "bitwarden.desktop"
         "spotify.desktop"
