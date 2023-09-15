@@ -5,7 +5,6 @@
     ./user.nix
     ./nix-settings.nix
     ./system-packages.nix
-    ./nfs.nix
     ./ssh.nix
   ];
 }
