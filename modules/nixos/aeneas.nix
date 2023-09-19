@@ -5,6 +5,7 @@
     ./syncthing
     ./tailscale
     ./virt-manager
+    ./nfs 
   ];
 
 }
