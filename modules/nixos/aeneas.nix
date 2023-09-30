@@ -6,6 +6,7 @@
     ./tailscale
     ./virt-manager
     ./nfs 
+    ./cups
   ];
 
 }
