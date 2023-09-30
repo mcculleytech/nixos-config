@@ -4,9 +4,9 @@
   [ 
     spotify
     bitwarden
-    element-desktop
     terminator
-    # Unstable packages
+    # Unstable pkgs
+    unstable.element-desktop
     unstable.obsidian
     unstable.sublime4
     unstable.rpcs3
