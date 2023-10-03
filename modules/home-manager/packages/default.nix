@@ -5,7 +5,6 @@
     spotify
     bitwarden
     terminator
-    sublime4
     # Unstable pkgs
     unstable.element-desktop
     unstable.obsidian
