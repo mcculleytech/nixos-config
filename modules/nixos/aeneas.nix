@@ -5,7 +5,7 @@
     ./syncthing
     ./tailscale
     ./virt-manager
-    ./nfs 
+    #./nfs 
     ./cups
   ];
 
