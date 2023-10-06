@@ -11,6 +11,8 @@
     neofetch
     zsh
     htop
+    bolt
+    thunderbolt
   ];
 
   fonts.fonts = with pkgs; [
