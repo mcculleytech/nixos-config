@@ -8,6 +8,7 @@
     guake
     zoom-us
     nextcloud-client
+    okular
     # Unstable pkgs
     unstable.fwupd
     unstable.usbutils
