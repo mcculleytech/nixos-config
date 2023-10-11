@@ -24,6 +24,7 @@
       disable-user-extensions = false;
       favorite-apps = [
         "firefox.desktop"
+        "thunderbird.desktop"
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
         "obsidian.desktop"

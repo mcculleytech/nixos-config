@@ -6,10 +6,11 @@
     bitwarden
     terminator
     guake
-    zoom-us
     nextcloud-client
     okular
+    thunderbird
     # Unstable pkgs
+    unstable.protonmail-bridge
     unstable.fwupd
     unstable.usbutils
     unstable.element-desktop
