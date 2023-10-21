@@ -9,6 +9,7 @@
     nextcloud-client
     okular
     thunderbird
+    nfs-utils
     # Unstable pkgs
     unstable.protonmail-bridge
     unstable.fwupd
