@@ -3,9 +3,9 @@
   imports = [
     ./gnome
     ./syncthing
-    ./tailscale
+    #./tailscale
+    ./nfs
     ./virt-manager
-    #./nfs 
     ./cups
   ];
 

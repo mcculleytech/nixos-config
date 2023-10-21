@@ -5,7 +5,8 @@
     ./git
     ./zsh
     ./vim
-    ./packages
     ./gnome-customizations
+    ./terminator
+    ./packages
   ];
 }
