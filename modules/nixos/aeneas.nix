@@ -4,7 +4,7 @@
     ./gnome
     ./syncthing
     ./tailscale
-    ./nfs
+    #./nfs
     ./virt-manager
     ./cups
   ];

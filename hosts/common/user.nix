@@ -7,6 +7,6 @@
       openssh.authorizedKeys.keys = [
       ];
       shell = pkgs.zsh;
-      extraGroups = [ "wheel" "libvirtd" ];
+      extraGroups = [ "wheel" "libvirtd" "audio"];
     };
 }
