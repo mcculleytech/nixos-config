@@ -28,7 +28,7 @@
         # > Our main nixos configuration file <
         modules = [
           ./hosts/aeneas/configuration.nix
-          hardware.nixosModules.dell-xps-15-9500-nvidia 
+          hardware.nixosModules.dell-xps-15-9500
         ];
       };
 
