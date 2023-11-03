@@ -7,6 +7,7 @@
     ./nfs
     ./virt-manager
     ./cups
+    ./yubikey.nix
   ];
 
 }

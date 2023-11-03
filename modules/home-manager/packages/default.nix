@@ -10,6 +10,7 @@
     okular
     thunderbird
     nfs-utils
+    flameshot
     # Unstable pkgs
     unstable.protonmail-bridge
     unstable.fwupd
