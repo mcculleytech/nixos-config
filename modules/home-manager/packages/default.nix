@@ -11,6 +11,7 @@
     thunderbird
     nfs-utils
     flameshot
+    yubikey-manager
     # Unstable pkgs
     unstable.protonmail-bridge
     unstable.fwupd
