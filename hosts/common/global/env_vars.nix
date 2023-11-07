@@ -1,0 +1,6 @@
+{
+
+  environment.variables.EDITOR = "vim";
+
+}
+
