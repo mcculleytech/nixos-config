@@ -13,6 +13,7 @@
     flameshot
     yubikey-manager
     # Unstable pkgs
+    unstable.libreoffice-fresh
     unstable.protonmail-bridge
     unstable.fwupd
     unstable.usbutils

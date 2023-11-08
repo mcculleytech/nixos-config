@@ -1,6 +1,6 @@
 {
 
-  import = [
+  imports = [
     ./env_vars.nix
   ];
 
