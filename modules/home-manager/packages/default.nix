@@ -13,6 +13,8 @@
     flameshot
     yubikey-manager
     # Unstable pkgs
+    unstable.jellyfin-media-player
+    unstable.vlc
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
     unstable.fwupd
