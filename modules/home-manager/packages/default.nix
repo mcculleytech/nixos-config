@@ -12,6 +12,7 @@
     nfs-utils
     flameshot
     yubikey-manager
+    transmission-gtk
     # Unstable pkgs
     unstable.jellyfin-media-player
     unstable.vlc
