@@ -8,5 +8,6 @@
     ./gnome-customizations
     ./terminator
     ./packages
+    ./offsec-pkgs
   ];
 }
