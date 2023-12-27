@@ -8,6 +8,7 @@
     ./virt-manager
     ./cups
     ./yubikey.nix
+    ./android
   ];
 
 }
