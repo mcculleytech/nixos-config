@@ -9,7 +9,6 @@
     ./cups
     ./yubikey.nix
     ./android
-    ./ssh.nix
   ];
 
 }
