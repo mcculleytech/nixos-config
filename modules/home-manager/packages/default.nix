@@ -14,7 +14,9 @@
     yubikey-manager
     transmission-gtk
     # Unstable pkgs
+    unstable.google-chrome
     unstable.jellyfin-media-player
+    unstable.watchmate
     unstable.vlc
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
