@@ -55,7 +55,7 @@
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
 	     pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	     extraSpecialArgs = { inherit inputs outputs; };
-	     modules = [ ./home-manager/achilles/home.nix ];
+	     modules = [ ./home/alex/achilles.nix ];
       };
     };
   };
