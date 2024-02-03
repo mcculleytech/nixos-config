@@ -10,6 +10,7 @@
       ../common/optional/syncthing.nix
       ../common/optional/tailscale.nix
       ../common/optional/virt-manager.nix
+      ../common/optional/docker.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

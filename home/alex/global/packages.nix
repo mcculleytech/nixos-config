@@ -13,6 +13,7 @@
     yubikey-manager
     transmission-gtk
     # Unstable pkgs
+    unstable.distrobox
     unstable.firefox
     unstable.bolt
     unstable.thunderbolt
