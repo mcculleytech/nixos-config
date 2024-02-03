@@ -3,7 +3,7 @@
   # You can import other NixOS modules here
   imports = [
     ./hardware-configuration.nix
-    ../common
+    ../common/global
     ../../modules/nixos/aeneas.nix
   ];
 
