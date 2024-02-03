@@ -6,7 +6,6 @@
     bitwarden
     terminator
     guake
-    nextcloud-client
     okular
     thunderbird
     nfs-utils
@@ -14,6 +13,9 @@
     yubikey-manager
     transmission-gtk
     # Unstable pkgs
+    unstable.firefox
+    unstable.bolt
+    unstable.thunderbolt
     unstable.google-chrome
     unstable.jellyfin-media-player
     unstable.watchmate

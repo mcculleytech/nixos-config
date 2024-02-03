@@ -49,7 +49,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
         # > Our main home-manager configuration file <
-        modules = [ ./home-manager/aeneas/home.nix ];
+        modules = [ ./home/alex/aeneas.nix ];
       };
       
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
