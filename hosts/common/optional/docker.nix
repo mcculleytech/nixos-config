@@ -1,4 +1,9 @@
+{ pkgs, ... }: 
 {
+  environment.systemPackages = [
+      pkgs.arion
+      pkgs.docker-client
+  ];
   virtualisation.docker = {
       enable = true;
       storageDriver = "btrfs";
@@ -8,5 +13,4 @@
 	  };
   };
   users.users.alex.extraGroups = [ "docker" ];
-  modules = [ arion.nixosModules.arion ];
 }
