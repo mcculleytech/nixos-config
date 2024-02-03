@@ -20,7 +20,7 @@
       inherit (self) outputs;
     in
     rec {
-    overlays = import ./overlays { inherit inputs; }; 
+    overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; }; 
 
     nixosConfigurations = {
       "aeneas" = nixpkgs.lib.nixosSystem {
