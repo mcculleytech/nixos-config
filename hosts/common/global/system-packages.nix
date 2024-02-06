@@ -10,6 +10,7 @@
     neofetch
     zsh
     htop
+    sops
   ];
 
   fonts.packages = with pkgs; [
