@@ -50,7 +50,7 @@
       };
 
       # Backup Server
-      "maul" = nixpkgs-unstable.lib.nixosSystem {
+      "maul" = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
           ./hosts/maul/configuration.nix
