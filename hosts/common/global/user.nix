@@ -1,10 +1,20 @@
 {config, pkgs, ...}: {
 
+
+    sops.secrets.alex_hash = {
+      sopsFile = ../../secrets.yaml;
+      neededForUsers = true;
+    };
+
     programs.zsh.enable = true;
     users.users.alex = {
-      initialPassword = "changeMe!";
+      hashedPasswordFile = config.sops.secrets.alex_pass.path;
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEZQ5hl6XP/iC45EnRpSQbxmAOKysPljVWFuXDleOWG alex@achilles"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqyTO3X8pqfIE+24+vtjlGi3FocJwDFzSkuhYQlzSUl alex@aeneas"
+        "no-touch-required sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIBLAg2zXXAlqhi+wg1EaezH2TQW4rnQ0oULK6CnXyBS2AAAAD3NzaDpzeXN0ZW0tYXV0aA== YubiKey841-system-auth"
+        "no-touch-required sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIP7VVX7OyA4eYm2nzJMmRl4EI8seJ3pTyUIuenTGivrcAAAAD3NzaDpzeXN0ZW0tYXV0aA== YubiKey840-system-auth"
       ];
       shell = pkgs.zsh;
       extraGroups = [ "wheel" "libvirtd" "audio"];
