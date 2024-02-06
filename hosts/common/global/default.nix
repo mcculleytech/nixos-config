@@ -6,6 +6,7 @@
     ./ssh.nix
     ./system-packages.nix
     ./user.nix
+    ./sops.nix
   ];
 
 
