@@ -7,7 +7,6 @@
       ../common/optional/cups.nix
       ../common/optional/gnome.nix
       ../common/optional/syncthing.nix
-      ../common/optional/tailscale.nix
       ../common/optional/virt-manager.nix
     ];
   

@@ -7,6 +7,7 @@
     ./system-packages.nix
     ./user.nix
     ./sops.nix
+    ./tailscale.nix
   ];
 
 

@@ -8,7 +8,6 @@
       ../common/optional/gnome.nix
       ../common/optional/nfs.nix
       ../common/optional/syncthing.nix
-      ../common/optional/tailscale.nix
       ../common/optional/virt-manager.nix
       ../common/optional/docker.nix
     ];
