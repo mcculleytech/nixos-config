@@ -1,23 +1,8 @@
 { inputs, lib, config, pkgs, outputs, ... }: {
   imports = [
     ./git.nix
-    ./gnome-customizations.nix
-    ./offsec-pkgs.nix
-    ./packages.nix
-    ./terminator.nix
     ./vim.nix
-    ./zsh.nix
   ];
-
-  nixpkgs = {
-    overlays = [
-    outputs.overlays.unstable-packages
-    ];
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
-  };
 
   home = {
     username = "alex";

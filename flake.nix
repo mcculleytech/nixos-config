@@ -29,6 +29,7 @@
     overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
     # NixOS Configs
     nixosConfigurations = {
+      # Dell XPS 15 Laptop
       "aeneas" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         modules = [
@@ -38,6 +39,7 @@
         ];
       };
 
+      # Main Custom Desktop 
       "achilles" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
 	       modules = [
@@ -46,6 +48,22 @@
            sops-nix.nixosModules.sops
 	      ];
       };
+
+      # Backup Server
+      "maul" = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          ./hosts/maul/configuration.nix
+          sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.alex = import ./home/alex/maul.nix;
+          }
+        ];
+      };
+
     };
 
     # home-manager
