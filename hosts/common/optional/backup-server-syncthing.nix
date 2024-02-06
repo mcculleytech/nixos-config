@@ -1,10 +1,10 @@
 { inputs, config, lib, ... }: {
 
   sops.secrets.TrueNas_syncthing_id = {
-    sopsFile = ../../maul/secrets.yaml;
+    sopsFile = ../../../secrets.yaml;
   };
-  sops.templates."TrueNas_syncthing_id".content = ''
-    "${config.sops.placeholder.TrueNas_syncthing_id}"
+  sops.templates."syncthing_server_id".content = ''
+    "${config.sops.placeholder.syncthing_server_id}"
     '';
 
 
@@ -23,7 +23,7 @@
       settings = {
         devices = {
           "TrueNAS" = { 
-             id = "${config.sops.placeholder.TrueNas_syncthing_id}"; 
+             id = "${config.sops.placeholder.syncthing_server_id}"; 
              autoAcceptFolders = true;
           };
         };
