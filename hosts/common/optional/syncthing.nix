@@ -1,4 +1,14 @@
+{config, ... }: 
 {
+
+sops.secrets.syncthing_server_id = {
+  sopsFile = ../../../secrets/main.yaml;
+};
+
+  sops.templates."syncthing_server_id".content = ''
+    "${config.sops.placeholder.syncthing_server_id}"
+  '';
+
 services = {
   syncthing = {
     enable = true;
@@ -6,7 +16,10 @@ services = {
     configDir = "/home/alex/.config/syncthing";
     settings = {
       devices = {
-        "Truenas" = { id = "CRRFFGZ-5KY77NV-TYQT2B5-WNM3KSZ-3DMU5ZC-FXXOXTY-EJ6ZQ7S-HHG4FAR"; };
+        "Truenas" = { 
+          id = "${config.sops.placeholder.syncthing_server_id}";
+          autoAcceptFolders = true;
+           };
       };
     };
   };
