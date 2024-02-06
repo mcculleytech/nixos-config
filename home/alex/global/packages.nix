@@ -12,6 +12,7 @@
     flameshot
     yubikey-manager
     transmission-gtk
+    ranger
     # Unstable pkgs
     unstable.godot_4
     unstable.distrobox

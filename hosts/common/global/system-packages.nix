@@ -2,7 +2,6 @@
   # Configure Systemwide Packages
   environment.systemPackages = with pkgs; 
   [
-    firefox
     vim
     wget
     git
