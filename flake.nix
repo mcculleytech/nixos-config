@@ -34,6 +34,7 @@
         modules = [
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.dell-xps-15-9500#-nvidia
+          sops-nix.nixosModules.sops
         ];
       };
 
@@ -42,6 +43,7 @@
 	       modules = [
 	         ./hosts/achilles/configuration.nix
 	         hardware.nixosModules.common-gpu-nvidia-nonprime
+           sops-nix.nixosModules.sops
 	      ];
       };
     };
