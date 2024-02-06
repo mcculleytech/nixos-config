@@ -2,13 +2,13 @@
 
 
     sops.secrets.alex_hash = {
-      sopsFile = ../../secrets.yaml;
+      sopsFile = ../../../secrets/main.yaml;
       neededForUsers = true;
     };
 
     programs.zsh.enable = true;
     users.users.alex = {
-      hashedPasswordFile = config.sops.secrets.alex_pass.path;
+      hashedPasswordFile = config.sops.secrets.alex_hash.path;
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEZQ5hl6XP/iC45EnRpSQbxmAOKysPljVWFuXDleOWG alex@achilles"
