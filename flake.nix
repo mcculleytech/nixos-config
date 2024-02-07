@@ -10,6 +10,8 @@
     nix-colors.url = "github:misterio77/nix-colors";
     sops-nix.url = "github:Mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   outputs = { 
@@ -20,6 +22,7 @@
     nix-colors,
     sops-nix,
     impermanence,
+    disko,
      ...
   }@inputs:
     let
