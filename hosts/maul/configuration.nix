@@ -7,7 +7,7 @@
       ../common/global
       ../common/optional/laptop-power-settings.nix
       ../common/optional/nfs-server.nix
-      ../common/optional/server-user-customizations.nix
+      #../common/optional/server-user-customizations.nix
       ../common/optional/backup-server-syncthing.nix
     ];
 
