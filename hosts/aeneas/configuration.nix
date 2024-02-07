@@ -7,6 +7,7 @@
       ../common/optional/cups.nix
       ../common/optional/gnome.nix
       ../common/optional/syncthing.nix
+      ../common/optional/desktop-user-customizations.nix
       ../common/optional/virt-manager.nix
     ];
   
