@@ -1,7 +1,7 @@
 { inputs, config, lib, ... }: {
 
-  sops.secrets.TrueNas_syncthing_id = {
-    sopsFile = ../../../secrets.yaml;
+  sops.secrets.syncthing_server_id = {
+    sopsFile = ../../../secrets/main.yaml;
   };
   sops.templates."syncthing_server_id".content = ''
     "${config.sops.placeholder.syncthing_server_id}"
