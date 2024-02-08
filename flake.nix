@@ -55,8 +55,10 @@
       # Gitea Server
       "vader" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
         modules = [
           disko.nixosModules.disko
+          sops-nix.nixosModules.sops
           ./hosts/vader/configuration.nix
         ];
       };

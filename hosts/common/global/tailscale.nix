@@ -4,7 +4,7 @@
   sops.secrets.tskey-reusable = {};
   sops.templates."tskey-reusable".content = ''
     "${config.sops.placeholder.tskey-reusable}"
-    '';
+  '';
 
   services.tailscale = {
     package = pkgs.tailscale;
