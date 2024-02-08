@@ -18,6 +18,11 @@ creation_rules:
         - *achilles_alex
         - *maul_alex
         - *maul_server
+  - path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+        - *aeneas_alex
+        - *achilles_alex
   - path_regex: hosts/aeneas/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
