@@ -14,6 +14,7 @@
     transmission-gtk
     ranger
     # Unstable pkgs
+    unstable.obs-studio
     unstable.godot_4
     unstable.distrobox
     unstable.firefox
