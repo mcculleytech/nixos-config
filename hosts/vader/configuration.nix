@@ -8,8 +8,8 @@
       ../common/optional/gitea.nix
     ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/sda"
 
   networking.hostName = "vader"; 
   networking.networkmanager.enable = true; 
