@@ -1,9 +1,11 @@
-{ config, pkgs, ... }:
+{ modulesPath, config, lib, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+    [ 
+      (modulesPath + "/installer/scan/not-detected.nix")
+      (modulesPath + "/profiles/qemu-guest.nix")
+      ../../disko/vader.nix
       ../common/global
       ../common/optional/gitea.nix
     ];
