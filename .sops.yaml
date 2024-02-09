@@ -3,7 +3,7 @@ keys:
   - &achilles_alex age18tmclsl69g44ck5l4xssa3sm4g8txzua6f74l45ujuyam2vjvqjsz7cqt6
   - &maul_alex age1a7c5ufhxme4kr3jhw53ue2gjjcstzrrr3cclxvu22ks5ulsexa9s5t80uz
   - &maul_server age1g3ksccdsxsw796jlzuyxl93fzg9s3pef8yspxphnsqak75xg8agsleke0g
-  - &vader_server age1jfv7v3p284m87x3qewnxvs0kucjk3tqqgskt20nqgn35vr52u57qk8uhz8 
+  - &vader_server age126f8yguza36ef34dcegwk8aunw83pwgdyvsmuldyeyffllg4hegq7l7pqg
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
