@@ -3,6 +3,7 @@ keys:
   - &achilles_alex age18tmclsl69g44ck5l4xssa3sm4g8txzua6f74l45ujuyam2vjvqjsz7cqt6
   - &maul_alex age1a7c5ufhxme4kr3jhw53ue2gjjcstzrrr3cclxvu22ks5ulsexa9s5t80uz
   - &maul_server age1g3ksccdsxsw796jlzuyxl93fzg9s3pef8yspxphnsqak75xg8agsleke0g
+  - &vader_server age1yedty3y4mgh4ly66w5mf5k5wsqf906cqk5hlmypqtsh6ypfpxdvq543fee 
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -11,6 +12,7 @@ creation_rules:
         - *achilles_alex
         - *maul_alex
         - *maul_server
+        - &vader_server 
   - path_regex: hosts/maul/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
@@ -23,6 +25,7 @@ creation_rules:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - &vader_server 
   - path_regex: hosts/aeneas/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
