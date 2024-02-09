@@ -37,7 +37,6 @@
                   "/persist" = {
                     mountOptions = [ "compress=zstd" ];
                     mountpoint = "/persist";
-                    extraArgs = [ "neededForBoot = true" ];
                   };
                   # Parent is not mounted so the mountpoint must be set
                   "/nix" = {

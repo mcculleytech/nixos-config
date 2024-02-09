@@ -8,6 +8,7 @@
       ../../disko/vader.nix
       ../common/global
       ../common/optional/gitea.nix
+      ../common/optional/impermanence.nix
     ];
 
   boot.loader.grub.enable = true;

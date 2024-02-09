@@ -1,0 +1,6 @@
+{
+  filesystems."/persist" = {
+    neededForBoot = true;
+  };
+
+}
