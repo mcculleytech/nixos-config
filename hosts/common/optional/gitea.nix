@@ -27,7 +27,7 @@
       host = "localhost"; 
       name = "gitea"; 
       user = "gitea"; 
-      password = "${config.sops.placeholder.gitea_db_pass}";  # Set your database password here
+      passwordFile = "${config.sops.templates."gitea_db_pass".path}";  # Set your database password here
     };
     appName = "McCulley Tech Gitea";
     settings = {
