@@ -12,7 +12,7 @@ creation_rules:
         - *achilles_alex
         - *maul_alex
         - *maul_server
-        - &vader_server 
+        - *vader_server 
   - path_regex: hosts/maul/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
@@ -25,7 +25,7 @@ creation_rules:
       - age:
         - *aeneas_alex
         - *achilles_alex
-        - &vader_server 
+        - *vader_server 
   - path_regex: hosts/aeneas/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
