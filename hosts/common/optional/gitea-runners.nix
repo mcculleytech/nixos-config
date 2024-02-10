@@ -7,6 +7,10 @@
       owner = config.systemd.services.gitea.serviceConfig.User;
     };
 
+    sops.templates."gitea_actions_token".content = ''
+      "${config.sops.placeholder.gitea_actions_token}"
+    '';
+
 	services.gitea-actions-runner = {
 		instances = {
 			hugo = {
@@ -21,4 +25,5 @@
 			};
 		};
 	};
+  };
 }
