@@ -5,9 +5,11 @@
   sops.secrets = {
     gitea_mail_pass = {
       sopsFile = ../../vader/secrets.yaml;
+      owner = config.systemd.services.gitea.serviceConfig.User;
     };
     gitea_db_pass = {
       sopsFile = ../../vader/secrets.yaml;
+      owner = config.systemd.services.gitea.serviceConfig.User;
     };
   };
 
@@ -16,7 +18,7 @@
     '';
 
   sops.templates."gitea_db_pass".content = ''
-      ${config.sops.placeholder.gitea_db_pass}
+      "${config.sops.placeholder.gitea_db_pass}"
     '';
 
   services.postgresql.enable = true;
@@ -27,31 +29,37 @@
       host = "localhost"; 
       name = "gitea"; 
       user = "gitea"; 
-      passwordFile = "${config.sops.templates."gitea_db_pass".path}";  # Set your database password here
+      passwordFile = config.sops.secrets.gitea_db_pass.path;  # Set your database password here
     };
     appName = "McCulley Tech Gitea";
     settings = {
       server = {
         DOMAIN = "source.mcculley.tech";
+        ROOT_URL = "https://source.mcculley.tech";
         HTTP_PORT = 3008;
-        PROTOCOL = "https";
+        PROTOCOL = "http";
         SSH_PORT = 2222;
       };
+      ui = {
+        SHOW_USER_EMAIL = false;
+      };
       service = {
-        DISABLE_REGISTRATION = false;
+        DISABLE_REGISTRATION = true;
       }; 
-
-    # Configure SMTP settings for Mailgun
-    mailer = {
-      ENABLED = true;
-      FROM = "noreply@mcculley.tech";  # Set the "From" address for outgoing emails
-      SMTP_ADDR = "smtp.mailgun.org";
-      SMTP_PORT = 587;
-      USER = "gitea@mail.mcculley.tech";  # Your Mailgun SMTP username
-      PASSWD = "${config.sops.placeholder.gitea_mail_pass}";  # Your Mailgun SMTP password
-      STARTTLS = true;
+      mailer = {
+        ENABLED = true;
+        PROTOCOL = "smtp+starttls";
+        FROM = "noreply@mcculley.tech";
+        SMTP_ADDR = "smtp.mailgun.org";
+        SMTP_PORT = 587;
+        USER = "gitea@mail.mcculley.tech";
+      };
+      actions = {
+        ENABLED = true;
+      };
     };
-  };
+    mailerPasswordFile = config.sops.secrets.gitea_mail_pass.path;
+    customDir = "${config.services.gitea.stateDir}/custom";
 };
 
   # Configure SSH to use a non-standard port
