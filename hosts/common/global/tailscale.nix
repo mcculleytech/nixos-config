@@ -3,7 +3,7 @@
 
   sops.secrets.tskey-reusable = {};
   sops.templates."tskey-reusable".content = ''
-    "${config.sops.placeholder.tskey-reusable}"
+    ${config.sops.placeholder.tskey-reusable}
   '';
 
   services.tailscale = {
@@ -34,7 +34,7 @@
       fi
 
       # otherwise authenticate with tailscale
-      ${tailscale}/bin/tailscale up --auth-key file:${config.sops.templates."tskey-reusable".path} 
+      ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path}
     '';
   };
 }

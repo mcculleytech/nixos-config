@@ -16,7 +16,7 @@
     '';
 
   sops.templates."gitea_db_pass".content = ''
-      "${config.sops.placeholder.gitea_db_pass}"
+      ${config.sops.placeholder.gitea_db_pass}
     '';
 
   services.postgresql.enable = true;
