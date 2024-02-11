@@ -13,7 +13,9 @@
     yubikey-manager
     transmission-gtk
     ranger
+    vlc
     # Unstable pkgs
+    unstable.xonotic
     unstable.obs-studio
     unstable.godot_4
     unstable.distrobox
@@ -23,7 +25,6 @@
     unstable.google-chrome
     unstable.jellyfin-media-player
     unstable.watchmate
-    unstable.vlc
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
     unstable.fwupd
