@@ -34,4 +34,8 @@
       shell = if checkHostname "${config.networking.hostName}" workstations then pkgs.zsh else pkgs.bash;
       extraGroups = [ "wheel" "libvirtd" "audio"];
     };
+
+    # Allows for easier rebuilds, no sudo password ask
+    security.pam.enableSSHAgentAuth = true;
+    security.pam.services.alex.sshAgentAuth = true;
   }
