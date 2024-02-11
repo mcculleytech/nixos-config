@@ -45,11 +45,11 @@
       # Main Custom Desktop 
       "achilles" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
-	modules = [
-	  ./hosts/achilles/configuration.nix
-	  hardware.nixosModules.common-gpu-nvidia-nonprime
+	      modules = [
+	       ./hosts/achilles/configuration.nix
+	       hardware.nixosModules.common-gpu-nvidia-nonprime
           sops-nix.nixosModules.sops
-	];
+	      ];
       };
 
       # Gitea Server
@@ -60,6 +60,11 @@
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
           ./hosts/vader/configuration.nix
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.alex = import ./home/alex/vader.nix;
+          }
         ];
       };
 
@@ -89,16 +94,16 @@
       };
       
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
-	pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	extraSpecialArgs = { inherit inputs outputs; };
-	modules = [ ./home/alex/achilles.nix ];
+	       pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	       extraSpecialArgs = { inherit inputs outputs; };
+	       modules = [ ./home/alex/achilles.nix ];
       };
 
-      "alex@vader" = home-manager.lib.homeManagerConfiguration {
-	pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	extraSpecialArgs = { inherit inputs outputs; };
-	modules = [ ./home/alex/vader.nix ];
-      };
+      # "alex@vader" = home-manager.lib.homeManagerConfiguration {
+	    #    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	    #    extraSpecialArgs = { inherit inputs outputs; };
+	    #    modules = [ ./home/alex/vader.nix ];
+      # };
     };
   };
 }
