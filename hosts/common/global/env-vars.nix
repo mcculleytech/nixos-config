@@ -3,6 +3,7 @@
   environment = {
     variables = {
       EDITOR = "vim";
+      NIX_SSHOPS = "-t";
     };
     shellAliases = {
       ga           = "git add .";
