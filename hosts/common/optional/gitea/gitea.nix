@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-
+# A work in progress. Decided to shelve this project for the time being (2-10-24)
   sops.secrets = {
     gitea_mail_pass = {
       sopsFile = ../../vader/secrets.yaml;

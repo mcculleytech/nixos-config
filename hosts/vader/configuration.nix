@@ -7,9 +7,6 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/vader.nix
       ../common/global
-      ../common/optional/gitea.nix
-      # I know runners and gitea servers shouldn't be on the same server, but I'm the only one using it and can move it easily if need be :)
-      ../common/optional/gitea-runners.nix
       ../common/optional/impermanence.nix
     ];
 
