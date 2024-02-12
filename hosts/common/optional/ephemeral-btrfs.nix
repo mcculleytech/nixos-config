@@ -1,11 +1,12 @@
 { lib, config, ... }:
+# Taken from Misterio77's config
 let
   hostname = config.networking.hostName;
   wipeScript = ''
     mkdir /tmp -p
     MNTPOINT=$(mktemp -d)
     (
-      mount -t btrfs -o subvol=/ /dev/disk/by-label/${hostname} "$MNTPOINT"
+      mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/${hostname} "$MNTPOINT"
       trap 'umount "$MNTPOINT"' EXIT
 
       echo "Creating needed directories"
@@ -42,9 +43,9 @@ in
       serviceConfig.Type = "oneshot";
       script = wipeScript;
     };
+  };
 
   fileSystems."/persist" = {
     neededForBoot = true;
   };
-
-  };
+}

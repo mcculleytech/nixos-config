@@ -1,4 +1,5 @@
 { lib, inputs, config, ... }: {
+  # Taken from Misterio77's config
   imports = [
     inputs.impermanence.nixosModules.impermanence
   ];
@@ -9,7 +10,6 @@
         "/var/lib/systemd"
         "/var/lib/nixos"
         "/var/log"
-        "/srv"
       ];
     };
   };
