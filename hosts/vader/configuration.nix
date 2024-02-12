@@ -7,6 +7,7 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/vader.nix
       ../common/global
+      ../common/optional/qemu-config.nix
       ../common/optional/ephemeral-btrfs.nix
       ../common/optional/impermanence.nix
     ];

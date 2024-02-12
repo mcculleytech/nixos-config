@@ -14,6 +14,7 @@
     transmission-gtk
     ranger
     vlc
+    nixos-anywhere
     # Unstable pkgs
     unstable.xonotic
     unstable.obs-studio

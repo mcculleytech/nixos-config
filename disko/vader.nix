@@ -1,7 +1,8 @@
-{ config, ... }: {
+{ config, lib, ... }:
+{
   disko.devices = {
     disk = {
-      sda = {
+      vader = {
         type = "disk";
         device = "/dev/sda";
         content = {
@@ -23,7 +24,6 @@
               };
             };
             root = {
-              label = "${config.networking.hostName}";
               size = "100%";
               content = {
                 type = "btrfs";

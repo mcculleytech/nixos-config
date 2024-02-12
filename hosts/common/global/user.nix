@@ -32,10 +32,13 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEGkHcMirY9luPZudrCkXEL9EDnnrRGKPv8uEqChtdl alex@terminus"
       ];
       shell = if checkHostname "${config.networking.hostName}" workstations then pkgs.zsh else pkgs.bash;
-      extraGroups = [ "wheel" "libvirtd" "audio"];
+      extraGroups = [ "wheel" "libvirtd" "audio" "plugdev" "dialout" ];
     };
 
-    # Allows for easier rebuilds, no sudo password ask
-    security.pam.enableSSHAgentAuth = true;
-    security.pam.services.alex.sshAgentAuth = true;
+    # Need this currently for nixos-anywhere and remote builds. Would like to not do this.
+    users.users.root.openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEZQ5hl6XP/iC45EnRpSQbxmAOKysPljVWFuXDleOWG alex@achilles"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqyTO3X8pqfIE+24+vtjlGi3FocJwDFzSkuhYQlzSUl alex@aeneas"
+    ];
+
   }

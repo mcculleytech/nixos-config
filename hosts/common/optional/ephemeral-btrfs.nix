@@ -6,7 +6,7 @@ let
     mkdir /tmp -p
     MNTPOINT=$(mktemp -d)
     (
-      mount -t btrfs -o subvol=/ /dev/disk/by-partlabel/${hostname} "$MNTPOINT"
+      mount -t btrfs -o subvol=/ /dev/disk/by-label/${hostname} "$MNTPOINT"
       trap 'umount "$MNTPOINT"' EXIT
 
       echo "Creating needed directories"
