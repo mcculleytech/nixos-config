@@ -59,6 +59,7 @@
         modules = [
           disko.nixosModules.disko
           sops-nix.nixosModules.sops
+          impermanence.nixosModules.impermanence
           ./hosts/vader/configuration.nix
           home-manager.nixosModules.home-manager
           {

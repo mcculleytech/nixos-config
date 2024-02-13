@@ -1,8 +1,5 @@
 { lib, inputs, config, ... }: {
   # Taken from Misterio77's config
-  imports = [
-    inputs.impermanence.nixosModules.impermanence
-  ];
 
   environment.persistence = {
     "/persist" = {
