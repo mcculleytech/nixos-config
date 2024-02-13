@@ -18,6 +18,7 @@
               type = "EF00";
               label = "ESP";
               content = {
+                extraArgs = [ "-n ESP" ];
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
@@ -27,7 +28,13 @@
               size = "100%";
               content = {
                 type = "btrfs";
-                extraArgs = [ "-f" ]; # Override existing partition
+                extraArgs = [ "-f" "-L ${config.networking.hostName}" ]; # Override existing partition
+                postCreateHook = /* sh */ ''
+                    MNTPOINT=$(mktemp -d)
+                    mount "/dev/disk/by-label/${config.networking.hostName}" "$MNTPOINT" -o subvol=/
+                    trap 'umount $MNTPOINT; rm -rf $MNTPOINT' EXIT
+                    btrfs subvolume snapshot -r $MNTPOINT/root $MNTPOINT/root-blank
+                  '';
                 subvolumes = {
                   "/root" = {
                     mountOptions = [ "compress=zstd" ];

@@ -46,8 +46,8 @@
       "achilles" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
 	      modules = [
-	       ./hosts/achilles/configuration.nix
-	       hardware.nixosModules.common-gpu-nvidia-nonprime
+	        ./hosts/achilles/configuration.nix
+	        hardware.nixosModules.common-gpu-nvidia-nonprime
           sops-nix.nixosModules.sops
 	      ];
       };
@@ -99,12 +99,6 @@
 	       extraSpecialArgs = { inherit inputs outputs; };
 	       modules = [ ./home/alex/achilles.nix ];
       };
-
-      # "alex@vader" = home-manager.lib.homeManagerConfiguration {
-	    #    pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	    #    extraSpecialArgs = { inherit inputs outputs; };
-	    #    modules = [ ./home/alex/vader.nix ];
-      # };
     };
   };
 }

@@ -8,6 +8,7 @@
     ./user.nix
     ./sops.nix
     ./tailscale.nix
+    ./systemd-initrd.nix
   ];
 
 

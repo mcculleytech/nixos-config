@@ -9,6 +9,8 @@
     homeDirectory = "/home/alex";
   };
 
+
+
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
