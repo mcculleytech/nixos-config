@@ -10,6 +10,7 @@
       ../common/optional/syncthing.nix
       ../common/optional/virt-manager.nix
       ../common/optional/docker.nix
+      ../common/optional/custom-udev.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

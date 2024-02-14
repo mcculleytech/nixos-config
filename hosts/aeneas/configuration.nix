@@ -8,6 +8,8 @@
       ../common/optional/gnome.nix
       ../common/optional/syncthing.nix
       ../common/optional/virt-manager.nix
+      ../common/optional/docker.nix
+      ../common/optional/custom-udev.nix
     ];
   
   networking.hostName = "aeneas";

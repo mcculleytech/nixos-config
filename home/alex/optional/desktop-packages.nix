@@ -16,6 +16,7 @@
     vlc
     nixos-anywhere
     # Unstable pkgs
+    appimage-run
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4

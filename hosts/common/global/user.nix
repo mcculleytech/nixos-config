@@ -21,10 +21,11 @@
     };
 
     programs.zsh.enable = true;
-    users.mutableUsers = false;
+    # users.mutableUsers = false;
     users.users.alex = {
       hashedPasswordFile = config.sops.secrets.alex_hash.path;
       isNormalUser = true;
+      uid = 1000;
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEZQ5hl6XP/iC45EnRpSQbxmAOKysPljVWFuXDleOWG alex@achilles"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICqyTO3X8pqfIE+24+vtjlGi3FocJwDFzSkuhYQlzSUl alex@aeneas"
@@ -33,7 +34,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEGkHcMirY9luPZudrCkXEL9EDnnrRGKPv8uEqChtdl alex@terminus"
       ];
       shell = if checkHostname "${config.networking.hostName}" workstations then pkgs.zsh else pkgs.bash;
-      extraGroups = [ "wheel" "libvirtd" "audio" "plugdev" "dialout" ];
+      extraGroups = [ "wheel" "libvirtd" "audio" "plugdev" "dialout" "docker"];
     };
 
     # Need this currently for nixos-anywhere and remote builds. Would like to not do this.
