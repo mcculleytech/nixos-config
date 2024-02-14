@@ -1,6 +1,10 @@
 { lib, inputs, config, ... }: {
   # Taken from Misterio77's config
 
+  # imports = [ 
+  #   inputs.impermanence.nixosModules.impermanence.home-manager
+  # ];
+
   environment.persistence = {
     "/persist" = {
       directories = [

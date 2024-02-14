@@ -21,6 +21,7 @@
     };
 
     programs.zsh.enable = true;
+    users.mutableUsers = false;
     users.users.alex = {
       hashedPasswordFile = config.sops.secrets.alex_hash.path;
       isNormalUser = true;
