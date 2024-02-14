@@ -11,6 +11,8 @@
     zsh
     htop
     sops
+    util-linux
+    exfatprogs
   ];
 
   fonts.packages = with pkgs; [
