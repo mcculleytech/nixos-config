@@ -1,12 +1,20 @@
 { inputs, lib, config, ... }:
+let
+  isEd25519 = k: k.type == "ed25519";
+  getKeyPath = k: k.path;
+  keys = builtins.filter isEd25519 config.services.openssh.hostKeys;
+in
 {
     
   sops.defaultSopsFile = ../../../secrets/main.yaml;
-  # This will automatically import SSH keys as age keys
-  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
-  # This is using an age key that is expected to already be in the filesystem
-  sops.age.keyFile = "/home/alex/.config/sops/age/keys.txt";
-  # This will generate a new key if the key specified above does not exist
-  sops.age.generateKey = true;
+
+  sops = {
+    age = { 
+      sshKeyPaths = map getKeyPath keys;
+      keyFile = "/var/lib/sops-nix/key.txt";
+      generateKey = true;
+    };
+  };
+
 }
 
