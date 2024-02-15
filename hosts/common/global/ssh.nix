@@ -11,7 +11,7 @@ in
   services.openssh = {
     enable = true;
     settings = {
-      # Need to allow root login for remote builds. Potential fix in Colmena
+      # Need to allow root login for remote builds. Potential fix in Colmena, possibly with pam sshagentauth
       PermitRootLogin = "yes";
       PasswordAuthentication = false;
     };
