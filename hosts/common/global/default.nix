@@ -6,8 +6,8 @@
     ./ssh.nix
     ./system-packages.nix
     ./user.nix
-    ./sops.nix
-    ./tailscale.nix
+    #./sops.nix
+    #./tailscale.nix
     ./systemd-initrd.nix
   ];
 
