@@ -30,10 +30,10 @@
                 # for example use `echo -n "password" > /tmp/secret.key`
                 #passwordFile = "/tmp/secret.key"; # Interactive
                 settings = { 
-		  allowDiscards = true;
+		              allowDiscards = true;
                   keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
-		  keyFileSize = 4096;
-		};
+		              keyFileSize = 4096;
+		            };
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
@@ -51,10 +51,10 @@
                       mountpoint = "/nix";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
-		    "/persist" = {
-		      mountpoint = "/persist";
-		      mountOptions = [ "compress=zstd" "noatime" ];
-		    };
+		                "/persist" = {
+		                  mountpoint = "/persist";
+		                  mountOptions = [ "compress=zstd" "noatime" ];
+		                };
                   };
                 };
               };
