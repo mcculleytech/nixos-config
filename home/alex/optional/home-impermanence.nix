@@ -18,6 +18,7 @@
           ".config/godot"
           ".local"
           ".config"
+          ".zshhistory"
         ];
         allowOther = true;
       };
