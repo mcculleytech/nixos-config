@@ -7,10 +7,12 @@
 
   environment.persistence = {
     "/persist" = {
+    hideMounts = true;
       directories = [
         "/var/lib/systemd"
         "/var/lib/NetworkManager"
         "/var/lib/nixos"
+        "/var/lib/tailscale"
         "/var/log"
         "/etc/NetworkManager"
       ];

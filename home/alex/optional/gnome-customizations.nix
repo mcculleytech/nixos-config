@@ -1,5 +1,13 @@
 { pkgs, ... }: {
 
+  home.packages = (with pkgs.gnomeExtensions; [
+    dash-to-dock
+    dash-to-panel
+    vitals
+    user-themes
+    tray-icons-reloaded
+  ]); 
+
   gtk = {
     enable = true;
 
@@ -36,12 +44,10 @@
         "spotify.desktop"
       ];
       enabled-extensions = [
-
         "user-theme@gnome-shell-extensions.gcampax.github.com"
         "dash-to-dock@micxgx.gmail.com"
         "trayIconsReloaded@selfmade.pl"
         "Vitals@CoreCoding.com"
-
       ];
     };
 
@@ -71,13 +77,5 @@
     };
   
   };
-
-  home.packages = (with pkgs.gnomeExtensions; [
-    dash-to-dock
-    dash-to-panel
-    vitals
-    user-themes
-    tray-icons-reloaded
-  ]); 
 
 }
