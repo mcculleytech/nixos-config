@@ -2,7 +2,6 @@
   imports = [
     ./git.nix
     ./vim.nix
-    ./home-impermanence.nix
   ];
 
   home = {
