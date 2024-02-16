@@ -2,7 +2,7 @@
 {
   disko.devices = {
     disk = {
-      aeneasRoot = {
+      aeneas = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
@@ -69,9 +69,6 @@
             };
           };
         };
-      };
-      disk = {
-
       };
     };
   };

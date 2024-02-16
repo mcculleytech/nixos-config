@@ -2,7 +2,7 @@
 {
   disko.devices = {
     disk = {
-      aeneasRoot = {
+      aeneas = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
@@ -71,7 +71,40 @@
         };
       };
       disk = {
-
+        aeneasHome = {
+          type = "disk";
+          device = "/dev/sda";
+          content = {
+            type = "gpt";
+            partitions = {
+              luks = {
+                size = "100%";
+                content = {
+                  type = "luks";
+                  name = "encryptedHome";
+                settings = {
+                  # usb unencrypt
+                  allowDiscards = true;
+                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
+                  keyFileSize = 4096;
+                };
+                # interactive password for unencypting
+                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                  content = {
+                    type = "btrfs";
+                    extraArgs = [ "-f" ];
+                    subvolumes = {
+                      "/home" = {
+                        mountpoint = "/home";
+                        mountOptions = [ "compress=zstd" "noatime" ];
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };  
       };
     };
   };
