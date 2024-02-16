@@ -1,6 +1,7 @@
 { inputs, config, pkgs, ... }: {
   imports = 
     [
+      ../../disko/aeneas.nix
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/android.nix

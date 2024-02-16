@@ -9,8 +9,10 @@
     "/persist" = {
       directories = [
         "/var/lib/systemd"
+        "/var/lib/NetworkManager"
         "/var/lib/nixos"
         "/var/log"
+        "/etc/NetworkManager"
       ];
       files = [
         "/etc/machine-id"
@@ -22,6 +24,11 @@
     };
   };
   programs.fuse.userAllowOther = true;
+
+  security.sudo.extraConfig = ''
+    # rollback results in sudo lectures after each reboot
+    Defaults lecture = never
+  '';
 
   system.activationScripts.persistent-dirs.text =
     let

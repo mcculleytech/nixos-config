@@ -37,6 +37,8 @@
         specialArgs = { inherit inputs outputs; };
         modules = [
           ./hosts/aeneas/configuration.nix
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
           hardware.nixosModules.dell-xps-15-9500#-nvidia
           sops-nix.nixosModules.sops
         ];
@@ -98,7 +100,10 @@
       "alex@aeneas" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs outputs; };
-        modules = [ ./home/alex/aeneas.nix ];
+        modules = [ 
+          ./home/alex/aeneas.nix
+          (impermanence + "/home-manager.nix") 
+        ];
       };
       
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
