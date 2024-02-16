@@ -9,6 +9,8 @@
     ./sops.nix
     ./tailscale.nix
     ./systemd-initrd.nix
+    ./ephemeral-btrfs.nix
+    ./impermanence.nix
   ];
 
 
