@@ -7,8 +7,9 @@
           "Downloads"
           "Pictures"
           "Videos"
+          "Repositories"
           ".local/bin"
-          ".local/share/nix" # trusted settings and repl history
+          ".local/share/nix"
         ];
         allowOther = true;
       };
