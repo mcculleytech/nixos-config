@@ -15,15 +15,15 @@
   in
   { 
   
-   # sops.secrets.alex_hash = {
-   #   sopsFile = ../../../secrets/main.yaml;
-   #   neededForUsers = true;
-   # };
+   sops.secrets.alex_hash = {
+     sopsFile = ../../../secrets/main.yaml;
+     neededForUsers = true;
+   };
 
     programs.zsh.enable = true;
     users.mutableUsers = false;
     users.users.alex = {
-      password = "HelloWorld!";
+      hashedPasswordFile = config.sops.secrets.alex_hash.path;
       isNormalUser = true;
       uid = 1000;
       openssh.authorizedKeys.keys = [

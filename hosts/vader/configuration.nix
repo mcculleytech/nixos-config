@@ -16,8 +16,6 @@
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
 
-  users.mutableUsers = false;
-
   networking.hostName = "vader"; 
   networking.networkmanager.enable = true; 
 
