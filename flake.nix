@@ -29,7 +29,7 @@
       inherit (self) outputs;
     in
     rec {
-    overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
+    overlays = import ./overlays/unstable-pkgs.nix { inherit inputs ; };
     # NixOS Configs
     nixosConfigurations = {
       # Dell XPS 15 Laptop
@@ -41,6 +41,18 @@
           impermanence.nixosModules.impermanence
           hardware.nixosModules.dell-xps-15-9500#-nvidia
           sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              (impermanence + "/home-manager.nix")
+              ./home/alex/aeneas.nix
+              ];
+            };
+          }
         ];
       };
 
@@ -51,6 +63,18 @@
 	        ./hosts/achilles/configuration.nix
 	        hardware.nixosModules.common-gpu-nvidia-nonprime
           sops-nix.nixosModules.sops
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              (impermanence + "/home-manager.nix")
+              ./home/alex/aeneas.nix
+              ];
+            };
+          }
 	      ];
       };
 
@@ -65,8 +89,8 @@
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.users.alex = {
               # Import impermanence to home-manager
               imports = [
@@ -97,15 +121,6 @@
 
     # home-manager
     homeConfigurations = {
-      "alex@aeneas" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = { inherit inputs outputs; };
-        modules = [ 
-          ./home/alex/aeneas.nix
-          (impermanence + "/home-manager.nix") 
-        ];
-      };
-      
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
 	       pkgs = nixpkgs.legacyPackages.x86_64-linux;
 	       extraSpecialArgs = { inherit inputs outputs; };
