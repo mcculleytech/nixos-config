@@ -33,6 +33,7 @@
   '';
 
   system.activationScripts.persistent-dirs.text =
+  if config.networking.hostName == "aeneas" then
     let
       mkHomePersist = user: lib.optionalString user.createHome ''
         mkdir -p /persist/${user.home}
@@ -41,5 +42,9 @@
       '';
       users = lib.attrValues config.users.users;
     in
-    lib.concatLines (map mkHomePersist users);
+    lib.concatLines (map mkHomePersist users)
+  else 
+    ''
+    :
+    '';
 }

@@ -73,8 +73,8 @@
             home-manager.users.alex = {
               # Import impermanence to home-manager
               imports = [
-              (impermanence + "/home-manager.nix")
-              ./home/alex/aeneas.nix
+              #(impermanence + "/home-manager.nix")
+              ./home/alex/achilles.nix
               ];
             };
           }

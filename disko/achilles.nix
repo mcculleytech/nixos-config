@@ -2,7 +2,7 @@
 {
   disko.devices = {
     disk = {
-      aeneas = {
+      achillesRoot = {
         type = "disk";
         device = "/dev/nvme0n1";
         content = {
@@ -30,13 +30,13 @@
                 type = "luks";
                 name = "encryptedRoot";
                 settings = {
-                  # usb unencrypt
                   allowDiscards = true;
-                  keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
-                  keyFileSize = 4096;
+                  # usb unencrypt
+                  # keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+                  # keyFileSize = 4096;
+                  keyFile = "/tmp/secret.key";
                 };
-                # interactive password for unencypting
-                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
+                additionalKeyFiles = [ "/dev/disk/by-id/usb-SMI_USB_DISK-0:0" ];
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" "-L ${config.networking.hostName}" ]; # Override existing partition
@@ -74,7 +74,7 @@
         };
       };
       disk = {
-        aeneasHome = {
+        achillesHome = {
           type = "disk";
           device = "/dev/sda";
           content = {
@@ -86,13 +86,14 @@
                   type = "luks";
                   name = "encryptedHome";
                 settings = {
-                  # usb unencrypt
                   allowDiscards = true;
-                  keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
-                  keyFileSize = 4096;
+                  # usb unencrypt
+                  # keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+                  # keyFileSize = 4096;
+                  keyFile = "/tmp/secret.key";
                 };
+                additionalKeyFiles = [ "/dev/disk/by-id/usb-SMI_USB_DISK-0:0" ];
                 # interactive password for unencypting
-                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                   content = {
                     type = "btrfs";
                     extraArgs = [ "-f" ];
