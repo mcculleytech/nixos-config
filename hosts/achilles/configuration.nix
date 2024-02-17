@@ -1,6 +1,7 @@
 { inputs, config, pkgs,  ... }: {
   imports =
     [
+      ../../disko/achilles.nix
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/android.nix

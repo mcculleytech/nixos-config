@@ -63,6 +63,7 @@
                       mountpoint = "/.swapvol";
                       swap = {
                         swapfile.size = "8G";
+                        };
                       };
                     };
                   };
@@ -109,6 +110,5 @@
         };  
       };
     };
-  };
-}
+  }
 

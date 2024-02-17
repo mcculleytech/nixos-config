@@ -59,6 +59,7 @@
       # Main Custom Desktop 
       "achilles" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
 	      modules = [
 	        ./hosts/achilles/configuration.nix
           disko.nixosModules.disko
