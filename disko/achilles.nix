@@ -30,11 +30,13 @@
                 type = "luks";
                 name = "encryptedRoot";
                 settings = {
+                  # usb unencrypt
                   allowDiscards = true;
-                  # if you want to use the key for interactive login be sure there is no trailing newline
-                  # for example use `echo -n "password" > /tmp/secret.key`
-                  keyFile = "/tmp/secret.key";
+                  keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+                  keyFileSize = 4096;
                 };
+                # interactive password for unencypting
+                additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" "-L ${config.networking.hostName}" ]; # Override existing partition
@@ -85,7 +87,7 @@
                 settings = {
                   # usb unencrypt
                   allowDiscards = true;
-                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
+                  keyFile = "/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
                   keyFileSize = 4096;
                 };
                 # interactive password for unencypting

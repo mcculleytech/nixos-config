@@ -61,6 +61,8 @@
         specialArgs = { inherit inputs outputs; };
 	      modules = [
 	        ./hosts/achilles/configuration.nix
+          disko.nixosModules.disko
+          impermanence.nixosModules.impermanence
 	        hardware.nixosModules.common-gpu-nvidia-nonprime
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
