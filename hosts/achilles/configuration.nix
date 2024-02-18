@@ -7,7 +7,7 @@
       ../common/optional/android.nix
       ../common/optional/cups.nix
       ../common/optional/gnome.nix
-      #../common/optional/nfs.nix
+      ../common/optional/nfs.nix
       ../common/optional/syncthing.nix
       ../common/optional/virt-manager.nix
       ../common/optional/docker.nix
@@ -16,6 +16,8 @@
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  networking.interfaces.enp4s0.wakeOnLan.enable = true;
 
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;

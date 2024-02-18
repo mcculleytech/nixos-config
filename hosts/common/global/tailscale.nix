@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ...}: {
+{ lib, pkgs, config, outputs, ...}: {
 
 
   sops.secrets.tskey-reusable = {};
@@ -7,7 +7,7 @@
   '';
 
   services.tailscale = {
-    package = pkgs.tailscale;
+    package = pkgs.unstable.tailscale;
     enable = true;
   };
 

@@ -6,7 +6,7 @@
     bitwarden
     terminator
     guake
-    okular
+    evince
     thunderbird
     nfs-utils
     flameshot
@@ -15,8 +15,10 @@
     ranger
     vlc
     nixos-anywhere
+    appimage-run
+    retroarchFull
+    wakeonlan
     # Unstable pkgs
-    unstable.appimage-run
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4

@@ -2,6 +2,7 @@
 
     imports = [
       ./global
+      ./home-impermanace
     ];
 
   programs.bash = {

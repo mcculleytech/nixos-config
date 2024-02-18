@@ -111,9 +111,10 @@
         modules = [
           ./hosts/maul/configuration.nix
           sops-nix.nixosModules.sops
+          impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.useUserPackages = true;
             home-manager.users.alex = import ./home/alex/maul.nix;
           }
@@ -122,7 +123,7 @@
 
     };
 
-    # home-manager
+    # home-manager standalones
     homeConfigurations = {
       "alex@achilles" = home-manager.lib.homeManagerConfiguration {
 	       pkgs = nixpkgs.legacyPackages.x86_64-linux;

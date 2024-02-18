@@ -1,4 +1,4 @@
-{ config, ... }: {
+  { config, ... }: {
 
   sops.secrets.nfs_hash = {
     sopsFile = ../../maul/secrets.yaml;

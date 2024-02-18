@@ -1,10 +1,6 @@
 { lib, inputs, config, ... }: {
   # Taken from Misterio77's config
 
-  # imports = [ 
-  #   inputs.impermanence.nixosModules.impermanence.home-manager
-  # ];
-
   environment.persistence = {
     "/persist" = {
     hideMounts = true;
@@ -33,7 +29,7 @@
   '';
 
   system.activationScripts.persistent-dirs.text =
-  if config.networking.hostName == "aeneas" then
+  if config.networking.hostName == "aeneas" || "maul" then
     let
       mkHomePersist = user: lib.optionalString user.createHome ''
         mkdir -p /persist/${user.home}
