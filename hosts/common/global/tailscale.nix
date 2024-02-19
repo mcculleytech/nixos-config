@@ -34,7 +34,7 @@
       fi
 
       # otherwise authenticate with tailscale
-      ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path}
+      ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path} --ssh
     '';
   };
 }
