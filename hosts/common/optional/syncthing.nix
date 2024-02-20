@@ -9,6 +9,7 @@
     "${config.sops.placeholder.syncthing_server_id}"
   '';
 
+# One day I'll move to totally using nix and this will be cleaner
   services = {
     syncthing = {
       enable = true;
@@ -23,7 +24,7 @@
              };
         };
       };
-      overrideDevices = true;
+      overrideDevices = false;
       overrideFolders = false;
     };
   };

@@ -10,6 +10,19 @@
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  boot.initrd.luks.devices."encryptedRoot" = {
+    keyFileSize = 4096;
+    keyFile = lib.mkForce"/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+    keyFileTimeout = 5;
+  };
+
+
+  boot.initrd.luks.devices."encryptedHome" = { 
+    keyFileSize = 4096;
+    keyFile = lib.mkForce"/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+    keyFileTimeout = 5;
+  };
+
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
