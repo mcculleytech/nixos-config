@@ -2,8 +2,10 @@
 {
   disko.devices = {
     disk = {
-      aeneas = {
+      #CHANGEME
+      hostname = {
         type = "disk";
+        #CHANGEME
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
@@ -33,11 +35,13 @@
                   allowDiscards = true;
                   # if you want to use the key for interactive login be sure there is no trailing newline
                   # for example use `echo -n "password" > /tmp/secret.key`
+                  # see achilles hardware-configuration.nix for usb auto unencrypt with fallback to password
                   keyFile = "/tmp/secret.key";
                 };
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" "-L ${config.networking.hostName}" ]; # Override existing partition
+                  # Creates a read only snapshot of the root subvol
                   postCreateHook = /* sh */ ''
                       MNTPOINT=$(mktemp -d)
                       mount "/dev/disk/by-label/${config.networking.hostName}" "$MNTPOINT" -o subvol=/
@@ -52,6 +56,11 @@
                     "/persist" = {
                       mountOptions = [ "compress=zstd" ];
                       mountpoint = "/persist";
+                    };
+                    # Comment this out if you'd like to opt-in for home impermanence.
+                    "/home" = {
+                      mountOptions = [ "compress=zstd" ];
+                      mountpoint = "/home";
                     };
                     "/nix" = {
                       mountOptions = [ "compress=zstd" "noatime" ];

@@ -13,6 +13,7 @@
   boot.initrd.luks.devices."encryptedRoot" = {
     keyFileSize = 4096;
     keyFile = lib.mkForce"/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+    # This allows for password fallout, otherwise it times out and boots into recovery
     keyFileTimeout = 5;
   };
 
@@ -20,6 +21,7 @@
   boot.initrd.luks.devices."encryptedHome" = { 
     keyFileSize = 4096;
     keyFile = lib.mkForce"/dev/disk/by-id/usb-SMI_USB_DISK-0:0";
+    # This allows for password fallout, otherwise it times out and boots into recovery
     keyFileTimeout = 5;
   };
 

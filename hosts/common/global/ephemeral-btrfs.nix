@@ -1,5 +1,6 @@
 { lib, config, ... }:
 # Taken from Misterio77's config
+
 let
   hostname = config.networking.hostName;
   wipeScript = ''
@@ -45,7 +46,15 @@ in
     };
   };
 
+  # needed? Disko doesn't concern itself with this since it's not part of partitioning or mounting. 
   fileSystems."/persist" = {
     neededForBoot = true;
+  };
+
+  # auto scrub
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "weekly";
+    fileSystems = [ "/" ];
   };
 }

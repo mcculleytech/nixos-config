@@ -28,6 +28,7 @@
     Defaults lecture = never
   '';
 
+  # This is technically unneeded if not opting in for home impermanence. It creates unnecessary dirs in the /persist subvol but I'm ok with that.
   system.activationScripts.persistent-dirs.text =
     let
       mkHomePersist = user: lib.optionalString user.createHome ''
