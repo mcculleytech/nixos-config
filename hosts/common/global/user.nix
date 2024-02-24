@@ -34,7 +34,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEGkHcMirY9luPZudrCkXEL9EDnnrRGKPv8uEqChtdl alex@terminus"
       ];
       shell = if checkHostname "${config.networking.hostName}" workstations then pkgs.zsh else pkgs.bash;
-      extraGroups = [ "wheel" "libvirtd" "audio" "plugdev" "dialout" "docker" "networkmanager" ];
+      extraGroups = [ "wheel" "audio" "plugdev" "dialout" "docker" "networkmanager" ];
     };
 
     # Need this currently for nixos-anywhere and remote builds. Would like to not do this.

@@ -12,6 +12,7 @@
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    rednix.url = "github:redcode-labs/rednix";
   };
 
   outputs = { 
@@ -75,6 +76,7 @@
               imports = [
               #(impermanence + "/home-manager.nix")
               ./home/alex/achilles.nix
+              inputs.rednix.container
               ];
             };
           }

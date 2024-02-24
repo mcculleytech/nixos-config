@@ -19,6 +19,7 @@
     retroarchFull
     wakeonlan
     # Unstable pkgs
+    unstable.quickemu
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4
