@@ -1,5 +1,5 @@
 {
-  description = "Workstation NixOS and Home Manager flake";
+  description = "NixOS and Home Manager flake";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
@@ -12,7 +12,6 @@
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    rednix.url = "github:redcode-labs/rednix";
   };
 
   outputs = { 
@@ -40,7 +39,7 @@
           ./hosts/aeneas/configuration.nix
           disko.nixosModules.disko
           impermanence.nixosModules.impermanence
-          hardware.nixosModules.dell-xps-15-9500#-nvidia
+          hardware.nixosModules.framework-13-inch-7040-amd
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           {
@@ -76,7 +75,6 @@
               imports = [
               #(impermanence + "/home-manager.nix")
               ./home/alex/achilles.nix
-              inputs.rednix.container
               ];
             };
           }
@@ -125,13 +123,13 @@
 
     };
 
-    # home-manager standalones
-    homeConfigurations = {
-      "alex@achilles" = home-manager.lib.homeManagerConfiguration {
-	       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-	       extraSpecialArgs = { inherit inputs outputs; };
-	       modules = [ ./home/alex/achilles.nix ];
-      };
-    };
+    # home-manager standalones - configure when needed
+    # homeConfigurations = {
+    #   "alex@achilles" = home-manager.lib.homeManagerConfiguration {
+	  #      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+	  #      extraSpecialArgs = { inherit inputs outputs; };
+	  #      modules = [ ./home/alex/achilles.nix ];
+    #   };
+    # };
   };
 }

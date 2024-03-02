@@ -3,7 +3,6 @@
     imports = [
       ./global
       ./optional/gnome-customizations.nix
-      ./optional/offsec-pkgs.nix
       ./optional/desktop-packages.nix
       ./optional/terminator.nix
       ./optional/zsh.nix

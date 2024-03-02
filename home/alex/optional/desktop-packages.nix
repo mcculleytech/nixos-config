@@ -1,4 +1,4 @@
-{ pkgs, ouputs, ... }: {
+{ pkgs, ... }: {
 
   home.packages = with pkgs; 
   [ 
@@ -19,7 +19,9 @@
     retroarchFull
     wakeonlan
     # Unstable pkgs
+    unstable.burpsuite
     unstable.quickemu
+    unstable.quickgui
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4

@@ -53,6 +53,11 @@
                       mountOptions = [ "compress=zstd" ];
                       mountpoint = "/persist";
                     };
+                    # Comment this out if you'd like to opt-in for home impermanence.
+                    "/home" = {
+                      mountOptions = [ "compress=zstd" ];
+                      mountpoint = "/home";
+                    };
                     "/nix" = {
                       mountOptions = [ "compress=zstd" "noatime" ];
                       mountpoint = "/nix";

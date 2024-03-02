@@ -6,6 +6,7 @@
     vitals
     user-themes
     tray-icons-reloaded
+    pop-shell
   ]); 
 
   gtk = {
@@ -48,6 +49,7 @@
         "dash-to-dock@micxgx.gmail.com"
         "trayIconsReloaded@selfmade.pl"
         "Vitals@CoreCoding.com"
+        "pop-shell@system76.com"
       ];
     };
 
