@@ -1,4 +1,5 @@
 # Overview
+[![built with nix](https://builtwithnix.org/badge.svg)](https://builtwithnix.org)
 
 **A Quick Note of Thanks**
 This repo was heavily influenced (and parts of it shamelessly taken from) [Misterio77's nix-config](https://github.com/Misterio77/nix-config) repo. Without his work, this repo would not be possible. 
@@ -14,8 +15,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | aeneas   | Personal Laptop          | AMD Framework 13in          |
 | achilles | Personal Desktop         | AMD Ryzen 5 <br>Nvidia 3050 |
 | maul     | Offsite Backup Server    | HP EliteBook 8460p          |
-| vader    | Test Machine (currently) |                             |
-|          |                          |                             |
+| vader    | Test Machine (currently) | Proxmox VM                  |
 
 ## Features
 
@@ -33,6 +33,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Move all machines to an `impermanence` setup
 	- [ ] Need to redeploy `maul.nix`
 - [x] immutable users as default ✅ 2024-02-20
+- [ ] Fix GitHub Action that should autoupdate flake.lock
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
 - [x] Disko configs for: ✅ 2024-03-01
