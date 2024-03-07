@@ -32,14 +32,14 @@
     overlays = import ./overlays/unstable-pkgs.nix { inherit inputs ; };
     # NixOS Configs
     nixosConfigurations = {
-      # Dell XPS 15 Laptop
+      # Framework 13 AMD Laptop
       "aeneas" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         modules = [
           ./hosts/aeneas/configuration.nix
           disko.nixosModules.disko
           impermanence.nixosModules.impermanence
-          hardware.nixosModules.framework-13-inch-7040-amd
+          hardware.nixosModules.framework-13-7040-amd
           sops-nix.nixosModules.sops
           home-manager.nixosModules.home-manager
           {
@@ -48,7 +48,7 @@
             home-manager.users.alex = {
               # Import impermanence to home-manager
               imports = [
-              (impermanence + "/home-manager.nix")
+              # (impermanence + "/home-manager.nix")
               ./home/alex/aeneas.nix
               ];
             };

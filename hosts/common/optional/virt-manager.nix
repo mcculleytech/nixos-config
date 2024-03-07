@@ -11,7 +11,7 @@
     };
 
     environment.sessionVariables.LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
-    environment.systemPackages = with pkgs; [ virt-manager win-virtio (OVMFFull.override{
+    environment.systemPackages = with pkgs; [ spice virt-manager win-virtio (OVMFFull.override{
     	secureBoot = true;
     	tpmSupport = true;
     }).fd];

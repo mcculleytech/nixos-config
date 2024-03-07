@@ -13,6 +13,7 @@
     sops
     util-linux
     exfatprogs
+    nfs-utils
   ];
 
   fonts.packages = with pkgs; [

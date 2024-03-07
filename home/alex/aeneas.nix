@@ -2,7 +2,6 @@
 
     imports = [
       ./global
-      ./optional/home-impermanence.nix
       ./optional/gnome-customizations.nix
       ./optional/desktop-packages.nix
       ./optional/terminator.nix
