@@ -16,6 +16,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | achilles | Personal Desktop         | AMD Ryzen 5 <br>Nvidia 3050 |
 | maul     | Offsite Backup Server    | HP EliteBook 8460p          |
 | vader    | Test Machine (currently) | Proxmox VM                  |
+| phantom  | Tailscale Subnet Router  | Proxmox VM                  |
 
 ## Features
 
@@ -32,6 +33,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 ##  ToDo
 - [ ] Move all machines to an `impermanence` setup
 	- [ ] Need to redeploy `maul.nix`
+ 	- [x] Set as part of global config ✅ 2024-03-08
 - [x] immutable users as default ✅ 2024-02-20
 - [ ] Fix GitHub Action that should autoupdate flake.lock
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
@@ -77,12 +79,12 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ### Documentation
 
-[Misterio77's nix-config](https://github.com/Misterio77/nix-config)
-[home-manager](https://github.com/nix-community/home-manager)
-[hardware](https://github.com/NixOS/nixos-hardware)
-[sops-nix](https://github.com/Mic92/sops-nix)
-[impermanence](https://github.com/nix-community/impermanence)
-[disko](https://github.com/nix-community/disko)
-[nixos-anywhere](https://github.com/nix-community/nixos-anywhere)
-[nix.dev](https://nix.dev/index.html)
-[Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/)
+[Misterio77's nix-config](https://github.com/Misterio77/nix-config) <br>
+[home-manager](https://github.com/nix-community/home-manager) <br>
+[hardware](https://github.com/NixOS/nixos-hardware) <br>
+[sops-nix](https://github.com/Mic92/sops-nix) <br>
+[impermanence](https://github.com/nix-community/impermanence) <br>
+[disko](https://github.com/nix-community/disko) <br>
+[nixos-anywhere](https://github.com/nix-community/nixos-anywhere) <br>
+[nix.dev](https://nix.dev/index.html) <br>
+[Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/) <br>
