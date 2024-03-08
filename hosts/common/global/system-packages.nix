@@ -15,6 +15,7 @@
     exfatprogs
     nfs-utils
     nmap
+    age
   ];
 
   fonts.packages = with pkgs; [

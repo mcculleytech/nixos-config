@@ -9,6 +9,9 @@
         "/var/lib/NetworkManager"
         "/var/lib/nixos"
         "/var/lib/tailscale"
+        "/var/lib/fprint"
+        "/var/lib/sops-nix"
+        "/var/lib/docker"
         "/var/log"
         "/etc/NetworkManager"
       ];
