@@ -18,23 +18,21 @@
     appimage-run
     retroarchFull
     wakeonlan
+    firefox
+    epiphany
     # Unstable pkgs
     unstable.burpsuite
     unstable.quickemu
-    unstable.quickgui
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4
     unstable.distrobox
-    unstable.firefox
     unstable.bolt
     unstable.thunderbolt
-    unstable.google-chrome
     unstable.jellyfin-media-player
     unstable.watchmate
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
-    unstable.fwupd
     unstable.usbutils
     unstable.element-desktop
     unstable.obsidian

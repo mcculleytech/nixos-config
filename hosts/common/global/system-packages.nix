@@ -14,6 +14,7 @@
     util-linux
     exfatprogs
     nfs-utils
+    nmap
   ];
 
   fonts.packages = with pkgs; [

@@ -73,7 +73,7 @@
             home-manager.users.alex = {
               # Import impermanence to home-manager
               imports = [
-              #(impermanence + "/home-manager.nix")
+              # (impermanence + "/home-manager.nix")
               ./home/alex/achilles.nix
               ];
             };
@@ -99,6 +99,30 @@
               imports = [
               (impermanence + "/home-manager.nix")
               ./home/alex/vader.nix
+              ];
+            };
+          }
+        ];
+      };
+
+      # Tailscale Subnet Router
+      "phantom" = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/phantom/configuration.nix
+          disko.nixosModules.disko
+          sops-nix.nixosModules.sops
+          impermanence.nixosModules.impermanence
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              (impermanence + "/home-manager.nix")
+              ./home/alex/phantom.nix
               ];
             };
           }
