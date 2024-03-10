@@ -5,9 +5,9 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ../common/global
-      ../common/optional/laptop-power-settings.nix
-      ../common/optional/nfs-server.nix
-      ../common/optional/backup-server-syncthing.nix
+      ../common/optional/roles/server/laptop-power-settings.nix
+      ../common/optional/roles/server/nfs-server.nix
+      ../common/optional/roles/server/backup-server-syncthing.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

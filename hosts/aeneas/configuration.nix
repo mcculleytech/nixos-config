@@ -4,14 +4,8 @@
       ../../disko/aeneas.nix
       ./hardware-configuration.nix
       ../common/global
-      ../common/optional/android.nix
-      ../common/optional/cups.nix
-      ../common/optional/gnome.nix
-      #../common/optional/nfs.nix
-      ../common/optional/syncthing.nix
-      ../common/optional/virt-manager.nix
       ../common/optional/docker.nix
-      ../common/optional/custom-udev.nix
+      ../common/optional/roles/workstation
     ];
   
   networking.hostName = "aeneas";

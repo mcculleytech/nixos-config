@@ -1,17 +1,12 @@
 { inputs, config, pkgs,  ... }: {
   imports =
     [
-      ../../disko/achilles.nix
       ./hardware-configuration.nix
       ../common/global
-      ../common/optional/android.nix
-      ../common/optional/cups.nix
-      ../common/optional/gnome.nix
-      ../common/optional/nfs.nix
-      ../common/optional/syncthing.nix
-      ../common/optional/virt-manager.nix
       ../common/optional/docker.nix
-      ../common/optional/custom-udev.nix
+      ../common/optional/nfs.nix
+      ../common/optional/roles/workstation
+      ../../disko/achilles.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

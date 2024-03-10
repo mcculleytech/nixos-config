@@ -7,9 +7,9 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/phantom.nix
       ../common/global
-      ../common/optional/qemu-config.nix
-      ../common/optional/syncthing-server.nix
-      ../common/optional/tailscale_server.nix
+      ../common/optional/roles/server/qemu-config.nix
+      ../common/optional/roles/server/syncthing-server.nix
+      ../common/optional/roles/server/tailscale-server.nix
     ];
 
   boot.loader.grub.enable = true;
