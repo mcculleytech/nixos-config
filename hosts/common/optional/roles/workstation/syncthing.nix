@@ -1,31 +1,47 @@
-{config, ... }: 
+{config, pkgs, ... }:
+let 
+  st_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_syncthing.json);
+in
 {
-
-  sops.secrets.syncthing_server_id = {
-    sopsFile = ../../../../../secrets/main.yaml;
-  };
-
-  sops.templates."syncthing_server_id".content = ''
-    "${config.sops.placeholder.syncthing_server_id}"
-  '';
-
-# One day I'll move to totally using nix and this will be cleaner
   services = {
     syncthing = {
+      package = pkgs.unstable.syncthing;
       enable = true;
+      openDefaultPorts = true;
       user = "alex";
       configDir = "/home/alex/.config/syncthing";
       settings = {
         devices = {
-          TrueNAS = {
-            name = "TrueNAS";
-            id = "${config.sops.placeholder.syncthing_server_id}";
+          "phantom" = {
+            id = "${st_secrets.syncthing.phantom_id}";
             autoAcceptFolders = true;
-             };
+          };
+        };
+        folders = {
+          "Obsidian" = {
+            id = "Obsidian";
+            path = "~/Documents/Obsidian";
+            devices = [
+              "phantom"
+            ];
+          };
+          "Synced-Documents" = {
+            id = "Synced-Documents";
+            path = "~/Documents/Synced-Documents";
+            devices = [
+              "phantom"
+            ];
+          };
+          "Pixel-Photos" = {
+            id = "Pixel-Photos";
+            path = "~/Pictures/Pixel-Photos";
+            devices = [
+              "phantom"
+            ];
+          };
         };
       };
-      overrideDevices = false;
-      overrideFolders = false;
+      overrideFolders = true;
     };
   };
 }

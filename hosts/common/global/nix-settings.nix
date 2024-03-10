@@ -10,7 +10,7 @@
     };
     gc = {
       automatic = true;
-      dates = "weekly";
+      dates = "daily";
       options = "--delete-older-than 30d";
     };
   };

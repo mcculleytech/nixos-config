@@ -9,7 +9,6 @@
           ".local/bin"
           ".local/share/nix"
           ".ssh"
-          ".config/syncthing"
           ".local"
           ".config"
           ".bash_history"

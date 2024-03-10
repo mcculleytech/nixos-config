@@ -5,6 +5,7 @@
     vim
     wget
     git
+    git-crypt
     tmux
     tree
     neofetch
@@ -16,6 +17,7 @@
     nfs-utils
     nmap
     age
+    ssh-to-age
   ];
 
   fonts.packages = with pkgs; [
