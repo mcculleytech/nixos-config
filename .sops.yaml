@@ -5,7 +5,7 @@ keys:
   - &achilles_workstation age10p5w4kn9q7svktzthcrrycu4vn8uxek7whlzpx2n6dnyww3rne6ql3cf2t 
   - &maul_server age1g3ksccdsxsw796jlzuyxl93fzg9s3pef8yspxphnsqak75xg8agsleke0g
   - &vader_server age1p28l4v7t2mm4qz3l8a33wkjd2z39esnkyfjpkqhx5737ss9tdgsq9x0m3w 
-  - &phantom_server age1arm40ng5tu69esxjfqy7jgnluhmcrhrnun9ajt2sg67pf3cevszqjv5mgw
+  - &phantom_server age1thr6ugzx83lz5r5gwazt05wgudx32xkgm76vdu8d98neg6sxu3xqh2nzkw
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:

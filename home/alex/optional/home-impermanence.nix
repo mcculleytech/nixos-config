@@ -5,20 +5,14 @@
         directories = [
           "Documents"
           "Downloads"
-          "Pictures"
-          "Videos"
           "Repositories"
           ".local/bin"
           ".local/share/nix"
           ".ssh"
-          ".config/sublime-text"
           ".config/syncthing"
-          ".mozilla"
-          ".bitwarden"
-          ".config/godot"
           ".local"
           ".config"
-          ".zshhistory"
+          ".bash_history"
         ];
         allowOther = true;
       };

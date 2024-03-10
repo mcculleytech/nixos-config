@@ -8,6 +8,7 @@
       ../../disko/phantom.nix
       ../common/global
       ../common/optional/qemu-config.nix
+      ../common/optional/syncthing-server.nix
     ];
 
   boot.loader.grub.enable = true;

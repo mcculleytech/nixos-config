@@ -14,7 +14,6 @@
     transmission-gtk
     ranger
     vlc
-    nixos-anywhere
     appimage-run
     retroarchFull
     wakeonlan
@@ -22,6 +21,7 @@
     epiphany
     # Unstable pkgs
     unstable.burpsuite
+    unstable.nixos-anywhere
     unstable.quickemu
     unstable.xonotic
     unstable.obs-studio
