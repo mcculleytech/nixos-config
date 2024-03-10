@@ -2,13 +2,13 @@
 
   sops.secrets = {
     syncthing_svr_id = {
-      sopsFile = ../../../secrets/main.yaml;
+      sopsFile = ../../../../../secrets/main.yaml;
     };
     syncthing_svr_user = {
-      sopsFile = ../../../secrets/main.yaml;
+      sopsFile = ../../../../../secrets/main.yaml;
     };
     syncthing_svr_pass = {
-      sopsFile = ../../../secrets/main.yaml;
+      sopsFile = ../../../../../secrets/main.yaml;
     };
   };
   sops.templates = {

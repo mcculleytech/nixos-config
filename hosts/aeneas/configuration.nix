@@ -6,6 +6,7 @@
       ../common/global
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
+      ../common/optional/roles/workstation/framework-tweaks.nix
     ];
   
   networking.hostName = "aeneas";

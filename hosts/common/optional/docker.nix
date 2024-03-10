@@ -12,5 +12,15 @@
 	    setSocketVariable = true;
 	  };
   };
+
+  environment.persistence = {
+    "/persist" = {
+    hideMounts = true;
+      directories = [
+        "/var/lib/docker"
+      ];
+    };
+  };
+
   users.users.alex.extraGroups = [ "docker" ];
 }

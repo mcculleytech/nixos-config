@@ -1,7 +1,7 @@
   { config, ... }: {
 
   sops.secrets.nfs_hash = {
-    sopsFile = ../../maul/secrets.yaml;
+    sopsFile = ../../../../maul/secrets.yaml;
     neededForUsers = true;
   };
 

@@ -11,6 +11,15 @@
     enable = true;
   };
 
+  environment.persistence = {
+    "/persist" = {
+    hideMounts = true;
+      directories = [
+        "/var/lib/tailscale"
+      ];
+    };
+  };
+
   systemd.services.tailscale-autoconnect = {
     description = "Automatic connection to Tailscale";
 
