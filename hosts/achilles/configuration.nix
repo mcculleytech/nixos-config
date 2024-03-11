@@ -4,7 +4,7 @@
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/docker.nix
-      ../common/optional/nfs.nix
+      #../common/optional/nfs.nix
       ../common/optional/roles/workstation
       ../../disko/achilles.nix
     ];

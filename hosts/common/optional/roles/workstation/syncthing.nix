@@ -21,6 +21,10 @@ in
           "Obsidian" = {
             id = "Obsidian";
             path = "~/Documents/Obsidian";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };            
             devices = [
               "phantom"
             ];
@@ -28,13 +32,21 @@ in
           "Synced-Documents" = {
             id = "Synced-Documents";
             path = "~/Documents/Synced-Documents";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };            
             devices = [
               "phantom"
             ];
           };
           "Pixel-Photos" = {
-            id = "Pixel-Photos";
+            id = "pixel_7_pro_rhez-photos";
             path = "~/Pictures/Pixel-Photos";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };            
             devices = [
               "phantom"
             ];

@@ -3,8 +3,6 @@ let
   st_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_syncthing.json);
 in 
 {
-
-
   environment.persistence = {
     "/persist" = {
     hideMounts = true;
@@ -27,22 +25,43 @@ in
           "Obsidian" = {
             id = "Obsidian";
             path = "/var/lib/syncthing/Obsidian";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };
             devices = [
               "achilles"
+              "aeneas"
+              "TrueNAS"
+              "pixel"
             ];
           };
           "Synced-Documents" = {
             id = "Synced-Documents";
             path = "/var/lib/syncthing/Synced-Documents";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };
             devices = [
               "achilles"
+              "aeneas"
+              "TrueNAS"
+              "pixel"
             ];
           };
           "Pixel-Photos" = {
-            id = "Pixel-Photos";
-            path = "/var/lib/syncthing/Pixel-Photos";
+            id = "pixel_7_pro_rhez-photos";
+            path = "/var/lib/syncthing/Camera";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };            
             devices = [
               "achilles"
+              "aeneas"
+              "TrueNAS"
+              "pixel"
             ];
           };
         };
