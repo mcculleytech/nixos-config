@@ -28,7 +28,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - impermanence with options for ignoring `/home subvol`
 - secret management via `sops-nix`
 - deployable via `nixos-anywhere`
-- `syncthing` setup (WIP - currently not declaritive)
+- `syncthing` setup utilizing `git-crypt` for secret management of IDs.
 
 ##  ToDo
 - [ ] Move all machines to an `impermanence` setup
@@ -51,10 +51,10 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Tailscale NFS fix
 - [ ] Standalone home manager config for wsl2 or Mac
 - [ ] Steam for desktops
-- [ ] Wireguard/headscale - redundant/replace tailscale
-- [ ] Syncthing 
-	- [ ] username and password
-	- [ ] standalone server - make syncthing more configurable for all endpoints.
+- [x] Tailscale Subnet Router ✅ 2024-03-10
+- [x] Syncthing ✅ 2024-03-10
+	- [x] username and password
+	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
 - [x] install `wakeonlan` ✅ 2024-02-20
 
 ## Notes
