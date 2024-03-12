@@ -6,6 +6,7 @@
       ../common/optional/docker.nix
       #../common/optional/nfs.nix
       ../common/optional/roles/workstation
+      ../common/optional/roles/workstation/gnome.nix
       ../../disko/achilles.nix
     ];
 

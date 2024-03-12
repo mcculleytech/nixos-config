@@ -10,13 +10,13 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ## Systems
 
-| **Name** | Purpose                  | Hardware                    |
-| -------- | ------------------------ | --------------------------- |
-| aeneas   | Personal Laptop          | AMD Framework 13in          |
-| achilles | Personal Desktop         | AMD Ryzen 5 <br>Nvidia 3050 |
-| maul     | Offsite Backup Server    | HP EliteBook 8460p          |
-| vader    | Test Machine (currently) | Proxmox VM                  |
-| phantom  | Tailscale Subnet Router  | Proxmox VM                  |
+| **Name** | Purpose                  					| Hardware                    |
+| -------- | ------------------------------------------ | --------------------------- |
+| aeneas   | Personal Laptop          					| AMD Framework 13in          |
+| achilles | Personal Desktop         					| AMD Ryzen 5 <br>Nvidia 3050 |
+| maul     | Offsite Backup Server    					| HP EliteBook 8460p          |
+| vader    | Test Machine (currently) 					| Proxmox VM                  |
+| phantom  | Tailscale Subnet Router/ Syncthing Server  | Proxmox VM                  |
 
 ## Features
 
@@ -36,6 +36,9 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
  	- [x] Set as part of global config ✅ 2024-03-08
 - [x] immutable users as default ✅ 2024-02-20
 - [ ] Fix GitHub Action that should autoupdate flake.lock
+- [ ] Homelab Dashboard
+- [ ] Blocky DNS
+- [ ] Traefik Reverse Proxy
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
 - [x] Disko configs for: ✅ 2024-03-01
@@ -53,7 +56,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Steam for desktops
 - [x] Tailscale Subnet Router ✅ 2024-03-10
 - [x] Syncthing ✅ 2024-03-10
-	- [x] username and password
+	- [x] username and password ✅ 2024-03-10
 	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
 - [x] install `wakeonlan` ✅ 2024-02-20
 

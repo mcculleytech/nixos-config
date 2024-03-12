@@ -3,6 +3,8 @@
   environment.systemPackages = with pkgs; 
   [
     vim
+    bitwarden-cli
+    dnsutils
     wget
     git
     git-crypt

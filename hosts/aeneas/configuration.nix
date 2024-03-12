@@ -6,15 +6,19 @@
       ../common/global
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
+      #../common/optional/roles/workstation/hyprland
+      ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
   
   networking.hostName = "aeneas";
+  networking.networkmanager.enable = true;
+
   boot.loader.systemd-boot.enable = true;
+
 
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
 
   services.power-profiles-daemon = {
     enable = true;

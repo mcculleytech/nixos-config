@@ -5,6 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager/release-23.11";
+    hyprland.url = "github:hyprwm/Hyprland";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware/master";
     nix-colors.url = "github:misterio77/nix-colors";
@@ -17,7 +18,8 @@
   outputs = { 
     self, 
     nixpkgs, 
-    home-manager, 
+    home-manager,
+    hyprland, 
     hardware,
     nix-colors,
     sops-nix,
@@ -123,6 +125,30 @@
               imports = [
               (impermanence + "/home-manager.nix")
               ./home/alex/phantom.nix
+              ];
+            };
+          }
+        ];
+      };
+
+      # Blocky DNS Server
+      "atreides" = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
+        modules = [
+          ./hosts/atreides/configuration.nix
+          disko.nixosModules.disko
+          sops-nix.nixosModules.sops
+          impermanence.nixosModules.impermanence
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              (impermanence + "/home-manager.nix")
+              ./home/alex/atreides.nix
               ];
             };
           }

@@ -6,6 +6,7 @@ keys:
   - &maul_server age1g3ksccdsxsw796jlzuyxl93fzg9s3pef8yspxphnsqak75xg8agsleke0g
   - &vader_server age1p28l4v7t2mm4qz3l8a33wkjd2z39esnkyfjpkqhx5737ss9tdgsq9x0m3w 
   - &phantom_server age1thr6ugzx83lz5r5gwazt05wgudx32xkgm76vdu8d98neg6sxu3xqh2nzkw
+  - &atreides_server age15kz7au85c7dyneyz7qlyhxk2cr0m29us9uhprn9fspnc9pe5ga7sp5vq2v
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -17,6 +18,7 @@ creation_rules:
         - *maul_server
         - *vader_server 
         - *phantom_server
+        - *atreides_server
   - path_regex: hosts/maul/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:

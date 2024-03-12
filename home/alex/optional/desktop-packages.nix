@@ -9,7 +9,6 @@
     evince
     thunderbird
     nfs-utils
-    flameshot
     yubikey-manager
     transmission-gtk
     ranger
@@ -19,6 +18,7 @@
     wakeonlan
     firefox
     epiphany
+    drawing
     # Unstable pkgs
     unstable.burpsuite
     unstable.nixos-anywhere
