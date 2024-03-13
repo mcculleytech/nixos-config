@@ -9,6 +9,7 @@
       ../common/global
       ../common/optional/roles/server/qemu-config.nix
       ../common/optional/roles/server/blocky.nix
+      ../common/optional/roles/server/homepage-dashboard.nix
     ];
 
   boot.loader.grub.enable = true;

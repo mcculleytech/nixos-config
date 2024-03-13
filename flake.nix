@@ -17,7 +17,7 @@
 
   outputs = { 
     self, 
-    nixpkgs, 
+    nixpkgs,
     home-manager,
     hyprland, 
     hardware,

@@ -31,7 +31,6 @@
     				"unifi.lan.mcculley.tech" = "10.1.8.3";
     				# lab subnet
    					"achilles.lab.mcculley.tech" = "10.0.0.2";
-
     			};
     		};
     		blocking = {

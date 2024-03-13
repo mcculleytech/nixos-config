@@ -37,6 +37,12 @@ creation_rules:
         - *aeneas_alex
         - *achilles_alex
         - *phantom_server 
+  - path_regex: hosts/atreides/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+        - *aeneas_alex
+        - *achilles_alex
+        - *atreides_server
   - path_regex: hosts/aeneas/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
