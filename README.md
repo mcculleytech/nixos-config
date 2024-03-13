@@ -17,6 +17,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | maul     | Offsite Backup Server    					| HP EliteBook 8460p          |
 | vader    | Test Machine (currently) 					| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router/ Syncthing Server  | Proxmox VM                  |
+| atreides | Blocky DNS Server/ Homepage-dashboard  | Proxmox VM                  |
 
 ## Features
 
@@ -35,9 +36,15 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Need to redeploy `maul.nix`
  	- [x] Set as part of global config ✅ 2024-03-08
 - [x] immutable users as default ✅ 2024-02-20
+- [ ] Clean up `flake.nix`
 - [ ] Fix GitHub Action that should autoupdate flake.lock
-- [ ] Homelab Dashboard
-- [ ] Blocky DNS
+- [ ] Homelab Dashboard - WIP
+	- [ ] Basic config - using Unstable module for more declaritive config
+	- [ ] Configure services
+	- [ ] Configure Widgets
+- [ ] Blocky DNS - WIP
+	- [ ] Multiple Nodes connected via Redis (?)
+	- [ ] Multiple Servers
 - [ ] Traefik Reverse Proxy
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
@@ -47,7 +54,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] server template ✅ 2024-03-01
 	- [x] workstation template ✅ 2024-02-20
 - [ ] Different DEs/TWM setups
-	- [ ] Hyprland
+	- [ ] Hyprland - WIP
 	- [ ] KDE
 - [ ] Colmena setup
 - [ ] KVM Server (?)
