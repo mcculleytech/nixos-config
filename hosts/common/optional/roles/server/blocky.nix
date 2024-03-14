@@ -28,7 +28,7 @@
     				"prddockerubuntu00.dmz.mcculley.tech" = "10.2.1.17";
     				"prdcoffeeubuntu.dmz.mcculley.tech" = "10.2.1.6";
     				# lan subnet
-    				"unifi.lan.mcculley.tech" = "10.1.8.3";
+    				"unifi.nix.mcculley.tech" = "10.1.8.3";
     				# lab subnet
    					"achilles.lab.mcculley.tech" = "10.0.0.2";
     			};

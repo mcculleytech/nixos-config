@@ -7,7 +7,9 @@
     ];
     servers = [ 
       "maul" 
-      "vader" 
+      "vader"
+      "atreides"
+      "phantom"
     ];
 
     checkHostname = hostname: hostnameList: 

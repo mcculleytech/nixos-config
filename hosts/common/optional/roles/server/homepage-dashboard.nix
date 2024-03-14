@@ -32,6 +32,44 @@ in
 			    };
 			  }
 		];
+		services = [
+					{
+            "Media" = [
+              {
+                "Jellyfin" = {
+                	icon = "jellyfin.png";
+                  href = "https://jellyfin.nix.mcculley.tech";
+                  description = "Home Media Server";
+                };
+              }
+            ];
+          }
+          {
+            "Infrastructure" = [
+              {
+                "Proxmox" = {
+                	icon = "proxmox.png";
+                  href = "https://proxmox.pve.mcculley.tech";
+                  description = "Proxmox Hypervisor";
+                };
+              }
+              {
+                "Tailscale" = {
+                	icon = "tailscale.png";
+                  href = "https://tailscale.com";
+                  description = "Wireguard Mesh Networking";
+                };
+              }
+              {
+                "Unifi Console" = {
+                	icon = "unifi.png";
+                  href = "https://unifi.nix.mcculley.tech";
+                  description = "Unifi Router";   
+                };
+               }
+            ];
+					}
+				];
 		settings = {
 			logpath = "/var/log/homepage-dashboard";
 		};
