@@ -17,7 +17,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | maul     | Offsite Backup Server    					| HP EliteBook 8460p          |
 | vader    | Test Machine (currently) 					| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router/ Syncthing Server  | Proxmox VM                  |
-| atreides | Blocky DNS Server/ Homepage-dashboard  | Proxmox VM                  |
+| atreides | Blocky DNS Server/ Homepage-dashboard      | Proxmox VM                  |
 
 ## Features
 
@@ -44,8 +44,9 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Configure Widgets
 - [ ] Blocky DNS - WIP
 	- [ ] Multiple Nodes connected via Redis (?)
-	- [ ] Multiple Servers
-- [ ] Traefik Reverse Proxy
+	- [x] Multiple Servers ✅ 2024-03-20
+- [x] Traefik Reverse Proxy ✅ 2024-03-20
+	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
 - [x] Disko configs for: ✅ 2024-03-01
@@ -89,12 +90,12 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ### Documentation
 
-[Misterio77's nix-config](https://github.com/Misterio77/nix-config) <br>
-[home-manager](https://github.com/nix-community/home-manager) <br>
-[hardware](https://github.com/NixOS/nixos-hardware) <br>
-[sops-nix](https://github.com/Mic92/sops-nix) <br>
-[impermanence](https://github.com/nix-community/impermanence) <br>
-[disko](https://github.com/nix-community/disko) <br>
-[nixos-anywhere](https://github.com/nix-community/nixos-anywhere) <br>
-[nix.dev](https://nix.dev/index.html) <br>
-[Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/) <br>
+- [Misterio77's nix-config](https://github.com/Misterio77/nix-config) - the holy grail of nix configs. <br>
+- [home-manager](https://github.com/nix-community/home-manager) - userspace management. <br>
+- [hardware](https://github.com/NixOS/nixos-hardware) - hardware quirks for various things.<br>
+- [sops-nix](https://github.com/Mic92/sops-nix) - secrets management. <br>
+- [impermanence](https://github.com/nix-community/impermanence) - forcing reproducability and clean boots. <br>
+- [disko](https://github.com/nix-community/disko) - disk setups for machines. <br>
+- [nixos-anywhere](https://github.com/nix-community/nixos-anywhere) - remote deployment of machines. <br>
+- [nix.dev](https://nix.dev/index.html) - nix documentation <br>
+- [Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/) - great nix tutorials and documentation I need to work through. <br>

@@ -1,4 +1,8 @@
-{ inputs, config, pkgs, ... }: {
+{ inputs, config, pkgs, ... }:
+let 
+  tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
+in 
+{
 	
 	services.blocky = {
 		enable = true;
@@ -14,23 +18,24 @@
     		customDNS = {
     			mapping = {
     				# nix subnet
-    				"truenas.nix.mcculley.tech" = "10.1.8.4";
-    				"devdockerubuntu.nix.mcculley.tech" = "10.1.8.3";
-    				"homer.nix.mcculley.tech" = "10.1.8.3";
-    				"jellyfin.nix.mcculley.tech" = "10.1.8.3";
-    				"jackett.nix.mcculley.tech" = "10.1.8.3";
-    				"octopi.nix.mcculley.tech" = "10.1.8.3";
-    				"transmission.nix.mcculley.tech" = "10.1.8.3";
-    				# pve subnet
-    				"proxmox.pve.mcculley.tech" = "10.1.8.3";
+    				"devdockerubuntu.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
+    				"jellyfin.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
+    				"jackett.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
+    				"transmission.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
+    				"atredies.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
+    				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
     				# dmz subnet
-    				"prdcloudubuntu.dmz.mcculley.tech" = "10.2.1.2";
-    				"prddockerubuntu00.dmz.mcculley.tech" = "10.2.1.17";
-    				"prdcoffeeubuntu.dmz.mcculley.tech" = "10.2.1.6";
-    				# lan subnet
-    				"unifi.nix.mcculley.tech" = "10.1.8.3";
-    				# lab subnet
-   					"achilles.lab.mcculley.tech" = "10.0.0.2";
+    				"prdcloudubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.2";
+    				"prddockerubuntu00.${tr_secrets.traefik.dmz_domain}" = "10.2.1.17";
+    				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.6";
+   					# homelab domain
+    				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"unifi.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"truenas.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"octoprint.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"syncthing.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     			};
     		};
     		blocking = {

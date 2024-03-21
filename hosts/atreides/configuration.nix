@@ -7,8 +7,11 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/atreides.nix
       ../common/global
+      ../common/optional/docker.nix
       ../common/optional/roles/server/qemu-config.nix
       ../common/optional/roles/server/blocky.nix
+      #../common/optional/roles/server/acme.nix
+      ../common/optional/roles/server/traefik
       ../common/optional/roles/server/homepage-dashboard.nix
     ];
 

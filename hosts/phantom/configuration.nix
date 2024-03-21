@@ -8,6 +8,7 @@
       ../../disko/phantom.nix
       ../common/global
       ../common/optional/roles/server/qemu-config.nix
+      ../common/optional/roles/server/blocky.nix
       ../common/optional/roles/server/syncthing-server.nix
       ../common/optional/roles/server/tailscale-server.nix
     ];

@@ -1,8 +1,8 @@
 # This uses a nifty trick to get the lastest service options for homepage-dashboard. Now I can fully declaritively configure it!
 { config, pkgs, inputs, ... } @ args:
-let
- hp_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_homepage.json);
-in
+let 
+  tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
+in 
 {
 	imports = [
 		"${args.inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix"
@@ -38,8 +38,19 @@ in
               {
                 "Jellyfin" = {
                 	icon = "jellyfin.png";
-                  href = "https://jellyfin.nix.mcculley.tech";
+                  href = "https://jellyfin.${tr_secrets.traefik.server_domain}";
                   description = "Home Media Server";
+                };
+              }
+            ];
+          }
+          {
+            "Services" = [
+              {
+                "Octoprint" = {
+                  icon = "octoprint.png";
+                  href = "https://octoprint.${tr_secrets.traefik.server_domain}";
+                  description = "3D Printer";
                 };
               }
             ];
@@ -49,7 +60,7 @@ in
               {
                 "Proxmox" = {
                 	icon = "proxmox.png";
-                  href = "https://proxmox.pve.mcculley.tech";
+                  href = "https://proxmox.${tr_secrets.traefik.homelab_domain}";
                   description = "Proxmox Hypervisor";
                 };
               }
@@ -63,9 +74,23 @@ in
               {
                 "Unifi Console" = {
                 	icon = "unifi.png";
-                  href = "https://unifi.nix.mcculley.tech";
+                  href = "https://unifi.${tr_secrets.traefik.homelab_domain}";
                   description = "Unifi Router";   
                 };
+               }
+             {
+                "TrueNAS" = {
+                	icon = "truenas.png";
+                  href = "https://truenas.${tr_secrets.traefik.homelab_domain}";
+                  description = "Home NAS";   
+                };
+              }
+              {
+                 "Syncthing" = {
+                  icon = "syncthing.png";
+                   href = "https://syncthing.${tr_secrets.traefik.homelab_domain}";
+                   description = "Syncthing Server";   
+                 };
                }
             ];
 					}
@@ -78,6 +103,7 @@ in
             Productivity = [
               { Github = [{ abbr = "GH"; href = "https://github.com/"; }]; }
               { Blog = [{ abbr = "MT"; href = "https://blog.mcculley.tech/"; }]; }
+              { NixOS = [{ abbr = "NO"; href = "https://search.nixos.org/options"; }]; }
             ];
           	}
           	{
