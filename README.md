@@ -10,14 +10,14 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ## Systems
 
-| **Name** | Purpose                  					| Hardware                    |
-| -------- | ------------------------------------------ | --------------------------- |
-| aeneas   | Personal Laptop          					| AMD Framework 13in          |
-| achilles | Personal Desktop         					| AMD Ryzen 5 <br>Nvidia 3050 |
-| maul     | Offsite Backup Server    					| HP EliteBook 8460p          |
-| vader    | Test Machine (currently) 					| Proxmox VM                  |
-| phantom  | Tailscale Subnet Router/ Syncthing Server  | Proxmox VM                  |
-| atreides | Blocky DNS Server/ Homepage-dashboard      | Proxmox VM                  |
+| **Name** | Purpose                  											  | Hardware                    |
+| -------- | -------------------------------------------------------------------- | --------------------------- |
+| aeneas   | Personal Laptop          											  | AMD Framework 13in          |
+| achilles | Personal Desktop         											  | AMD Ryzen 5 <br>Nvidia 3050 |
+| maul     | Offsite Backup Server    											  | HP EliteBook 8460p          |
+| vader    | Test Machine (currently) 											  | Proxmox VM                  |
+| phantom  | Tailscale Subnet Router/ Syncthing Server  						  | Proxmox VM                  |
+| atreides | Blocky DNS Server/ Homepage-dashboard <br> Traefik Reverse Proxy     | Proxmox VM                  |
 
 ## Features
 
@@ -27,26 +27,49 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- blank root subvol snapshotting for `impermanence`
 - Tailscale autoenroll & connect
 - impermanence with options for ignoring `/home subvol`
-- secret management via `sops-nix`
+- secret management via `sops-nix` & git-crypt
 - deployable via `nixos-anywhere`
 - `syncthing` setup utilizing `git-crypt` for secret management of IDs.
 
 ##  ToDo
+
+### Desktop
+- [ ] Tailscale NFS fix
+- [ ] Different DEs/TWM setups
+	- [ ] Hyprland - WIP
+	- [ ] KDE
+- [x] install `wakeonlan` ✅ 2024-02-20
+- [ ] Steam
+
+### Servers
+- [ ] Colmena setup
+- [ ] KVM Server (?)
+- [ ] Standalone home manager config for wsl2 or Mac
+- [x] Tailscale Subnet Router ✅ 2024-03-10
+- [x] Syncthing ✅ 2024-03-10
+	- [x] username and password ✅ 2024-03-10
+	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
+- [ ] Homelab Dashboard - WIP
+	- [x] Basic config - using Unstable module for more declaritive config
+	- [ ] Configure services
+	- [ ] Configure Widgets
+- [x] Traefik Reverse Proxy ✅ 2024-03-20
+	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
+- [ ] Jellyfin in Nix, decom ubuntu docker server
+- [ ] Arion for docker compose configurations
+
+
+### Other
 - [ ] Move all machines to an `impermanence` setup
 	- [ ] Need to redeploy `maul.nix`
  	- [x] Set as part of global config ✅ 2024-03-08
+- [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20
 - [ ] Clean up `flake.nix`
 - [ ] Fix GitHub Action that should autoupdate flake.lock
-- [ ] Homelab Dashboard - WIP
-	- [ ] Basic config - using Unstable module for more declaritive config
-	- [ ] Configure services
-	- [ ] Configure Widgets
-- [ ] Blocky DNS - WIP
+- [ ] Blocky DNS
 	- [ ] Multiple Nodes connected via Redis (?)
 	- [x] Multiple Servers ✅ 2024-03-20
-- [x] Traefik Reverse Proxy ✅ 2024-03-20
-	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
 - [x] Disko configs for: ✅ 2024-03-01
@@ -54,19 +77,6 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] aeneas ✅ 2024-02-20
 	- [x] server template ✅ 2024-03-01
 	- [x] workstation template ✅ 2024-02-20
-- [ ] Different DEs/TWM setups
-	- [ ] Hyprland - WIP
-	- [ ] KDE
-- [ ] Colmena setup
-- [ ] KVM Server (?)
-- [ ] Tailscale NFS fix
-- [ ] Standalone home manager config for wsl2 or Mac
-- [ ] Steam for desktops
-- [x] Tailscale Subnet Router ✅ 2024-03-10
-- [x] Syncthing ✅ 2024-03-10
-	- [x] username and password ✅ 2024-03-10
-	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
-- [x] install `wakeonlan` ✅ 2024-02-20
 
 ## Notes
 

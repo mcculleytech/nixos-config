@@ -1,4 +1,5 @@
-{ inputs, config, pkgs, ... }: {
+{ inputs, config, pkgs, ... }:
+{
   imports = 
     [
       ../../disko/aeneas.nix
@@ -6,7 +7,7 @@
       ../common/global
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
-      #../common/optional/roles/workstation/hyprland
+      ../common/optional/roles/workstation/hyprland
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
@@ -16,13 +17,16 @@
 
   boot.loader.systemd-boot.enable = true;
 
-
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  services.power-profiles-daemon = {
-    enable = true;
-  };
+  # services.power-profiles-daemon = {
+  #   enable = true;
+  # };
+
+  nixpkgs.overlays = [
+    (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
+  ];
 
   services.fprintd = {
     enable = true;
