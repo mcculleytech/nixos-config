@@ -36,6 +36,7 @@ in
     				"truenas.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"octoprint.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"syncthing.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+    				"radicale.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     			};
     		};
     		blocking = {

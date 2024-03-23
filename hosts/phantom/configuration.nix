@@ -11,6 +11,7 @@
       ../common/optional/roles/server/blocky.nix
       ../common/optional/roles/server/syncthing-server.nix
       ../common/optional/roles/server/tailscale-server.nix
+      ../common/optional/roles/server/radicale.nix
     ];
 
   boot.loader.grub.enable = true;

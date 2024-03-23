@@ -73,6 +73,15 @@ in
 					};
 					service = "syncthing";
 				};
+				radicale = {
+					entryPoints = [ "websecure" ];
+					rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`)";
+					middlewares = [ "default-headers" "https-redirectscheme" ];
+					tls =  {
+						certResolver = "cloudflare";
+					};
+					service = "radicale";
+				};
 				# traefik = {
 				# 	rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
 				# 	service = "api@internal";
@@ -125,6 +134,14 @@ in
 					loadBalancer = {
 						servers = [	
 							{url = "https://10.1.8.121:8384";}
+						];
+						passHostHeader = "true";
+					};
+				};
+				radicale = {
+					loadBalancer = {
+						servers = [	
+							{url = "http://10.1.8.121:5232";}
 						];
 						passHostHeader = "true";
 					};
