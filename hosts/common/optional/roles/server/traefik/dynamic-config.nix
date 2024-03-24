@@ -16,6 +16,7 @@ in
 					};
 				};
 			};
+		# Remember to make a DNS entry and ensure that Firewall ports are open for services!
 		http = {
 			routers = {
 				# begin Routers
@@ -75,18 +76,18 @@ in
 				};
 				radicale = {
 					entryPoints = [ "websecure" ];
-					rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`)";
-					middlewares = [ "default-headers" "https-redirectscheme" ];
+					rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`) && PathPrefix(`/radicale`)";
+					middlewares = [ "https-redirectscheme" "radicale-headers" "radicale-strip" ];
 					tls =  {
 						certResolver = "cloudflare";
 					};
 					service = "radicale";
 				};
-				# traefik = {
-				# 	rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
-				# 	service = "api@internal";
-				# 	middlewares = [ "auth" ];	
-				# };
+				traefik = {
+					entryPoints = [ "websecure" ];
+					rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
+					service = "api@internal";	
+				};
 			};
 			services = {
 				# begin Services
@@ -138,10 +139,18 @@ in
 						passHostHeader = "true";
 					};
 				};
+				traefik = {
+					loadBalancer = {
+						servers = [	
+							{url = "https://10.1.8.129:8080";}
+						];
+						passHostHeader = "true";
+					};
+				};
 				radicale = {
 					loadBalancer = {
 						servers = [	
-							{url = "http://10.1.8.121:5232";}
+							{url = "http://10.1.8.121:5232/";}
 						];
 						passHostHeader = "true";
 					};
@@ -168,6 +177,30 @@ in
 					redirectScheme = {
 						scheme = "https";
 						permanent = "true";
+					};
+				};				
+				radicale-headers = {
+					headers = {
+						customRequestHeaders = {
+							X-Script-Name = "/radicale";
+						};
+					};
+				};
+				radicale-strip = {
+					stripPrefix = {
+						prefixes = ["/radicale"];
+					};
+				};
+				radicale-auth = {
+					basicAuth = {
+						users = "alex:$2y$10$zo5TtLSZCRaAG1q/zCL3KOd9VGA1L34p8sfxsZmZUP7C2/H0TEtau";
+						headerField = "X-Remote-User";
+
+					};
+				};
+				radicale-forwardAuth = {
+					forwardAuth = {
+						trustForwardHeader = "true";
 					};
 				};
 				default-whitelist = {

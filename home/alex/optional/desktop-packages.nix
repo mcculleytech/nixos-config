@@ -20,6 +20,7 @@
     epiphany
     drawing
     # Unstable pkgs
+    unstable.hugo
     unstable.burpsuite
     unstable.nixos-anywhere
     unstable.quickemu

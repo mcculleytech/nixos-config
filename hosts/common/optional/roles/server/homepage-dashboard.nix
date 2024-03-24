@@ -53,6 +53,20 @@ in
                   description = "3D Printer";
                 };
               }
+              {
+                "Radicale" = {
+                  icon = "radicale.png";
+                  href = "https://radicale.${tr_secrets.traefik.homelab_domain}/radicale";
+                  description = "CardDAV and CalDAV server";
+                };
+              }
+              {
+                "Proton" = {
+                  icon = "proton-mail.svg";
+                  href = "https://proton.me";
+                  description = "Privacy Respecting Email";
+                };
+              }
             ];
           }
           {

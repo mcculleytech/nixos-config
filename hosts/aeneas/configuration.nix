@@ -20,10 +20,6 @@
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # services.power-profiles-daemon = {
-  #   enable = true;
-  # };
-
   nixpkgs.overlays = [
     (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
   ];

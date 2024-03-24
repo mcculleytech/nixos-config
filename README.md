@@ -10,14 +10,14 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ## Systems
 
-| **Name** | Purpose                  											  | Hardware                    |
-| -------- | -------------------------------------------------------------------- | --------------------------- |
-| aeneas   | Personal Laptop          											  | AMD Framework 13in          |
-| achilles | Personal Desktop         											  | AMD Ryzen 5 <br>Nvidia 3050 |
-| maul     | Offsite Backup Server    											  | HP EliteBook 8460p          |
-| vader    | Test Machine (currently) 											  | Proxmox VM                  |
-| phantom  | Tailscale Subnet Router/ Syncthing Server  						  | Proxmox VM                  |
-| atreides | Blocky DNS Server/ Homepage-dashboard <br> Traefik Reverse Proxy     | Proxmox VM                  |
+| **Name** | Purpose                  											  		| Hardware                    |
+| -------- | -------------------------------------------------------------------------- | --------------------------- |
+| aeneas   | Personal Laptop          											  		| AMD Framework 13in          |
+| achilles | Personal Desktop         											  		| AMD Ryzen 5 <br>Nvidia 3050 |
+| maul     | Offsite Backup Server    											  		| HP EliteBook 8460p          |
+| vader    | Test Machine (currently) 											  		| Proxmox VM                  |
+| phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server   		| Proxmox VM                  |
+| atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     	| Proxmox VM                  |
 
 ## Features
 
@@ -27,7 +27,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- blank root subvol snapshotting for `impermanence`
 - Tailscale autoenroll & connect
 - impermanence with options for ignoring `/home subvol`
-- secret management via `sops-nix` & git-crypt
+- secret management via `sops-nix` & `git-crypt`
 - deployable via `nixos-anywhere`
 - `syncthing` setup utilizing `git-crypt` for secret management of IDs.
 
@@ -55,6 +55,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Configure Widgets
 - [x] Traefik Reverse Proxy ✅ 2024-03-20
 	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
+- [x] Radicale CardDav and CalDav Server ✅ 2024-03-23
 - [ ] Jellyfin in Nix, decom ubuntu docker server
 - [ ] Arion for docker compose configurations
 
