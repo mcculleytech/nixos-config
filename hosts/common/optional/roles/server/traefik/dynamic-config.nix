@@ -77,7 +77,7 @@ in
 				radicale = {
 					entryPoints = [ "websecure" ];
 					rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`) && PathPrefix(`/radicale`)";
-					middlewares = [ "https-redirectscheme" "radicale-headers" "radicale-strip" ];
+					middlewares = [ "default-headers" "https-redirectscheme" "radicale-headers" "radicale-strip" ];
 					tls =  {
 						certResolver = "cloudflare";
 					};
@@ -189,18 +189,6 @@ in
 				radicale-strip = {
 					stripPrefix = {
 						prefixes = ["/radicale"];
-					};
-				};
-				radicale-auth = {
-					basicAuth = {
-						users = "alex:$2y$10$zo5TtLSZCRaAG1q/zCL3KOd9VGA1L34p8sfxsZmZUP7C2/H0TEtau";
-						headerField = "X-Remote-User";
-
-					};
-				};
-				radicale-forwardAuth = {
-					forwardAuth = {
-						trustForwardHeader = "true";
 					};
 				};
 				default-whitelist = {
