@@ -18,6 +18,9 @@
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
   ];
+  virtualisation.docker = {
+    enableNvidia = true;
+  };
 
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;
