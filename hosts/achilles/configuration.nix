@@ -15,6 +15,10 @@
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
 
+  environment.systemPackages = with pkgs; [
+    unstable.nvidia-docker
+  ];
+
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;
 
