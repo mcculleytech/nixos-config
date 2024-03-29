@@ -5,7 +5,7 @@
 		settings ={
 			sv_public = 0;
 			sv_motd = "Et Verbum Carum Factum Est";
-			hostname = "harkonnen (ver $g_xonoticversion)";
+			hostname = "vader (ver $g_xonoticversion)";
 		};
 		openFirewall = true;
 	};
