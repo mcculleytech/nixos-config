@@ -1,0 +1,25 @@
+* {
+    border: none;
+    border-radius: 0.5em;
+    font-family: "Fira Code";
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 13px;
+    min-height: 0;
+}
+
+#waybar {
+    background: transparent;
+}
+
+#battery {
+    padding-right: 10px;
+}
+
+#workspaces button.active {
+    color: green;
+}
+
+/*#module {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}*/

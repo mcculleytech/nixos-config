@@ -8,7 +8,7 @@
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/hyprland
-      ../common/optional/roles/workstation/gnome.nix
+      #../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
   
@@ -35,6 +35,8 @@
   services.xserver.layout = "us";
   
   services.printing.enable = true;
+
+  hardware.bluetooth.enable = true;
   
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;

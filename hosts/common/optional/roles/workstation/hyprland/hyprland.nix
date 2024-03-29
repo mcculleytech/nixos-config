@@ -6,6 +6,7 @@
   };
   programs.hyprland = {
     enable = true;
+    xwayland.enable = true;
     package = inputs.hyprland.packages.${pkgs.system}.hyprland;
   };
   services.xserver = {
@@ -15,4 +16,14 @@
         wayland = true;
     };
   };
+
+  fonts.packages = with pkgs; [
+    font-awesome
+  ];
+
+  # blueman service
+  services.blueman.enable = true;
+
+  # add swaylock to PAM
+  security.pam.services.swaylock = {};
 }
