@@ -12,5 +12,6 @@
 		networkmanagerapplet
 		kanshi
 		gnome.nautilus
+		flameshot
 	];
 }

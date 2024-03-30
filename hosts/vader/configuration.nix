@@ -7,7 +7,8 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/vader.nix
       ../common/global
-      ../common/optional/qemu-config.nix
+      ../common/optional/roles/server/xonotic.nix
+      ../common/optional/roles/server/qemu-config.nix
     ];
 
   boot.loader.grub.enable = true;

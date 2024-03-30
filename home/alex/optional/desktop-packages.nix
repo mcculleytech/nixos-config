@@ -19,11 +19,11 @@
     firefox
     epiphany
     drawing
+    nixos-anywhere
     # Unstable pkgs
     unstable.ollama
     unstable.hugo
     unstable.burpsuite
-    unstable.nixos-anywhere
     unstable.quickemu
     unstable.xonotic
     unstable.obs-studio
