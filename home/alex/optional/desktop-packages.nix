@@ -20,6 +20,8 @@
     epiphany
     drawing
     nixos-anywhere
+    rpcs3
+    game-devices-udev-rules
     # Unstable pkgs
     unstable.ollama
     unstable.hugo
@@ -39,7 +41,6 @@
     unstable.element-desktop
     unstable.obsidian
     unstable.sublime4
-    rpcs3
     unstable.beeper
   ];
 

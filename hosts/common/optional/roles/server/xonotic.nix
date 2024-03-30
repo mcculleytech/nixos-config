@@ -10,9 +10,10 @@
 			sv_vote_gametype = 1;
 			g_maplist_votable = 4;
 			skill = 3;
-			maxplayers = 6;
+			maxplayers = 8;
 			sv_status_privacy = 1;
 			minplayers_per_team = 3;
+			alias = ''bots "minplayers 4; minplayers_per_team 2"'';
 		};
 		openFirewall = true;
 	};
