@@ -4,10 +4,9 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ../../disko/maul.nix
       ../common/global
-      ../common/optional/roles/server/laptop-power-settings.nix
       ../common/optional/roles/server/nfs-server.nix
-      ../common/optional/roles/server/backup-server-syncthing.nix
     ];
 
   boot.loader.systemd-boot.enable = true;

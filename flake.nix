@@ -158,15 +158,23 @@
       # Backup Server
       "maul" = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
+        system = "x86_64-linux";
         modules = [
           ./hosts/maul/configuration.nix
           sops-nix.nixosModules.sops
+          disko.nixosModules.disko
           impermanence.nixosModules.impermanence
           home-manager.nixosModules.home-manager
           {
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.useUserPackages = true;
-            home-manager.users.alex = import ./home/alex/maul.nix;
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              (impermanence + "/home-manager.nix")
+              ./home/alex/atreides.nix
+              ];
+            };
           }
         ];
       };

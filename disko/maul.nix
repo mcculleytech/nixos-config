@@ -1,3 +1,4 @@
+{ config, lib, ... }: 
 {
   disko.devices = {
     disk = {
@@ -37,14 +38,16 @@
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-f" ];
+                  extraArgs = [ "-f" "-L ${config.networking.hostName}-OS" ]; # Override existing partition
+                  postCreateHook = /* sh */ ''
+                      MNTPOINT=$(mktemp -d)
+                      mount "/dev/disk/by-label/${config.networking.hostName}-OS" "$MNTPOINT" -o subvol=/
+                      trap 'umount $MNTPOINT; rm -rf $MNTPOINT' EXIT
+                      btrfs subvolume snapshot -r $MNTPOINT/root $MNTPOINT/root-blank
+                    '';
                   subvolumes = {
                     "/root" = {
                       mountpoint = "/";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/home" = {
-                      mountpoint = "/home";
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
                     "/nix" = {
@@ -55,6 +58,12 @@
 		                  mountpoint = "/persist";
 		                  mountOptions = [ "compress=zstd" "noatime" ];
 		                };
+                    "/swap" = {
+                      mountpoint = "/.swapvol";
+                      swap = {
+                        swapfile.size = "4G";
+                      };
+                    };
                   };
                 };
               };
@@ -67,7 +76,7 @@
       sdb = {
         type = "disk";
         # Backup disk needs to be entered below
-        device = "/dev/sdb";
+        device = "/dev/sdc";
         content = {
           type = "gpt";
           partitions = {
@@ -88,7 +97,7 @@
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
-                  extraArgs = [ "-f" ];
+                  extraArgs = [ "-f" "-L ${config.networking.hostName}-data" ]; # Override existing partition
                   subvolumes = {
                     "/data" = {
                       mountpoint = "/data";

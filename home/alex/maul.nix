@@ -2,14 +2,7 @@
 
     imports = [
       ./global
-      ./home-impermanace
+      ./optional/home-impermanace.nix
     ];
-
-  programs.bash = {
-    enable = true;
-    shellAliases = {
-      os-rebuild = "sudo nixos-rebuild switch --flake .#maul";
-    };
-  };
 
 }

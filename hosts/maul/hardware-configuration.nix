@@ -8,70 +8,18 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "firewire_ohci" "usb_storage" "sd_mod" "sr_mod" "sdhci_pci" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "ehci_pci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ "usb_storage" ];
-  boot.kernelModules = [ "wl" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.broadcom_sta ];
-
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/e834c4c2-7ac3-45d8-ade6-3f53a4e41772";
-      fsType = "btrfs";
-      options = [ "subvol=root" ];
-    };
-
-  boot.initrd.luks.devices."OScrypted" = 
-    { device = "/dev/disk/by-uuid/522dd75f-8a7a-4f1e-888e-5d699c7c45df";
-      allowDiscards = true;
-      keyFileSize = 4096;
-      keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/68AB-6085";
-      fsType = "vfat";
-    };
-
-  fileSystems."/data" =
-    { device = "/dev/mapper/NFScrypted";
-      fsType = "btrfs";
-      options = [ "subvol=data" ];
-    };
-
-  boot.initrd.luks.devices."NFScrypted" = 
-    { device = "/dev/disk/by-uuid/117ed150-3b46-4371-836e-590ccb488d72";
-      allowDiscards = true;
-      keyFileSize = 4096;
-      keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
-    };
-
-  fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/e834c4c2-7ac3-45d8-ade6-3f53a4e41772";
-      fsType = "btrfs";
-      options = [ "subvol=home" ];
-    };
-
-  fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/e834c4c2-7ac3-45d8-ade6-3f53a4e41772";
-      fsType = "btrfs";
-      options = [ "subvol=nix" ];
-    };
-
-  fileSystems."/persist" =
-    { device = "/dev/disk/by-uuid/e834c4c2-7ac3-45d8-ade6-3f53a4e41772";
-      fsType = "btrfs";
-      options = [ "subvol=persist" ];
-    };
-
-  swapDevices = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.extraModulePackages = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp0s25.useDHCP = lib.mkDefault true;
+  # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
-
