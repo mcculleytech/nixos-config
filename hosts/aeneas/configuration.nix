@@ -8,7 +8,7 @@
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/hyprland
-      #../common/optional/roles/workstation/gnome.nix
+      ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
   

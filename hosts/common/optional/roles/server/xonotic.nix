@@ -12,7 +12,9 @@
 			skill = 3;
 			maxplayers = 8;
 			sv_status_privacy = 1;
-			minplayers_per_team = 3;
+			minplayers_per_team = 4;
+			minplayers = 8;
+			bot_vs_human = 2;
 			alias = ''bots "minplayers 4; minplayers_per_team 2"'';
 		};
 		openFirewall = true;

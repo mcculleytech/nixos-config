@@ -1,4 +1,4 @@
-{config, ...}: {
+{config, pkgs, ...}: {
 	programs.waybar = {
 		enable = true;
 		systemd = {
@@ -18,7 +18,7 @@
 		    # ];
 		    modules-left = [ "hyprland/workspaces" ];
 		    modules-center = [ "memory" "clock" "cpu" ];
-		    modules-right = [ "pulseaudio" "idle_inhibitor" "backlight" "battery" "network" "tray" ];
+		    modules-right = [ "pulseaudio" "idle_inhibitor" "backlight" "battery" "network" "tray" "custom/notification" ];
 
 		    "hyprland/workspaces" = {
 		      format = "{icon}";
@@ -81,7 +81,7 @@
 		        max-length = 10;
 		    };
 		    tray = {
-		        icon-size = 21;
+		        icon-size = 15;
 		        spacing = 10;
 		    };
 		    network = {
@@ -112,6 +112,26 @@
 		        scroll-step = 1;
 		        on-click = "pavucontrol";
 		        ignored-sinks = ["Easy Effects Sink"];
+		    };
+		    "custom/notification"= {
+		      tooltip= false;
+		      format= "{icon}";
+		      format-icons= {
+		        notification= "<span foreground='red'><sup></sup></span>";
+		        none= "";
+		        dnd-notification= "<span foreground='red'><sup></sup></span>";
+		        dnd-none= "";
+		        inhibited-notification= "<span foreground='red'><sup></sup></span>";
+		        inhibited-none= "";
+		        dnd-inhibited-notification= "<span foreground='red'><sup></sup></span>";
+		        dnd-inhibited-none= ";";
+		      };
+		      return-type= "json";
+		      # exec-if= "which ";
+		      exec= "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+		      on-click= "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+		      on-click-right= "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+		      escape= true;
 		    };
 	    };
 	  };

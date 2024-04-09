@@ -22,8 +22,10 @@
     nixos-anywhere
     rpcs3
     game-devices-udev-rules
+    remmina
     # Unstable pkgs
     unstable.ollama
+    unstable.metasploit
     unstable.hugo
     unstable.burpsuite
     unstable.quickemu

@@ -17,7 +17,7 @@
 
 	  iconTheme = {
 	    package = pkgs.unstable.zafiro-icons;
-	    name = "Zafiro-Icons-Dark";
+	    name = "Zafiro-icons-Dark";
 	  };
 
 	  font = {
@@ -25,14 +25,4 @@
 	    size = 11;
 	  };
 	};
-
-	# services.xsettingsd = {
-	#     enable = true;
-	#     settings = {
-	#       "Net/ThemeName" = "${config.gtk.theme.name}";
-	#       "Net/IconThemeName" = "${config.gtk.iconTheme.name}";
-	#     };
-	#   };
-
-	  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
 }

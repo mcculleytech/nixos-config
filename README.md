@@ -10,14 +10,14 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ## Systems
 
-| **Name** | Purpose                  											  		| Hardware                    |
-| -------- | -------------------------------------------------------------------------- | --------------------------- |
-| aeneas   | Personal Laptop          											  		| AMD Framework 13in          |
-| achilles | Personal Desktop         											  		| AMD Ryzen 5 <br>Nvidia 3050 |
-| maul     | Offsite Backup Server    											  		| HP EliteBook 8460p          |
-| vader    | Test Machine (currently) 											  		| Proxmox VM                  |
-| phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server   		| Proxmox VM                  |
-| atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     	| Proxmox VM                  |
+| **Name** | Purpose                  											  							| Hardware                    |
+| -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
+| aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
+| achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
+| maul     | Offsite Backup Server    											  							| HP EliteBook 8460p          |
+| vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
+| phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Block DNS Server  		| Proxmox VM                  |
+| atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     						| Proxmox VM                  |
 
 ## Features
 
@@ -37,6 +37,11 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Tailscale NFS fix
 - [ ] Different DEs/TWM setups
 	- [ ] Hyprland - WIP
+		- [ ] Move manual dotfiles that cannot currently be configured by Home Manager
+			- [ ] Hyprlock
+			- [ ] Hypridle
+			- [ ] kanshi
+			- [ ] Hyprpaper
 	- [ ] KDE
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [ ] Steam
@@ -62,7 +67,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ### Other
 - [ ] Move all machines to an `impermanence` setup
-	- [ ] Need to redeploy `maul.nix`
+	- [ ] Need to redeploy `maul.nix` - Hardware refresh
  	- [x] Set as part of global config ✅ 2024-03-08
 - [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20
