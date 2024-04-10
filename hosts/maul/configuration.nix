@@ -6,7 +6,7 @@
       ./hardware-configuration.nix
       ../../disko/maul.nix
       ../common/global
-      ../common/optional/roles/server/nfs-server.nix
+      ../common/optional/roles/server/remote-backup-server.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
