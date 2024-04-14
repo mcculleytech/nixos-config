@@ -12,7 +12,7 @@
 	  enable = true;
 	  theme = {
 	    package = pkgs.nordic;
-	    name = "Nordic-darker";
+	    name = "Nordic-darker-standard-buttons";
 	  };
 
 	  iconTheme = {
