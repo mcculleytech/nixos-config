@@ -32,7 +32,6 @@ in
               "achilles"
               "aeneas"
               "phantom"
-              "TrueNAS"
               "pixel"
             ];
           };
@@ -47,7 +46,6 @@ in
               "achilles"
               "aeneas"
               "phantom"
-              "TrueNAS"
               "pixel"
             ];
           };
@@ -62,7 +60,6 @@ in
               "achilles"
               "aeneas"
               "phantom"
-              "TrueNAS"
               "pixel"
             ];
           };
@@ -76,9 +73,6 @@ in
           };
           "pixel" = {
             id = "${st_secrets.syncthing.pixel_id}";
-          };
-          "TrueNAS" = {
-            id = "${st_secrets.syncthing.truenas_id}";
           };
           "phantom" = {
             id = "${st_secrets.syncthing.phantom_id}";

@@ -172,7 +172,7 @@
               # Import impermanence to home-manager
               imports = [
               (impermanence + "/home-manager.nix")
-              ./home/alex/atreides.nix
+              ./home/alex/maul.nix
               ];
             };
           }

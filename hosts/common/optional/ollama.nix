@@ -22,8 +22,8 @@
   networking.firewall.allowedTCPPorts = [ 11434 8080 3000 ];
 
   # This is needed for Nvidia to work after suspend with ollama
-  boot.extraModprobeConfig = ''
-    options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/tmp
-  '';
+  # boot.extraModprobeConfig = ''
+  #   options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/tmp
+  # '';
 
 }

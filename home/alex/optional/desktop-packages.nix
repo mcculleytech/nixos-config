@@ -23,6 +23,7 @@
     rpcs3
     game-devices-udev-rules
     remmina
+    google-chrome
     # Unstable pkgs
     unstable.ollama
     unstable.metasploit

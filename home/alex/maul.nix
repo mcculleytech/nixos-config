@@ -2,7 +2,7 @@
 
     imports = [
       ./global
-      ./optional/home-impermanace.nix
+      ./optional/home-impermanence.nix
     ];
 
 }
