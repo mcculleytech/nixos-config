@@ -29,6 +29,28 @@
   }@inputs:
     let
       inherit (self) outputs;
+
+      defaultModules = [
+        disko.nixosModules.disko
+        impermanence.nixosModules.impermanence
+        sops-nix.nixosModules.sops
+      ];
+
+      homeManagerServerModule = [
+      home-manager.nixosModules.home-manager
+        {
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit inputs outputs; };
+          home-manager.users.alex = {
+            # Import impermanence to home-manager
+            imports = [
+            (impermanence + "/home-manager.nix")
+            ./home/alex/server.nix
+            ];
+          };
+        }
+      ];
+
     in
     rec {
     overlays = import ./overlays/unstable-pkgs.nix { inherit inputs ; };
@@ -37,13 +59,9 @@
       # Framework 13 AMD Laptop
       "aeneas" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
-        modules = [
+        modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
-          disko.nixosModules.disko
-          impermanence.nixosModules.impermanence
           hardware.nixosModules.framework-13-7040-amd
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
@@ -62,13 +80,9 @@
       "achilles" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         system = "x86_64-linux";
-	      modules = [
+	      modules = defaultModules ++ [
 	        ./hosts/achilles/configuration.nix
-          disko.nixosModules.disko
-          impermanence.nixosModules.impermanence
 	        hardware.nixosModules.common-gpu-nvidia-nonprime
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
@@ -87,23 +101,8 @@
       "vader" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         system = "x86_64-linux";
-        modules = [
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
+        modules = defaultModules ++ homeManagerServerModule ++ [
           ./hosts/vader/configuration.nix
-          impermanence.nixosModules.impermanence
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex = {
-              # Import impermanence to home-manager
-              imports = [
-              (impermanence + "/home-manager.nix")
-              ./home/alex/vader.nix
-              ];
-            };
-          }
         ];
       };
 
@@ -111,23 +110,8 @@
       "phantom" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         system = "x86_64-linux";
-        modules = [
+        modules = defaultModules ++ homeManagerServerModule ++ [
           ./hosts/phantom/configuration.nix
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
-          impermanence.nixosModules.impermanence
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex = {
-              # Import impermanence to home-manager
-              imports = [
-              (impermanence + "/home-manager.nix")
-              ./home/alex/phantom.nix
-              ];
-            };
-          }
         ];
       };
 
@@ -135,23 +119,8 @@
       "atreides" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
         system = "x86_64-linux";
-        modules = [
+        modules = defaultModules ++ homeManagerServerModule ++ [
           ./hosts/atreides/configuration.nix
-          disko.nixosModules.disko
-          sops-nix.nixosModules.sops
-          impermanence.nixosModules.impermanence
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex = {
-              # Import impermanence to home-manager
-              imports = [
-              (impermanence + "/home-manager.nix")
-              ./home/alex/atreides.nix
-              ];
-            };
-          }
         ];
       };
 
@@ -159,23 +128,8 @@
       "maul" = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         system = "x86_64-linux";
-        modules = [
+        modules = defaultModules ++ homeManagerServerModule ++ [
           ./hosts/maul/configuration.nix
-          sops-nix.nixosModules.sops
-          disko.nixosModules.disko
-          impermanence.nixosModules.impermanence
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.useUserPackages = true;
-            home-manager.users.alex = {
-              # Import impermanence to home-manager
-              imports = [
-              (impermanence + "/home-manager.nix")
-              ./home/alex/maul.nix
-              ];
-            };
-          }
         ];
       };
 

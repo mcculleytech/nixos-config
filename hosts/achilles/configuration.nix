@@ -6,7 +6,7 @@
       ../common/optional/docker.nix
       #../common/optional/nfs.nix
       ../common/optional/roles/workstation
-      ../common/optional/ollama.nix
+      #../common/optional/ollama.nix
       ../common/optional/roles/workstation/gnome.nix
       ../../disko/achilles.nix
     ];
@@ -18,6 +18,7 @@
 
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
+    unstable.flameshot
   ];
   virtualisation.docker = {
     enableNvidia = true;
