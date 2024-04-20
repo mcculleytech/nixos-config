@@ -62,6 +62,7 @@
         modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd
+          home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
@@ -82,6 +83,7 @@
         system = "x86_64-linux";
 	      modules = defaultModules ++ [
 	        ./hosts/achilles/configuration.nix
+          home-manager.nixosModules.home-manager
 	        hardware.nixosModules.common-gpu-nvidia-nonprime
           {
             home-manager.useUserPackages = true;
@@ -95,6 +97,27 @@
             };
           }
 	      ];
+      };
+
+      # Garage PC
+      "jak" = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
+        modules = defaultModules ++ [
+          ./hosts/jak/configuration.nix
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              # (impermanence + "/home-manager.nix")
+              ./home/alex/jak.nix
+              ];
+            };
+          }
+        ];
       };
 
       # Testing Server
