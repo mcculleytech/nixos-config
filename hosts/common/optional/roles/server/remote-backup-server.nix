@@ -33,6 +33,7 @@ in
               "aeneas"
               "phantom"
               "pixel"
+              "jak"
             ];
           };
           "Synced-Documents" = {
@@ -47,6 +48,7 @@ in
               "aeneas"
               "phantom"
               "pixel"
+              "jak"
             ];
           };
           "Pixel-Photos" = {
@@ -61,6 +63,7 @@ in
               "aeneas"
               "phantom"
               "pixel"
+              "jak"
             ];
           };
         };
@@ -76,6 +79,9 @@ in
           };
           "phantom" = {
             id = "${st_secrets.syncthing.phantom_id}";
+          };
+          "jak" = {
+            id = "${st_secrets.syncthing.jak_id}";
           };
         };
         gui = {

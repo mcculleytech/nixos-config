@@ -34,6 +34,7 @@ in
               "aeneas"
               "maul"
               "pixel"
+              "jak"
             ];
           };
           "Synced-Documents" = {
@@ -48,6 +49,7 @@ in
               "aeneas"
               "maul"
               "pixel"
+              "jak"
             ];
           };
           "Pixel-Photos" = {
@@ -62,6 +64,7 @@ in
               "aeneas"
               "maul"
               "pixel"
+              "jak"
             ];
           };
         };
@@ -77,6 +80,9 @@ in
           };
           "maul" = {
             id = "${st_secrets.syncthing.maul_id}";
+          };
+          "jak" = {
+            id = "${st_secrets.syncthing.jak_id}";
           };
         };
         gui = {
