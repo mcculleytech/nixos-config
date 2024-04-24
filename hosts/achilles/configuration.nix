@@ -21,6 +21,7 @@
     unstable.flameshot
   ];
 
+  # virtualbox setup for tcm course
   virtualisation.virtualbox.host.enable = true;
   virtualisation.virtualbox.host.enableHardening = false;
   users.extraGroups.vboxusers.members = [ "alex" ];

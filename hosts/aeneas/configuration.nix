@@ -24,6 +24,11 @@
     (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
   ];
 
+  # virtualbox setup for tcm course
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableHardening = false;
+  users.extraGroups.vboxusers.members = [ "alex" ];
+
   services.fprintd = {
     enable = true;
   };
