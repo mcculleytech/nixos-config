@@ -20,6 +20,11 @@
     unstable.nvidia-docker
     unstable.flameshot
   ];
+
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableHardening = false;
+  users.extraGroups.vboxusers.members = [ "alex" ];
+
   virtualisation.docker = {
     enableNvidia = true;
   };
