@@ -20,6 +20,7 @@
     nmap
     age
     ssh-to-age
+    p7zip
   ];
 
   fonts.packages = with pkgs; [
