@@ -34,6 +34,7 @@ in
               "phantom"
               "pixel"
               "jak"
+              "truenas"
             ];
           };
           "Synced-Documents" = {
@@ -49,6 +50,7 @@ in
               "phantom"
               "pixel"
               "jak"
+              "truenas"
             ];
           };
           "Pixel-Photos" = {
@@ -64,6 +66,7 @@ in
               "phantom"
               "pixel"
               "jak"
+              "truenas"
             ];
           };
         };
@@ -82,6 +85,9 @@ in
           };
           "jak" = {
             id = "${st_secrets.syncthing.jak_id}";
+          };
+          "truenas" = {
+            id = "${st_secrets.syncthing.truenas_id}";
           };
         };
         gui = {

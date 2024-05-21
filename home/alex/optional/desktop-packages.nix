@@ -25,6 +25,7 @@
     remmina
     google-chrome
     # Unstable pkgs
+    unstable.signal-desktop
     unstable.ollama
     unstable.metasploit
     unstable.hugo
