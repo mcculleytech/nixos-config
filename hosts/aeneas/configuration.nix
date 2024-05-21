@@ -6,6 +6,7 @@
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/docker.nix
+      ../common/optional/pam-auth.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/hyprland
       ../common/optional/roles/workstation/gnome.nix
@@ -28,10 +29,6 @@
   virtualisation.virtualbox.host.enable = true;
   virtualisation.virtualbox.host.enableHardening = false;
   users.extraGroups.vboxusers.members = [ "alex" ];
-
-  services.fprintd = {
-    enable = true;
-  };
 
   services.hardware.bolt.enable = true;
   
