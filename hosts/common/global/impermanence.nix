@@ -9,6 +9,7 @@
         "/var/lib/NetworkManager"
         "/var/lib/nixos"
         "/var/lib/sops-nix"
+        "/var/lib/libvirt"
         "/var/log"
         "/etc/NetworkManager"
       ];
