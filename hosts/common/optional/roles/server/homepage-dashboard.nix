@@ -106,6 +106,13 @@ in
                    description = "Syncthing Server";   
                  };
                }
+              {
+                 "Azure" = {
+                  icon = "azure.png";
+                   href = "https://portal.azure.com/#home";
+                   description = "Azure Services";   
+                 };
+               }
             ];
 					}
 				];
