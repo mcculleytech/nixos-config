@@ -42,6 +42,7 @@
         "sublime_text.desktop" 
         "bitwarden.desktop"
         "spotify.desktop"
+        "org.remmina.Remmina.desktop"
       ];
       enabled-extensions = [
         "user-theme@gnome-shell-extensions.gcampax.github.com"
@@ -53,6 +54,10 @@
 
     "org/gnome/shell/extensions/user-theme" = {
        name = "Nordic-darker-standard-buttons";
+    };
+
+    "org/gnome/shell/extensions/dash-to-dock" = { 
+      running-indicator-style = "DOTS";
     };
 
     "org/gnome/mutter" = {

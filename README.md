@@ -16,12 +16,12 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
 | maul     | Offsite Backup Server    											  							| HP EliteBook 8460p          |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
-| phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Block DNS Server  		| Proxmox VM                  |
+| phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     						| Proxmox VM                  |
 
 ## Features
 
-- disk configuration via disko with various features including:
+- disk configuration via `disko` with various features including:
 	- btrfs subvol setup and encryption (usb and password based encryption)
 	- labeling drives
 	- blank root subvol snapshotting for `impermanence`

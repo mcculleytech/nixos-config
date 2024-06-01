@@ -11,6 +11,7 @@
         "/var/lib/sops-nix"
         "/var/lib/libvirt"
         "/var/log"
+        "/etc/cups"
         "/etc/NetworkManager"
       ];
       files = [

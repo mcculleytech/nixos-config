@@ -35,8 +35,6 @@
 
   time.timeZone = "America/Chicago";
 
-  services.xserver.layout = "us";
-
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
