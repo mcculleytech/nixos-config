@@ -25,16 +25,16 @@
     (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
   ];
 
-  # virtualbox setup for tcm course
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableHardening = false;
-  users.extraGroups.vboxusers.members = [ "alex" ];
+  # # virtualbox setup for tcm course
+  # virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enableHardening = false;
+  # users.extraGroups.vboxusers.members = [ "alex" ];
 
   services.hardware.bolt.enable = true;
   
   time.timeZone = "America/Chicago";
   
-  services.xserver.layout = "us";
+  services.xserver.xkb.layout = "us";
   
   services.printing.enable = true;
 

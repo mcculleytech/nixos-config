@@ -48,6 +48,7 @@
             ./home/alex/server.nix
             ];
           };
+          home-manager.backupFileExtension = "bak";
         }
       ];
 
@@ -73,6 +74,7 @@
               ./home/alex/aeneas.nix
               ];
             };
+            home-manager.backupFileExtension = "bak";
           }
         ];
       };

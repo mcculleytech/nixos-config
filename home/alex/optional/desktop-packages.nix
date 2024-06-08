@@ -24,6 +24,7 @@
     game-devices-udev-rules
     remmina
     google-chrome
+    unvanquished
     # Unstable pkgs
     unstable.signal-desktop
     unstable.ollama

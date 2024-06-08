@@ -14,6 +14,6 @@
 		unstable.hyprpaper
 		unstable.hyprlock
 		unstable.hypridle
-		eww-wayland
+		eww
 	];
 }
