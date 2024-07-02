@@ -8,7 +8,7 @@ keys:
   - &phantom_server age1thr6ugzx83lz5r5gwazt05wgudx32xkgm76vdu8d98neg6sxu3xqh2nzkw
   - &atreides_server age15kz7au85c7dyneyz7qlyhxk2cr0m29us9uhprn9fspnc9pe5ga7sp5vq2v
   - &jak_server age1tsh06f74ldhqxst8v0jdks8lvy4e5aqwv3vkjqh8ahf90f207q4stzzg50
-  - &saruman_server age1pe850zmzyyu0przt273vv8sqv5pf3g76759hxd4p5rchr4m43vhqqyxetf
+  - &saruman_server age1l9yka74x02ygv5937ncra9ythnzf32vqde3fgvft23zdf8xyj5wsuelwpa
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
