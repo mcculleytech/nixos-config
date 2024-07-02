@@ -24,6 +24,7 @@
                 format = "vfat";
                 mountpoint = "/boot";
               };
+            };
             OSluks = {
               size = "100%";
               content = {
@@ -35,7 +36,7 @@
                 #passwordFile = "/tmp/secret.key"; # Interactive
                 settings = { 
                   allowDiscards = true;
-                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
+                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307122127183208553103-0:0";
                   keyFileSize = 4096;
                 };
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
@@ -83,18 +84,18 @@
         content = {
           type = "gpt";
           partitions = {
-            NFSluks = {
+            dataLuks = {
               size = "100%";
               content = {
                 type = "luks";
-                name = "NFScrypted";
+                name = "dataLuks";
                 extraOpenArgs = [ ];
                 # if you want to use the key for interactive login be sure there is no trailing newline
                 # for example use `echo -n "password" > /tmp/secret.key`
                 #passwordFile = "/tmp/secret.key"; # Interactive
                 settings = {
                   allowDiscards = true;
-                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307111809272950543702-0:0";
+                  keyFile = "/dev/disk/by-id/usb-General_UDisk_2307122127183208553103-0:0";
                   keyFileSize = 4096;
                 };
                 # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];

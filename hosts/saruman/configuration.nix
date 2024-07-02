@@ -19,9 +19,9 @@
     unstable.flameshot
   ];
 
-  virtualisation.docker = {
-    enableNvidia = true;
-  };
+  # virtualisation.docker = {
+  #   enableNvidia = true;
+  # };
 
   networking.hostName = "saruman";
   networking.networkmanager.enable = true;
