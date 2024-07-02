@@ -101,6 +101,28 @@
 	      ];
       };
 
+      # Dedicated GPU Server 
+      "saruman" = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
+        modules = defaultModules ++ [
+          ./hosts/saruman/configuration.nix
+          home-manager.nixosModules.home-manager
+          hardware.nixosModules.common-gpu-nvidia-nonprime
+          {
+            home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs outputs; };
+            home-manager.users.alex = {
+              # Import impermanence to home-manager
+              imports = [
+              # (impermanence + "/home-manager.nix")
+              ./home/alex/saruman.nix
+              ];
+            };
+          }
+        ];
+      };
+
       # Garage PC
       "jak" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };

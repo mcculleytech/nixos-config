@@ -136,9 +136,7 @@ in
     extraNfsdConfig = '''';
     exports = ''
       # Should use DNS names in final revision
-      /data/proxmox        gandalf.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
-      /data/proxmox        pippin.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
-      /data/proxmox        sam.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
+      /data/proxmox        aragorn.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
       /data/proxmox        achilles.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
       /data/proxmox        aeneas.tail5c738.ts.net(rw,sync,all_squash,anonuid=1002,anongid=1002,no_subtree_check)
     '';
