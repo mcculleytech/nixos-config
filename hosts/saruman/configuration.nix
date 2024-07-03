@@ -5,7 +5,7 @@
       ../common/global
       ../common/optional/docker.nix
       ../common/optional/roles/workstation/kde.nix
-      ../common/optional/ollama.nix
+      ../common/optional/roles/server/ollama.nix
       ../../disko/saruman.nix
     ];
 

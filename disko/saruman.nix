@@ -1,10 +1,9 @@
-{ config, lib, ... }: 
+{ config, lib, ... }:
 {
   disko.devices = {
     disk = {
       sarumanRoot = {
         type = "disk";
-        # OS disk
         device = "/dev/nvme0n1";
         content = {
           type = "gpt";
@@ -25,21 +24,16 @@
                 mountpoint = "/boot";
               };
             };
-            OSluks = {
+            luks = {
               size = "100%";
               content = {
                 type = "luks";
-                name = "OScrypted";
-                extraOpenArgs = [ ];
-                # if you want to use the key for interactive login be sure there is no trailing newline
-                # for example use `echo -n "password" > /tmp/secret.key`
-                #passwordFile = "/tmp/secret.key"; # Interactive
-                settings = { 
+                name = "encryptedRoot";
+                settings = {
                   allowDiscards = true;
                   keyFile = "/dev/disk/by-id/usb-General_UDisk_2307122127183208553103-0:0";
                   keyFileSize = 4096;
                 };
-                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" "-L ${config.networking.hostName}" ]; # Override existing partition
@@ -51,21 +45,22 @@
                     '';
                   subvolumes = {
                     "/root" = {
+                      mountOptions = [ "compress=zstd" ];
                       mountpoint = "/";
-                      mountOptions = [ "compress=zstd" "noatime" ];
-                    };
-                    "/nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = [ "compress=zstd" "noatime" ];
                     };
                     "/persist" = {
+                      mountOptions = [ "compress=zstd" ];
                       mountpoint = "/persist";
+                    };
+                    "/nix" = {
                       mountOptions = [ "compress=zstd" "noatime" ];
+                      mountpoint = "/nix";
                     };
                     "/swap" = {
                       mountpoint = "/.swapvol";
                       swap = {
-                        swapfile.size = "4G";
+                        swapfile.size = "8G";
+                        };
                       };
                     };
                   };
@@ -75,46 +70,39 @@
           };
         };
       };
-    };
-    disk = {
-      sarumanData = {
-        type = "disk";
-        # data disk for llms, etc.
-        device = "/dev/sda";
-        content = {
-          type = "gpt";
-          partitions = {
-            dataLuks = {
-              size = "100%";
-              content = {
-                type = "luks";
-                name = "dataLuks";
-                extraOpenArgs = [ ];
-                # if you want to use the key for interactive login be sure there is no trailing newline
-                # for example use `echo -n "password" > /tmp/secret.key`
-                #passwordFile = "/tmp/secret.key"; # Interactive
+      disk = {
+        SarumanHome = {
+          type = "disk";
+          device = "/dev/sda";
+          content = {
+            type = "gpt";
+            partitions = {
+              luks = {
+                size = "100%";
+                content = {
+                  type = "luks";
+                  name = "encryptedHome";
                 settings = {
                   allowDiscards = true;
                   keyFile = "/dev/disk/by-id/usb-General_UDisk_2307122127183208553103-0:0";
                   keyFileSize = 4096;
                 };
-                # additionalKeyFiles = [ "/tmp/additionalSecret.key" ];
-                content = {
-                  type = "btrfs";
-                  extraArgs = [ "-f" "-L ${config.networking.hostName}-data" ]; # Override existing partition
-                  subvolumes = {
-                    "/data" = {
-                      mountpoint = "/data";
-                      mountOptions = [ "compress=zstd" "noatime" ];
+                  content = {
+                    type = "btrfs";
+                    extraArgs = [ "-f" ];
+                    subvolumes = {
+                      "/home" = {
+                        mountpoint = "/home";
+                        mountOptions = [ "compress=zstd" "noatime" ];
+                      };
                     };
                   };
                 };
               };
             };
           };
-        };
+        };  
       };
     };
-  };
-}
+  }
 
