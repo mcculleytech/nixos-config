@@ -6,6 +6,8 @@
       ../common/optional/docker.nix
       ../common/optional/roles/workstation/kde.nix
       ../common/optional/roles/server/ollama.nix
+      ../common/optional/roles/server/jellyfin.nix
+      ../common/optional/roles/server/octoprint.nix
       ../../disko/saruman.nix
     ];
 

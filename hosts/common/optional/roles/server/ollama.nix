@@ -21,6 +21,15 @@
       };
     };
 
+  environment.persistence = {
+    "/persist" = {
+    hideMounts = true;
+      directories = [
+        "/var/lib/private"
+      ];
+    };
+  };
+
   networking.firewall.allowedTCPPorts = [ 11434 8080 3000 ];
 
   # This is needed for Nvidia to work after suspend with ollama
