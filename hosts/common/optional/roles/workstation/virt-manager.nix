@@ -29,5 +29,15 @@
         source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
       };
     };
+
+    systemd.services.virt-network-start = {
+         wantedBy = [ "multi-user.target" ];
+         after = [ "network.target" ];
+         description = "start default virt network NAT";
+         serviceConfig = {
+           Type = "simple";
+           ExecStart = "${pkgs.libvirt}/bin/virsh net-start default"; 
+         };
+      };
 	
 }

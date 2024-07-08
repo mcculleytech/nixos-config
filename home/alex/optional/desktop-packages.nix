@@ -25,6 +25,7 @@
     remmina
     google-chrome
     unvanquished
+    zrok
     # Unstable pkgs
     unstable.signal-desktop
     unstable.ollama
