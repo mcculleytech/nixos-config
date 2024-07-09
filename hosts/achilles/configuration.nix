@@ -6,8 +6,7 @@
       ../common/optional/docker.nix
       #../common/optional/nfs.nix
       ../common/optional/roles/workstation
-      #../common/optional/ollama.nix
-      ../common/optional/roles/workstation/gnome.nix
+      ../common/optional/roles/workstation/kde.nix
       ../../disko/achilles.nix
     ];
 
