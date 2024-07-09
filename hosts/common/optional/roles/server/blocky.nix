@@ -18,9 +18,6 @@ in
     		customDNS = {
     			mapping = {
     				# nix subnet
-    				"devdockerubuntu.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
-    				"jellyfin.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
-    				"jackett.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
     				"transmission.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
     				"atredies.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
     				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
@@ -29,6 +26,7 @@ in
     				"prddockerubuntu00.${tr_secrets.traefik.dmz_domain}" = "10.2.1.17";
     				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.6";
    					# homelab domain
+   					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";

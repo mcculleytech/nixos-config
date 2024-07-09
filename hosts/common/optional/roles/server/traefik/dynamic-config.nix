@@ -65,6 +65,15 @@ in
 					};
 					service = "octoprint";
 				};
+				jellyfin = {
+					entryPoints = [ "websecure" ];
+					rule = "Host(`jellyfin.${tr_secrets.traefik.homelab_domain}`)";
+					middlewares = [ "default-headers" "https-redirectscheme" ];
+					tls =  {
+						certResolver = "cloudflare";
+					};
+					service = "jellyfin";
+				};
 				syncthing = {
 					entryPoints = [ "websecure" ];
 					rule = "Host(`syncthing.${tr_secrets.traefik.homelab_domain}`)";
@@ -107,6 +116,14 @@ in
 						passHostHeader = "true";
 					};
 				};
+				jellyfin = {
+					loadBalancer = {
+						servers = [	
+							{url = "http://10.3.29.6:8096";}
+						];
+						passHostHeader = "true";
+					};
+				};
 				unifi = {
 					loadBalancer = {
 						servers = [	
@@ -126,7 +143,7 @@ in
 				octoprint = {
 					loadBalancer = {
 						servers = [	
-							{url = "https://10.1.8.5";}
+							{url = "https://10.3.29.6:5000";}
 						];
 						passHostHeader = "true";
 					};
