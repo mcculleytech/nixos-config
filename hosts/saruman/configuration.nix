@@ -19,6 +19,7 @@
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
     unstable.flameshot
+    unstable.zrok
   ];
 
   # virtualisation.docker = {
