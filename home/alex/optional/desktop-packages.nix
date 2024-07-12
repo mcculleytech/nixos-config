@@ -27,6 +27,7 @@
     unvanquished
     zrok
     # Unstable pkgs
+    makemkv
     unstable.signal-desktop
     unstable.ollama
     unstable.metasploit

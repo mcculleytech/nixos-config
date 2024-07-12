@@ -128,7 +128,7 @@ in
 				jellyfin = {
 					loadBalancer = {
 						servers = [	
-							{url = "http://10.3.29.6:8096";}
+							{url = "http://10.1.8.6:8096";}
 						];
 						passHostHeader = "true";
 					};
@@ -152,7 +152,7 @@ in
 				ai = {
 					loadBalancer = {
 						servers = [	
-							{url = "http://10.3.29.6:8080";}
+							{url = "http://10.1.8.6:8080";}
 						];
 						passHostHeader = "true";
 					};
@@ -160,7 +160,7 @@ in
 				octoprint = {
 					loadBalancer = {
 						servers = [	
-							{url = "http://10.3.29.6:5000";}
+							{url = "http://10.1.8.6:5000";}
 						];
 						passHostHeader = "true";
 					};
