@@ -8,6 +8,7 @@
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/kde.nix
       ../common/optional/roles/workstation/steam.nix
+      ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/achilles.nix
     ];
 
