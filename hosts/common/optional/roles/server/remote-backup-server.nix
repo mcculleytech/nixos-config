@@ -124,9 +124,12 @@ in
     gid = 1002;
   };
 
-  # nfs server setup
+  # Configure nfs-server to start only after tailscaled
+  systemd.services.nfs-server = {
+    after = [ "tailscaled.service" ];
+  };
 
-  # Firewall setup
+  # nfs server setup
   services.nfs.server = {
     enable = true;
     # fixed rpc.statd port; for firewall

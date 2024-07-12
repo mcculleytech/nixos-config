@@ -12,6 +12,6 @@
    environment.systemPackages = with pkgs; 
    [
     kdePackages.krdc
-
+    kdePackages.kdeconnect-kde
    ];
 }

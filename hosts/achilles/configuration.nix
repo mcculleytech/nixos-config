@@ -7,6 +7,7 @@
       #../common/optional/nfs.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/kde.nix
+      ../common/optional/roles/workstation/steam.nix
       ../../disko/achilles.nix
     ];
 

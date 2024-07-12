@@ -21,6 +21,7 @@
     age
     ssh-to-age
     p7zip
+    usbutils
   ];
 
   fonts.packages = with pkgs; [

@@ -17,7 +17,6 @@
     retroarchFull
     wakeonlan
     firefox
-    epiphany
     drawing
     nixos-anywhere
     rpcs3
@@ -27,7 +26,6 @@
     unvanquished
     zrok
     # Unstable pkgs
-    makemkv
     unstable.signal-desktop
     unstable.ollama
     unstable.metasploit

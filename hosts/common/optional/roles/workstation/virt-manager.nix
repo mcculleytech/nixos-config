@@ -37,6 +37,7 @@
          serviceConfig = {
            Type = "simple";
            ExecStart = "${pkgs.libvirt}/bin/virsh net-start default"; 
+           Restart = "no";
          };
       };
 	
