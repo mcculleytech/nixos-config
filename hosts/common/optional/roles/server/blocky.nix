@@ -27,6 +27,7 @@ in
     				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.6";
    					# homelab domain
    					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+   					"ai.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";

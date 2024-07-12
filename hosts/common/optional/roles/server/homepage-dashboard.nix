@@ -38,7 +38,7 @@ in
               {
                 "Jellyfin" = {
                 	icon = "jellyfin.png";
-                  href = "https://jellyfin.${tr_secrets.traefik.server_domain}";
+                  href = "https://jellyfin.${tr_secrets.traefik.homelab_domain}";
                   description = "Home Media Server";
                 };
               }
@@ -47,9 +47,16 @@ in
           {
             "Services" = [
               {
+                "OpenWebUI" = {
+                  icon = "https://api.openwebui.com/api/v1/models/017d6414-6bd3-46c8-9dfe-bcf6f23e6803/image";
+                  href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
+                  description = "Locally Hosted LLM";
+                };
+              }
+              {
                 "Octoprint" = {
                   icon = "octoprint.png";
-                  href = "https://octoprint.${tr_secrets.traefik.server_domain}";
+                  href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
                   description = "3D Printer";
                 };
               }

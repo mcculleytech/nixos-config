@@ -56,6 +56,15 @@ in
 					};
 					service = "truenas";
 				};
+				ai = {
+					entryPoints = [ "websecure" ];
+					rule = "Host(`ai.${tr_secrets.traefik.homelab_domain}`)";
+					middlewares = [ "default-headers" "https-redirectscheme" ];
+					tls =  {
+						certResolver = "cloudflare";
+					};
+					service = "ai";
+				};
 				octoprint = {
 					entryPoints = [ "websecure" ];
 					rule = "Host(`octoprint.${tr_secrets.traefik.homelab_domain}`)";
@@ -140,10 +149,18 @@ in
 						passHostHeader = "true";
 					};
 				};
+				ai = {
+					loadBalancer = {
+						servers = [	
+							{url = "http://10.3.29.6:8080";}
+						];
+						passHostHeader = "true";
+					};
+				};
 				octoprint = {
 					loadBalancer = {
 						servers = [	
-							{url = "https://10.3.29.6:5000";}
+							{url = "http://10.3.29.6:5000";}
 						];
 						passHostHeader = "true";
 					};
