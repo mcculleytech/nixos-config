@@ -20,6 +20,7 @@ in
 	};
 
 	  services.rpcbind.enable = true; # needed for NFS
+	  boot.supportedFilesystems = [ "nfs" ];
 	  systemd.mounts = let commonMountOptions = {
 	    type = "nfs";
 	    mountConfig = {
