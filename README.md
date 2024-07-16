@@ -15,6 +15,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
 | achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
 | maul     | Offsite Backup Server    											  							| HP EliteBook 8460p          |
+| saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server 								  	| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     						| Proxmox VM                  |
@@ -42,9 +43,9 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 			- [ ] Hypridle
 			- [ ] kanshi
 			- [ ] Hyprpaper
-	- [ ] KDE
+	- [x] KDE ✅ 2024-07-12
 - [x] install `wakeonlan` ✅ 2024-02-20
-- [ ] Steam
+- [x] Steam ✅ 2024-07-12
 
 ### Servers
 - [ ] Colmena setup
@@ -66,8 +67,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 
 ### Other
-- [ ] Move all machines to an `impermanence` setup
-	- [ ] Need to redeploy `maul.nix` - Hardware refresh
+- [x] Move all machines to an `impermanence` setup ✅ 2024-03-08
+	- [x] Need to redeploy `maul.nix` - Hardware refresh ✅ 2024-03-08
  	- [x] Set as part of global config ✅ 2024-03-08
 - [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20
@@ -115,3 +116,4 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [nixos-anywhere](https://github.com/nix-community/nixos-anywhere) - remote deployment of machines. <br>
 - [nix.dev](https://nix.dev/index.html) - nix documentation <br>
 - [Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/) - great nix tutorials and documentation I need to work through. <br>
+- [Docker Compose to Nix Config](https://github.com/aksiksi/compose2nix) - Easy way to convert existing docker compose files into Nix. <br>

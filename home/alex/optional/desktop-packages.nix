@@ -25,7 +25,10 @@
     google-chrome
     unvanquished
     zrok
+    calibre
+    protonvpn-gui
     # Unstable pkgs
+    unstable.hexchat
     unstable.signal-desktop
     unstable.ollama
     unstable.metasploit

@@ -31,13 +31,14 @@
     };
 
     systemd.services.virt-network-start = {
-         wantedBy = [ "multi-user.target" ];
+         wantedBy = [ "libvirtd.target" ];
          after = [ "network.target" ];
          description = "start default virt network NAT";
          serviceConfig = {
            Type = "simple";
            ExecStart = "${pkgs.libvirt}/bin/virsh net-start default"; 
            Restart = "no";
+           FailureAction = "ignore";
          };
       };
 	
