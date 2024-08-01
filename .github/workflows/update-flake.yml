@@ -1,13 +1,15 @@
-name: "Nix Install With Flake Support"
+name: "nix flake update"
 on:
-  pull_request:
-  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0'
 jobs:
-  tests:
+  lockfile:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: cachix/install-nix-action@v27
-      with:
-        github_access_token: ${{ secrets.GITHUB_TOKEN }}
-    - run: nix flake update
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+    - name: Install Nix
+      uses: cachix/install-nix-action@v27
+    - name: Update flake.lock
+      uses: DeterminateSystems/update-flake-lock@main
