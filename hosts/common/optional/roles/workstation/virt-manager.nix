@@ -14,11 +14,12 @@
     environment.systemPackages = with pkgs; [ spice virt-manager win-virtio (OVMFFull.override{
     	secureBoot = true;
     	tpmSupport = true;
-    }).fd];
+    }).fd
+    virtiofsd
+    ];
     users.users.alex = {
       extraGroups = [ "libvirtd" "kvm" "qemu-libvirtd" ];
     };
-
 
     environment.etc = {
       "ovmf/edk2-x86_64-secure-code.fd" = {
@@ -38,7 +39,6 @@
            Type = "simple";
            ExecStart = "${pkgs.libvirt}/bin/virsh net-start default"; 
            Restart = "no";
-           FailureAction = "ignore";
          };
       };
 	
