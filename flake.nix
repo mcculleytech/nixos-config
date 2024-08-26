@@ -29,6 +29,7 @@
     sops-nix,
     impermanence,
     disko,
+    nixos-cosmic,
      ...
   }@inputs:
     let
