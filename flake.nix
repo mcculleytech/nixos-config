@@ -13,6 +13,10 @@
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    nixos-cosmic = {
+      url = "github:lilyinstarlight/nixos-cosmic";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = { 
@@ -63,6 +67,13 @@
         modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd
+          nixos-cosmic.nixosModules.default
+          {
+            nix.settings = {
+              substituters = [ "https://cosmic.cachix.org/" ];
+              trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+            };
+          }
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
@@ -84,9 +95,16 @@
         specialArgs = { inherit inputs outputs; };
         system = "x86_64-linux";
 	      modules = defaultModules ++ [
+          nixos-cosmic.nixosModules.default
 	        ./hosts/achilles/configuration.nix
+          {
+            nix.settings = {
+              substituters = [ "https://cosmic.cachix.org/" ];
+              trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+            };
+          }
+          hardware.nixosModules.common-gpu-nvidia-nonprime
           home-manager.nixosModules.home-manager
-	        hardware.nixosModules.common-gpu-nvidia-nonprime
           {
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
