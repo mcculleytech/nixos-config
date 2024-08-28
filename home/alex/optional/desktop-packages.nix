@@ -27,6 +27,7 @@
     zrok
     calibre
     protonvpn-gui
+    watchmate
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop
@@ -42,7 +43,6 @@
     unstable.bolt
     unstable.thunderbolt
     unstable.jellyfin-media-player
-    unstable.watchmate
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
     unstable.usbutils
