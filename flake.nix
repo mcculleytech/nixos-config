@@ -15,7 +15,7 @@
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
@@ -116,6 +116,7 @@
               ./home/alex/achilles.nix
               ];
             };
+            home-manager.backupFileExtension = "bak";
           }
 	      ];
       };

@@ -1,4 +1,4 @@
-  {
+  {pkgs, ...}: {
   # Hardware quicks with Framework
   services.fwupd.enable = true;
   # # we need fwupd 1.9.7 to downgrade the fingerprint sensor firmware
@@ -10,6 +10,10 @@
   # }).fwupd;
   # hardware.framework.amd-7040.preventWakeOnAC = true;
 
+  # may not be needed in future configurations, superseded by system76 power management for cosmic atm 8-29-24
+  nixpkgs.overlays = [
+    (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
+  ];
 
   environment.persistence = {
     "/persist" = {

@@ -368,7 +368,7 @@
         "flake-compat": "flake-compat",
         "nix-update": "nix-update",
         "nixpkgs": [
-          "nixpkgs"
+          "nixpkgs-unstable"
         ],
         "nixpkgs-stable": "nixpkgs-stable",
         "rust-overlay": "rust-overlay"

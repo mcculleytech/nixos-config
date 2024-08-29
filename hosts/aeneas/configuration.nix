@@ -8,8 +8,9 @@
       ../common/optional/docker.nix
       ../common/optional/pam-auth.nix
       ../common/optional/roles/workstation
-      ../common/optional/roles/workstation/hyprland
+      #../common/optional/roles/workstation/hyprland
       ../common/optional/roles/workstation/cosmic.nix
+      ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
   
@@ -20,14 +21,6 @@
 
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  environment.systemPackages = with pkgs; [
-    unstable.gnome-screenshot
-  ];
-
-  nixpkgs.overlays = [
-    (_: _: {power-profiles-daemon = pkgs.unstable.power-profiles-daemon;})
-  ];
 
   # # virtualbox setup for tcm course
   # virtualisation.virtualbox.host.enable = true;

@@ -31,6 +31,9 @@
     zafiro-icons
   ]) ++ (with pkgs.gnome; [
     gnome-tweaks
+    gnome-screenshot
   ]);
+
+
 
 }

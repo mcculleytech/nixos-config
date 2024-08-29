@@ -6,7 +6,6 @@
       ./optional/desktop-packages.nix
       ./optional/terminator.nix
       ./optional/zsh.nix
-      ./optional/gnome-customizations.nix
       ./optional/hyprland
     ];
 
