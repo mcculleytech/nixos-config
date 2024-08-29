@@ -23,7 +23,6 @@
     game-devices-udev-rules
     remmina
     google-chrome
-    unvanquished
     zrok
     calibre
     protonvpn-gui
