@@ -5,7 +5,7 @@
       ../common/global
       ../common/optional/docker.nix
       #../common/optional/nfs.nix
-      ../common/optional/roles/workstation/cosmic.nix
+      #../common/optional/roles/workstation/cosmic.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/steam.nix
