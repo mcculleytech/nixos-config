@@ -8,6 +8,7 @@
       ../../disko/vader.nix
       ../common/global
       ../common/optional/roles/server/xonotic.nix
+      ../common/optional/roles/server/gitea
       ../common/optional/roles/server/qemu-config.nix
     ];
 

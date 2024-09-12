@@ -65,6 +65,15 @@ in
 					};
 					service = "ai";
 				};
+				gitea = {
+					entryPoints = [ "websecure" ];
+					rule = "Host(`source.${tr_secrets.traefik.homelab_domain}`)";
+					middlewares = [ "default-headers" "https-redirectscheme" ];
+					tls =  {
+						certResolver = "cloudflare";
+					};
+					service = "gitea";
+				};
 				octoprint = {
 					entryPoints = [ "websecure" ];
 					rule = "Host(`octoprint.${tr_secrets.traefik.homelab_domain}`)";
@@ -162,6 +171,14 @@ in
 					loadBalancer = {
 						servers = [	
 							{url = "http://10.1.8.6:8080";}
+						];
+						passHostHeader = "true";
+					};
+				};
+				gitea = {
+					loadBalancer = {
+						servers = [	
+							{url = "http://10.2.1.245:3008";}
 						];
 						passHostHeader = "true";
 					};

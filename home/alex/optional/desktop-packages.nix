@@ -27,6 +27,7 @@
     calibre
     protonvpn-gui
     watchmate
+    cura
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop

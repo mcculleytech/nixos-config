@@ -1,14 +1,16 @@
 { config, pkgs, ... }:
-
+let 
+  gitea_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_gitea.json);
+in 
 {
 # A work in progress. Decided to shelve this project for the time being (2-10-24)
   sops.secrets = {
     gitea_mail_pass = {
-      sopsFile = ../../vader/secrets.yaml;
+      sopsFile = ../../../../../vader/secrets.yaml;
       owner = config.systemd.services.gitea.serviceConfig.User;
     };
     gitea_db_pass = {
-      sopsFile = ../../vader/secrets.yaml;
+      sopsFile = ../../../../vader/secrets.yaml;
       owner = config.systemd.services.gitea.serviceConfig.User;
     };
   };
@@ -34,8 +36,8 @@
     appName = "McCulley Tech Gitea";
     settings = {
       server = {
-        DOMAIN = "source.mcculley.tech";
-        ROOT_URL = "https://source.mcculley.tech";
+        DOMAIN = "${gitea_secrets.gitea.domain}";
+        ROOT_URL = "${gitea_secrets.gitea.url}";
         HTTP_PORT = 3008;
         PROTOCOL = "http";
         SSH_PORT = 2222;
