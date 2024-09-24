@@ -1,4 +1,5 @@
-{ pkgs, ... }:{
+{ pkgs, ... }:
+{
 
   home.packages = with pkgs; 
   [ 
@@ -28,6 +29,9 @@
     protonvpn-gui
     watchmate
     cura
+    minetestclient
+    gparted
+    rpi-imager
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop
@@ -51,5 +55,4 @@
     unstable.sublime4
     unstable.beeper
   ];
-
 }

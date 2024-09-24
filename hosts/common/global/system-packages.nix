@@ -22,6 +22,7 @@
     ssh-to-age
     p7zip
     usbutils
+    e2fsprogs
   ];
 
   fonts.packages = with pkgs; [
