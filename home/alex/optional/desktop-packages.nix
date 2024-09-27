@@ -1,6 +1,5 @@
 { pkgs, ... }:
 {
-
   home.packages = with pkgs; 
   [ 
     spotify
@@ -32,6 +31,8 @@
     minetestclient
     gparted
     rpi-imager
+    gtkradiant
+    unetbootin
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop

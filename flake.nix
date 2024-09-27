@@ -56,7 +56,6 @@
           home-manager.backupFileExtension = "bak";
         }
       ];
-
     in
     rec {
     overlays = import ./overlays/unstable-pkgs.nix { inherit inputs ; };
