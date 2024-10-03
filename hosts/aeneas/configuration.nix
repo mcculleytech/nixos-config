@@ -17,6 +17,8 @@
   networking.hostName = "aeneas";
   networking.networkmanager.enable = true;
 
+  hardware.opengl.enable = true; 
+
   boot.loader.systemd-boot.enable = true;
 
   # Latest Kernel fixes some issues on Framework

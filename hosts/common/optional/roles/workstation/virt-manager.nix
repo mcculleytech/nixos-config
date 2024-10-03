@@ -4,40 +4,37 @@
       libvirtd = {
         enable = true;
         qemu = {
-        	ovmf.enable = true;
+        	ovmf = {
+            enable = true;
+            packages = [pkgs.OVMFFull.fd];
+          };
         	swtpm.enable = true;
         };
       };
     };
 
     environment.sessionVariables.LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
-    environment.systemPackages = with pkgs; [ spice virt-manager win-virtio (OVMFFull.override{
-    	secureBoot = true;
-    	tpmSupport = true;
-    }).fd
-    virtiofsd
+    environment.systemPackages = with pkgs; [ 
+      spice 
+      virt-manager 
+      win-virtio
+      virt-viewer
+      spice-gtk
+      win-spice
+      spice-protocol
     ];
     users.users.alex = {
       extraGroups = [ "libvirtd" "kvm" "qemu-libvirtd" ];
     };
 
-    environment.etc = {
-      "ovmf/edk2-x86_64-secure-code.fd" = {
-        source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-x86_64-secure-code.fd";
-      };
-
-      "ovmf/edk2-i386-vars.fd" = {
-        source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
-      };
-    };
-
     systemd.services.virt-network-start = {
-         wantedBy = [ "libvirtd.target" ];
-         after = [ "network.target" ];
+         wantedBy = [ "multi-user.target" ];
+         after = [ "libvirtd.service" ];
          description = "start default virt network NAT";
          serviceConfig = {
-           Type = "simple";
-           ExecStart = "${pkgs.libvirt}/bin/virsh net-start default"; 
+           Type = "oneshot";
+           ExecStart = "${pkgs.libvirt}/bin/virsh net-start default";
+           RemainAfterExit = true; 
            Restart = "no";
          };
       };

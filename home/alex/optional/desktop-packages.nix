@@ -33,6 +33,7 @@
     rpi-imager
     gtkradiant
     unetbootin
+    isoimagewriter
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop
