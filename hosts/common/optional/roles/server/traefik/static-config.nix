@@ -7,10 +7,8 @@ in
 	services.traefik.staticConfigOptions = {
 		api = {
 			dashboard = true;
-			insecure = true;
 		};
 		log.level = "DEBUG";
-
 		entryPoints = {
 			web = {
 				address = ":80";
@@ -21,6 +19,9 @@ in
 			};
 			websecure = {
 				address = ":443";
+			};
+			traefik = {
+				address = ":8080";
 			};
 		};
 		serversTransport.insecureSkipVerify = true;

@@ -1,16 +1,16 @@
 { config, pkgs, ... }:
 let 
   gitea_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_gitea.json);
-in 
+in
+# This configuration disables registration, but you can use the gitea cli to add a user. 
 {
-# A work in progress. Decided to shelve this project for the time being (2-10-24)
   sops.secrets = {
     gitea_mail_pass = {
       sopsFile = ../../../../../vader/secrets.yaml;
       owner = config.systemd.services.gitea.serviceConfig.User;
     };
     gitea_db_pass = {
-      sopsFile = ../../../../vader/secrets.yaml;
+      sopsFile = ../../../../../vader/secrets.yaml;
       owner = config.systemd.services.gitea.serviceConfig.User;
     };
   };
@@ -31,7 +31,7 @@ in
       host = "localhost"; 
       name = "gitea"; 
       user = "gitea"; 
-      passwordFile = config.sops.secrets.gitea_db_pass.path;  # Set your database password here
+      passwordFile = config.sops.secrets.gitea_db_pass.path;
     };
     appName = "McCulley Tech Gitea";
     settings = {
@@ -63,6 +63,17 @@ in
     mailerPasswordFile = config.sops.secrets.gitea_mail_pass.path;
     customDir = "${config.services.gitea.stateDir}/custom";
 };
+
+
+  # Persist storage across reboots
+  environment.persistence = {
+    "/persist" = {
+    hideMounts = true;
+      directories = [
+        "/var/lib/gitea"
+      ];
+    };
+  };
 
   # Configure SSH to use a non-standard port
   networking.firewall.allowedTCPPorts = [ 3008 2222 ];  # Open ports 3008 (HTTP) and 2222 (SSH)

@@ -22,11 +22,13 @@ in
     				"atredies.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
     				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
     				# dmz subnet
-    				"prdcloudubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.2";
+    				"vader.${tr_secrets.traefik.dmz_domain}" = "10.2.1.245";
     				"prddockerubuntu00.${tr_secrets.traefik.dmz_domain}" = "10.2.1.17";
     				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.6";
+    				"housetohome.${tr_secrets.traefik.dmz_domain}" = "10.2.1.113";
    					# homelab domain
    					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+   					"source.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
    					"ai.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
     				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
