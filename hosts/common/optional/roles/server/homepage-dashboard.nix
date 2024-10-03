@@ -4,14 +4,16 @@ let
   tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
 in 
 {
-	imports = [
-		"${args.inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix"
-	];
-	disabledModules = [
-    "services/misc/homepage-dashboard.nix"
-  	];
-
-
+  ##############################
+  #    Pulls from unstable     #
+  ##############################
+	# imports = [
+	# 	"${args.inputs.nixpkgs-unstable}/nixos/modules/services/misc/homepage-dashboard.nix"
+	# ];
+	# disabledModules = [
+  #   "services/misc/homepage-dashboard.nix"
+  # 	];
+  ##############################  
 	services.homepage-dashboard ={
 		package = pkgs.unstable.homepage-dashboard;
 		# default port is 8082
@@ -58,6 +60,13 @@ in
                   icon = "octoprint.png";
                   href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
                   description = "3D Printer";
+                };
+              }
+              {
+                "Gitea" = {
+                  icon = "gitea.png";
+                  href = "https://source.${tr_secrets.traefik.homelab_domain}";
+                  description = "Self Hosted Version Control";
                 };
               }
               {
@@ -120,6 +129,13 @@ in
                    description = "Azure Services";   
                  };
                }
+               {
+                  "Traefik" = {
+                   icon = "traefik.png";
+                    href = "https://traefik.${tr_secrets.traefik.homelab_domain}/dashboard/";
+                    description = "Traefik Reverse Proxy";   
+                  };
+                }
             ];
 					}
 				];

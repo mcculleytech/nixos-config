@@ -120,9 +120,13 @@ in
 					service = "radicale";
 				};
 				traefik = {
-					entryPoints = [ "websecure" ];
+					# entryPoints = [ "traefik" ];
 					rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
-					service = "api@internal";	
+					service = "api@internal";
+					tls =  {
+						certResolver = "cloudflare";
+					};
+					middlewares = [ "auth" "default-headers" "https-redirectscheme" ];
 				};
 			};
 			services = {
@@ -207,14 +211,6 @@ in
 						passHostHeader = "true";
 					};
 				};
-				traefik = {
-					loadBalancer = {
-						servers = [	
-							{url = "https://10.1.8.129:8080";}
-						];
-						passHostHeader = "true";
-					};
-				};
 				radicale = {
 					loadBalancer = {
 						servers = [	
@@ -257,6 +253,11 @@ in
 				radicale-strip = {
 					stripPrefix = {
 						prefixes = ["/radicale"];
+					};
+				};
+				auth = {
+					basicAuth = {
+						users = [ "${tr_secrets.traefik.basic_auth}" ];
 					};
 				};
 				default-whitelist = {
