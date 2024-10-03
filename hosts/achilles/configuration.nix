@@ -28,9 +28,7 @@
   virtualisation.virtualbox.host.enableHardening = false;
   users.extraGroups.vboxusers.members = [ "alex" ];
 
-  virtualisation.docker = {
-    enableNvidia = true;
-  };
+  hardware.nvidia-container-toolkit.enable = true;
 
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;
