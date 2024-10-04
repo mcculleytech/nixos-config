@@ -124,9 +124,34 @@ in
     gid = 1002;
   };
 
-  # Configure nfs-server to start only after tailscaled
-  systemd.services.nfs-server = {
-    after = [ "tailscaled.service" ];
+  # Configure nfs-server to start only after boot so it recognizes the tailscale dns names
+  # systemd.services.nfs-server = {
+  #   unitConfig = {
+  #     after = [ "multi-user.target" ];
+  #     requires = [ "tailscaled.service" ];
+  #   };
+  #   serviceConfig = {
+  #     # Tailscale DNS makes me do this. Service needs to be restarted once it starts
+  #     execStartPost = "${pkgs.systemd}/bin/systemctl restart nfs-server";
+  #   };
+  # };
+
+  systemd.services.restart-nfs-server = {
+    enable = true;
+    description = "Allows for Tailscale DNS in NFS Server";
+    after = ["nfs-server.service"];
+    wantedBy = [ "multi-user.target" ];
+    
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+
+    script = with pkgs; ''
+      ${pkgs.coreutils}/bin/sleep 30
+
+      ${pkgs.systemd}/bin/systemctl restart nfs-server
+    '';
   };
 
   # nfs server setup

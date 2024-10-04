@@ -22,21 +22,12 @@
       spice-gtk
       win-spice
       spice-protocol
+      bridge-utils
     ];
     users.users.alex = {
       extraGroups = [ "libvirtd" "kvm" "qemu-libvirtd" ];
     };
 
-    systemd.services.virt-network-start = {
-         wantedBy = [ "multi-user.target" ];
-         after = [ "libvirtd.service" ];
-         description = "start default virt network NAT";
-         serviceConfig = {
-           Type = "oneshot";
-           ExecStart = "${pkgs.libvirt}/bin/virsh net-start default";
-           RemainAfterExit = true; 
-           Restart = "no";
-         };
-      };
-	
+    # Post Installation steps include starting the default networking automatically on boot with:
+    # virsh net-autostart default
 }
