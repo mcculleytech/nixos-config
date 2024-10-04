@@ -71,6 +71,7 @@ in
     hideMounts = true;
       directories = [
         "/var/lib/gitea"
+        "/var/lib/postgresql"
       ];
     };
   };
