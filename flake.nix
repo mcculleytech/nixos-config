@@ -15,7 +15,7 @@
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -68,12 +68,6 @@
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd
           nixos-cosmic.nixosModules.default
-          {
-            nix.settings = {
-              substituters = [ "https://cosmic.cachix.org/" ];
-              trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
-            };
-          }
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
@@ -136,27 +130,6 @@
               imports = [
               # (impermanence + "/home-manager.nix")
               ./home/alex/saruman.nix
-              ];
-            };
-          }
-        ];
-      };
-
-      # Garage PC
-      "jak" = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs outputs; };
-        system = "x86_64-linux";
-        modules = defaultModules ++ [
-          ./hosts/jak/configuration.nix
-          home-manager.nixosModules.home-manager
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex = {
-              # Import impermanence to home-manager
-              imports = [
-              # (impermanence + "/home-manager.nix")
-              ./home/alex/jak.nix
               ];
             };
           }

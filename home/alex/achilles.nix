@@ -9,14 +9,4 @@
       ./optional/security-tooling.nix
     ];
 
-  nixpkgs = {
-    overlays = [
-    outputs.overlays.unstable-packages
-    ];
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = (_: true);
-    };
-  };
-
 }

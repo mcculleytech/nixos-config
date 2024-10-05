@@ -23,6 +23,7 @@
     p7zip
     usbutils
     e2fsprogs
+    cachix
   ];
 
   fonts.packages = with pkgs; [

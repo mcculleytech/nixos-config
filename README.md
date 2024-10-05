@@ -35,7 +35,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 ##  ToDo
 
 ### Desktop
-- [ ] Tailscale NFS fix
+- [x] Tailscale NFS fix ✅ 2024-10-4
 - [ ] Different DEs/TWM setups
 	- [ ] Hyprland - WIP
 		- [ ] Move manual dotfiles that cannot currently be configured by Home Manager
@@ -56,13 +56,14 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] username and password ✅ 2024-03-10
 	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
 - [ ] Homelab Dashboard - WIP
-	- [x] Basic config - using Unstable module for more declaritive config
-	- [ ] Configure services
-	- [ ] Configure Widgets
+	- [x] Basic config
+	- [ ] Configure services (?)
+	- [ ] Configure Widgets (?)
 - [x] Traefik Reverse Proxy ✅ 2024-03-20
 	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
 - [x] Radicale CardDav and CalDav Server ✅ 2024-03-23
-- [ ] Jellyfin in Nix, decom ubuntu docker server
+- [x] Gitea server fix ✅ 2024-10-04
+- [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
 
 
@@ -73,7 +74,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20
 - [ ] Clean up `flake.nix`
-- [ ] Fix GitHub Action that should autoupdate flake.lock
+- [x] Fix GitHub Action that should autoupdate flake.lock ✅ 2024-08-01
 - [ ] Blocky DNS
 	- [ ] Multiple Nodes connected via Redis (?)
 	- [x] Multiple Servers ✅ 2024-03-20

@@ -31,7 +31,6 @@
     minetestclient
     gparted
     rpi-imager
-    gtkradiant
     unetbootin
     isoimagewriter
     # Unstable pkgs
@@ -41,7 +40,6 @@
     unstable.metasploit
     unstable.hugo
     unstable.burpsuite
-    unstable.quickemu
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4
