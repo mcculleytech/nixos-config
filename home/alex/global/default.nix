@@ -9,6 +9,16 @@
     homeDirectory = "/home/alex";
   };
 
+  nixpkgs = {
+    overlays = [
+    outputs.overlays.unstable-packages
+    ];
+    config = {
+      allowUnfree = true;
+      allowUnfreePredicate = (_: true);
+    };
+  };
+
   # Enable home-manager and git
   programs.home-manager.enable = true;
 
@@ -17,4 +27,5 @@
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.11";
+
 }

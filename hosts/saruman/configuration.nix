@@ -1,4 +1,4 @@
-{ inputs, config, pkgs,  ... }: {
+{ inputs, config, pkgs, lib,  ... }: {
   imports =
     [
       ./hardware-configuration.nix
@@ -12,6 +12,8 @@
       ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/saruman.nix
     ];
+
+  jellyfin.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

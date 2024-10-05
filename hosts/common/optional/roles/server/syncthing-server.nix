@@ -50,7 +50,6 @@ in
               "aeneas"
               "maul"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -66,7 +65,6 @@ in
               "aeneas"
               "maul"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -83,9 +81,6 @@ in
           };
           "maul" = {
             id = "${st_secrets.syncthing.maul_id}";
-          };
-          "jak" = {
-            id = "${st_secrets.syncthing.jak_id}";
           };
           "truenas" = {
             id = "${st_secrets.syncthing.truenas_id}";

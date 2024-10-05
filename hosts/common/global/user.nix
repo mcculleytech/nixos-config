@@ -3,7 +3,8 @@
   let 
     workstations = [ 
       "achilles" 
-      "aeneas" 
+      "aeneas"
+      "saruman" 
     ];
     servers = [ 
       "maul" 
