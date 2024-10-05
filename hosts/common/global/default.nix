@@ -1,18 +1,14 @@
 {
-
   imports = [
     ./env-vars.nix
-    ./nix-settings.nix
-    ./ssh.nix
-    ./system-packages.nix
-    ./user.nix
-    ./sops.nix
-    ./tailscale.nix
-    ./systemd-initrd.nix
     ./ephemeral-btrfs.nix
     ./impermanence.nix
+    ./nix-settings.nix
+    ./sops.nix
+    ./ssh.nix
+    ./system-packages.nix
+    ./systemd-initrd.nix
+    ./tailscale.nix
+    ./user.nix
   ];
-
-
-
 }

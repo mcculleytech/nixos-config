@@ -1,8 +1,15 @@
-{ pkgs, config, ... }: 
+{ pkgs, lib, config, ... }: 
 let 
   tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
 in 
 {
+	options = {
+		jellyfin.enable =
+			lib.mkEnableOption "enables jellyfin server";
+	};
+
+	config = lib.mkIf config.jellyfin.enable {
+
 	services.jellyfin = {
 		package = pkgs.unstable.jellyfin;
 		enable = true;
@@ -49,5 +56,7 @@ in
 	  [
 	    (commonAutoMountOptions // { where = "/var/lib/jellyfin/movies"; })
 	  ];
+
+	};
 
 }
