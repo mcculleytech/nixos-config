@@ -1,4 +1,12 @@
 {
+
+	options = {
+		xonotic.enable =
+			lib.mkEnableOption "enables xonotic server";
+	};
+
+	config = lib.mkIf config.xonotic.enable {
+
 	services.xonotic = {
 		enable = true;
 		settings ={
@@ -18,5 +26,7 @@
 			alias = ''bots "minplayers 4; minplayers_per_team 2"'';
 		};
 		openFirewall = true;
+	};
+
 	};
 }

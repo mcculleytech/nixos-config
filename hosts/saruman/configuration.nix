@@ -8,6 +8,7 @@
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/server/ollama.nix
       ../common/optional/roles/server/jellyfin.nix
+      ../common/optional/roles/server/xonotic.nix
       ../common/optional/roles/server/octoprint.nix
       ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/saruman.nix
