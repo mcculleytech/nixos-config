@@ -18,6 +18,9 @@
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
 
+  # additional services and configs
+  workstation-user-options.enable = true;
+
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
     unstable.flameshot

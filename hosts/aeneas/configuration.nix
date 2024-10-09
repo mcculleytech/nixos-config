@@ -9,7 +9,7 @@
       ../common/optional/pam-auth.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/hyprland
-      ../common/optional/roles/workstation/cosmic.nix
+      #../common/optional/roles/workstation/cosmic.nix
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];
@@ -18,6 +18,9 @@
   networking.networkmanager.enable = true;
 
   hardware.opengl.enable = true; 
+
+  # additional services and configs
+  workstation-user-options.enable = true;
 
   boot.loader.systemd-boot.enable = true;
 

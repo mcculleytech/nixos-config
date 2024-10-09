@@ -7,6 +7,7 @@
       ./optional/terminator.nix
       ./optional/zsh.nix
       ./optional/hyprland
+      ./optional/nvim
     ];
 
 }

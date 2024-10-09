@@ -12,7 +12,7 @@
 		    layer = "top";
 		    position = "top";
 		    height = 30;
-		    spacing = 18;
+		    spacing = 20;
 		    # output = [
 		    #   "eDP-1"
 		    # ];
@@ -94,7 +94,7 @@
 		        tooltip-format-wifi = "{essid} ({signalStrength}%) ";
 		        tooltip-format-ethernet = "{ifname} ";
 		        tooltip-format-disconnected = "Disconnected";
-		        max-length = 50;
+		        max-length = 100;
 		    };
 		    pulseaudio = {
 		        format = "{volume}% {icon}";

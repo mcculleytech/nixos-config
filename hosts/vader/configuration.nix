@@ -12,6 +12,8 @@
       ../common/optional/roles/server/qemu-config.nix
     ];
 
+  xonotic.enable = true;
+
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;

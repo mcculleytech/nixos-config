@@ -1,4 +1,6 @@
-{inputs, pkgs, ...}: {
+{inputs, pkgs, ...}:
+
+{
 
   nix.settings = {
     substituters = ["https://hyprland.cachix.org"];

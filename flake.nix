@@ -17,6 +17,10 @@
       url = "github:lilyinstarlight/nixos-cosmic";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = { 
@@ -30,6 +34,7 @@
     impermanence,
     disko,
     nixos-cosmic,
+    nixvim,
      ...
   }@inputs:
     let
@@ -77,6 +82,7 @@
               imports = [
               # (impermanence + "/home-manager.nix")
               ./home/alex/aeneas.nix
+              nixvim.homeManagerModules.nixvim
               ];
             };
             home-manager.backupFileExtension = "bak";
@@ -107,6 +113,7 @@
               imports = [
               # (impermanence + "/home-manager.nix")
               ./home/alex/achilles.nix
+              nixvim.homeManagerModules.nixvim
               ];
             };
             home-manager.backupFileExtension = "bak";

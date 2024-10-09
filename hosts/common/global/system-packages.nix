@@ -11,7 +11,6 @@
     tmux
     tree
     neofetch
-    zsh
     htop
     sops
     util-linux
@@ -24,12 +23,10 @@
     usbutils
     e2fsprogs
     cachix
+    nixos-anywhere
   ];
-
   fonts.packages = with pkgs; [
     (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
-
-  programs.zsh.enable = true;
 
 }

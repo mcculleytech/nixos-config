@@ -5,15 +5,13 @@
 		wofi
 		swaynotificationcenter
 		playerctl
+		hyprpaper
 		brightnessctl
 		sway-audio-idle-inhibit
 		networkmanagerapplet
-		kanshi
+		wdisplays
 		gnome.nautilus
 		unstable.grimblast
-		unstable.hyprpaper
-		unstable.hyprlock
-		unstable.hypridle
 		eww
 	];
 }

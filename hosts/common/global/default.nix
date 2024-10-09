@@ -9,6 +9,6 @@
     ./system-packages.nix
     ./systemd-initrd.nix
     ./tailscale.nix
-    ./user.nix
+    ./users/alex
   ];
 }

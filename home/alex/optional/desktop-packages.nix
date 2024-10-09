@@ -18,7 +18,6 @@
     wakeonlan
     firefox
     drawing
-    nixos-anywhere
     rpcs3
     game-devices-udev-rules
     remmina
@@ -36,10 +35,7 @@
     # Unstable pkgs
     unstable.hexchat
     unstable.signal-desktop
-    unstable.ollama
-    unstable.metasploit
     unstable.hugo
-    unstable.burpsuite
     unstable.xonotic
     unstable.obs-studio
     unstable.godot_4
@@ -49,7 +45,6 @@
     unstable.jellyfin-media-player
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
-    unstable.usbutils
     unstable.element-desktop
     unstable.obsidian
     unstable.sublime4
