@@ -1,4 +1,5 @@
 { config, pkgs, ... }: {
+  # Need to configure the dotfiles for hypridle, kanshi. 
   wayland.windowManager.hyprland = { 
     enable = true;
     extraConfig = ''
@@ -17,7 +18,7 @@
       "$fileManager" = "nautilus";
       "$menu" = "wofi --show drun";
       "monitor"="eDP-1,2256x1504,0x0,1";
-      "exec-once" = "hyprpaper & hypridle & sway-audio-idle-inhibit & nm-applet --indicator & blueman-applet & swaync & kanshi";
+      "exec-once" = "hyprpaper & hypridle & sway-audio-idle-inhibit & nm-applet --indicator & blueman-applet & swaync";
       "$w1" = ''hyprctl hyprpaper wallpaper "eDP-1,~/Pictures/wp12329536-nixos-wallpapers.png"'';
       bind = [
         # Application launchers
@@ -38,6 +39,8 @@
         "$mod, right, movefocus, r"
         "$mod, up, movefocus, u"
         "$mod, down, movefocus, d"
+        "CTRL+ALT, LEFT, workspace, e-1"
+        "CTRL+ALT, RIGHT, workspace, e+1"
       ]
 
       ++ (
