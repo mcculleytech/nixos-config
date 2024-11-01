@@ -20,6 +20,11 @@
       name = "Nordic-darker-standard-buttons";
       package = pkgs.nordic;
     };
+
+    cursorTheme = {
+      name = "Adwaita";
+      package = pkgs.unstable.adwaita-icon-theme;
+    };
   };
 
   dconf.settings = {
@@ -35,6 +40,7 @@
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
+        "logseq.desktop"
         "obsidian.desktop"
         "virt-manager.desktop"
         "element-desktop.desktop"

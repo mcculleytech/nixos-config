@@ -2,7 +2,7 @@
 
 {
   imports =
-    [   
+    [
       (modulesPath + "/installer/scan/not-detected.nix")
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/phantom.nix
@@ -11,15 +11,17 @@
       ../common/optional/roles/server/blocky.nix
       ../common/optional/roles/server/syncthing-server.nix
       ../common/optional/roles/server/tailscale-server.nix
-      ../common/optional/roles/server/radicale.nix
+      ../common/optional/roles/server
     ];
+
+  radicale.enable = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
 
-  networking.hostName = "phantom"; 
-  networking.networkmanager.enable = true; 
+  networking.hostName = "phantom";
+  networking.networkmanager.enable = true;
 
   time.timeZone = "America/Chicago";
 

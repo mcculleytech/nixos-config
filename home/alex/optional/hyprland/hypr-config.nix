@@ -1,12 +1,14 @@
 { config, pkgs, ... }: {
-  # Need to configure the dotfiles for hypridle, kanshi. 
-  wayland.windowManager.hyprland = { 
+  # Need to configure the dotfiles for hypridle, kanshi.
+  wayland.windowManager.hyprland = {
     enable = true;
     extraConfig = ''
       env = GTK_THEME, Nordic-darker
+      env = HYPRCURSOR_THEME,Adwaita
+      env = HYPRCURSOR_SIZE,24
       exec-once=[workspace 1 silent] terminator
       exec-once=[workspace 2 silent] firefox
-      exec-once=[workspace 3 silent] subl
+      exec-once=[workspace 3 silent] zeditor
       exec-once=[workspace 4 silent] spotify
       exec-once=[workspace 5 silent] obsidian
       exec-once=[workspace 6 silent] beeper --enable-features=UseOzonePlatform --ozone-platform=wayland
@@ -18,7 +20,7 @@
       "$fileManager" = "nautilus";
       "$menu" = "wofi --show drun";
       "monitor"="eDP-1,2256x1504,0x0,1";
-      "exec-once" = "hyprpaper & hypridle & sway-audio-idle-inhibit & nm-applet --indicator & blueman-applet & swaync";
+      "exec-once" = "hyprpaper & hypridle & sway-audio-idle-inhibit & blueman-applet & swaync & udiskie";
       "$w1" = ''hyprctl hyprpaper wallpaper "eDP-1,~/Pictures/wp12329536-nixos-wallpapers.png"'';
       bind = [
         # Application launchers
@@ -28,7 +30,7 @@
         "$mod, M, exit, "
         "$mod_SHIFT, S, exec, grimblast copysave area "
         "$mod, E, exec, $fileManager"
-        "$mod, T, exec, subl"
+        "$mod, T, exec, zeditor"
         "$mod, O, exec, obsidian"
         "$mod, V, togglefloating, "
         "$mod, R, exec, $menu"

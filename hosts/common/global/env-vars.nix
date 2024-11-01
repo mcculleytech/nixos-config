@@ -3,6 +3,7 @@
   environment = {
     variables = {
       EDITOR = "vim";
+      OLLAMA_HOST= "10.1.8.6";
     };
     shellAliases = {
       ga           = "git add .";
@@ -15,4 +16,3 @@
 
 
 }
-

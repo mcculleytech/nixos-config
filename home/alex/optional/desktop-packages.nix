@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs; 
-  [ 
+  home.packages = with pkgs;
+  [
     spotify
     bitwarden
     terminator
@@ -32,8 +32,11 @@
     rpi-imager
     unetbootin
     isoimagewriter
+    ollama
+    logseq
     # Unstable pkgs
     unstable.hexchat
+    unstable.zed-editor
     unstable.signal-desktop
     unstable.hugo
     unstable.xonotic

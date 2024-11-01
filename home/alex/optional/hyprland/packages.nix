@@ -6,6 +6,9 @@
 		swaynotificationcenter
 		playerctl
 		hyprpaper
+		hyprlock
+		hypridle
+		hyprcursor
 		brightnessctl
 		sway-audio-idle-inhibit
 		networkmanagerapplet
@@ -13,5 +16,6 @@
 		gnome.nautilus
 		unstable.grimblast
 		eww
+		udiskie
 	];
 }

@@ -21,6 +21,21 @@ in
       guiAddress = "0.0.0.0:8384";
       settings = {
         folders = {
+          "Logseq" = {
+            id = "Logseq";
+            path = "${config.services.syncthing.dataDir}/Logseq";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };
+            devices = [
+              "achilles"
+              "aeneas"
+              "phantom"
+              "pixel"
+              "truenas"
+            ];
+          };
           "Obsidian" = {
             id = "Obsidian";
             path = "${config.services.syncthing.dataDir}/Obsidian";
@@ -33,7 +48,6 @@ in
               "aeneas"
               "phantom"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -49,7 +63,6 @@ in
               "aeneas"
               "phantom"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -65,7 +78,6 @@ in
               "aeneas"
               "phantom"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -82,9 +94,6 @@ in
           };
           "phantom" = {
             id = "${st_secrets.syncthing.phantom_id}";
-          };
-          "jak" = {
-            id = "${st_secrets.syncthing.jak_id}";
           };
           "truenas" = {
             id = "${st_secrets.syncthing.truenas_id}";
