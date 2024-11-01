@@ -1,4 +1,11 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: {
+
+    options = {
+		radicale.enable =
+			lib.mkEnableOption "enables radicale server";
+	};
+
+	config = lib.mkIf config.radicale.enable {
 
 	sops.secrets = {
 	  radicale_users = {
@@ -58,5 +65,6 @@
 	      "/etc/radicale/users"
 	    ];
 	  };
+	};
 	};
 }

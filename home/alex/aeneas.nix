@@ -4,6 +4,7 @@
       ./global
       ./optional/gnome-customizations.nix
       ./optional/desktop-packages.nix
+      ./optional/security-tooling.nix
       ./optional/terminator.nix
       ./optional/zsh.nix
       ./optional/hyprland

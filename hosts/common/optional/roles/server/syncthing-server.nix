@@ -1,7 +1,7 @@
 { inputs, config, lib, pkgs, ... }:
-let 
+let
   st_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_syncthing.json);
-in 
+in
 {
   environment.persistence = {
     "/persist" = {
@@ -22,6 +22,20 @@ in
       guiAddress = "0.0.0.0:8384";
       settings = {
         folders = {
+          "Logseq" = {
+            id = "Logseq";
+            path = "${config.services.syncthing.dataDir}/Logseq";
+            versioning = {
+              type = "simple";
+              params.keep = "5";
+            };
+            devices = [
+              "achilles"
+              "aeneas"
+              "pixel"
+              "truenas"
+            ];
+          };
           "Obsidian" = {
             id = "Obsidian";
             path = "/var/lib/syncthing/Obsidian";
@@ -34,7 +48,6 @@ in
               "aeneas"
               "maul"
               "pixel"
-              "jak"
               "truenas"
             ];
           };
@@ -59,7 +72,7 @@ in
             versioning = {
               type = "simple";
               params.keep = "5";
-            };            
+            };
             devices = [
               "achilles"
               "aeneas"
