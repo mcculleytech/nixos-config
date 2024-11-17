@@ -9,7 +9,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware/master";
     nix-colors.url = "github:misterio77/nix-colors";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix = {
+      # sops update broke my config, specify commit to fix
+      url = "github:Mic92/sops-nix/fe63071416471abdab06caa234122932a7c4b980";    
+    };
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
