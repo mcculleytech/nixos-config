@@ -4,16 +4,16 @@
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/docker.nix
+      ../common/optional/nvidia.nix
       ../common/optional/roles/workstation/kde.nix
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/server/ollama.nix
-      ../common/optional/roles/server/jellyfin.nix
-      ../common/optional/roles/server/octoprint.nix
       ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/saruman.nix
     ];
 
   jellyfin.enable = true;
+  octoprint.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;

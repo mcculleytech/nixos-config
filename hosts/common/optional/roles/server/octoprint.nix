@@ -1,5 +1,21 @@
 { pkgs, config, ... }: {
 
+
+	options = {
+		octoprint.enable =
+			lib.mkEnableOption "enables octoprint server";
+	};
+
+
+	config = lib.mkIf config.octoprint.enable {
+
+	# Pulls unstable, stable is broken atm
+	nixpkgs.overlays = [
+	  (final: prev: {
+	    octoprint = pkgs.unstable.octoprint;
+	  })
+	];
+
 	services.octoprint = {
 		enable = true;
 		openFirewall = true;
@@ -31,4 +47,6 @@
 	};
 
 	networking.firewall.allowedTCPPorts = [ 8081 ];
+
+	};
 }

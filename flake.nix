@@ -9,10 +9,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware/master";
     nix-colors.url = "github:misterio77/nix-colors";
-    sops-nix = {
-      # sops update broke my config, specify commit to fix
-      url = "github:Mic92/sops-nix/fe63071416471abdab06caa234122932a7c4b980";    
-    };
+    sops-nix.url = "github:Mic92/sops-nix";    
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -106,7 +103,7 @@
               trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
             };
           }
-          hardware.nixosModules.common-gpu-nvidia-nonprime
+          #hardware.nixosModules.common-gpu-nvidia-nonprime
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
