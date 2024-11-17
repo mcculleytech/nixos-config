@@ -3,7 +3,7 @@
     [
       ./hardware-configuration.nix
       ../common/global
-      ../common/optional
+      ../common/optional/roles/server
       ../common/optional/docker.nix
       ../common/optional/nvidia.nix
       ../common/optional/roles/workstation/kde.nix
