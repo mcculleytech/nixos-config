@@ -37,6 +37,7 @@
       disable-user-extensions = false;
       favorite-apps = [
         "firefox.desktop"
+        "google-chrome.desktop"
         "thunderbird.desktop"
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
@@ -46,6 +47,7 @@
         "element-desktop.desktop"
         "beeper.desktop"
         "sublime_text.desktop" 
+        "dev.zed.Zed.desktop"
         "bitwarden.desktop"
         "spotify.desktop"
         "org.remmina.Remmina.desktop"

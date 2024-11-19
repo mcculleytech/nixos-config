@@ -15,6 +15,7 @@
 
   jellyfin.enable = true;
   octoprint.enable = true;
+  ollama.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -53,4 +54,3 @@
   system.stateVersion = "24.05";
 
 }
-
