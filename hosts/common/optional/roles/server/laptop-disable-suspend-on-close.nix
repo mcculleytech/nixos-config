@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, lib, ... }: {
 
   options = {
 		laptop-disable-suspend-on-close.enable =
