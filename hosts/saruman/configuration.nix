@@ -5,7 +5,6 @@
       ../common/global
       ../common/optional/roles/server
       ../common/optional/docker.nix
-      ../common/optional/nvidia.nix
       ../common/optional/roles/workstation/kde.nix
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/server/ollama.nix

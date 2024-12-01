@@ -4,7 +4,6 @@
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/docker.nix
-      #../common/optional/nvidia.nix
       #../common/optional/nfs.nix
       #../common/optional/roles/workstation/cosmic.nix
       ../common/optional/roles/workstation
@@ -60,4 +59,3 @@
   system.stateVersion = "23.11";
 
 }
-
