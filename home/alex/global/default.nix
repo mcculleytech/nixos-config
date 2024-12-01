@@ -19,7 +19,6 @@
       permittedInsecurePackages = [
         "electron-27.3.11" # needed for logseq
       ];
-
     };
   };
 

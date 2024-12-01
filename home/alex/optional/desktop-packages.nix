@@ -10,7 +10,7 @@
     thunderbird
     nfs-utils
     yubikey-manager
-    transmission-gtk
+    transmission_4-gtk
     ranger
     vlc
     appimage-run
@@ -26,7 +26,6 @@
     calibre
     protonvpn-gui
     watchmate
-    cura
     minetestclient
     gparted
     rpi-imager
@@ -36,6 +35,7 @@
     logseq
     # Unstable pkgs
     unstable.hexchat
+    #unstable.cura
     unstable.zed-editor
     unstable.signal-desktop
     unstable.hugo

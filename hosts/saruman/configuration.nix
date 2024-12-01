@@ -17,6 +17,7 @@
   octoprint.enable = true;
   ollama.enable = true;
   steam.enable = true;
+  immich.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -32,6 +33,8 @@
   # virtualisation.docker = {
   #   enableNvidia = true;
   # };
+
+  hardware.nvidia.open = true;
 
   networking.hostName = "saruman";
   networking.networkmanager.enable = true;

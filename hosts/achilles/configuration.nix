@@ -36,6 +36,7 @@
   users.extraGroups.vboxusers.members = [ "alex" ];
 
   hardware.nvidia-container-toolkit.enable = true;
+  hardware.nvidia.open = true;
 
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;

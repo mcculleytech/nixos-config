@@ -17,7 +17,7 @@
     keyFileTimeout = 5;
   };
 
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable32Bit = true;
   boot.initrd.luks.devices."encryptedHome" = { 
     keyFileSize = 4096;
     keyFile = lib.mkForce"/dev/disk/by-id/usb-SMI_USB_DISK-0:0";

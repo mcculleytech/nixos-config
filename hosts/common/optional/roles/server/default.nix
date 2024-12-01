@@ -6,5 +6,6 @@
     ./jellyfin.nix
     ./laptop-disable-suspend-on-close.nix
     ./ollama.nix
+    ./immich.nix
   ];
 }

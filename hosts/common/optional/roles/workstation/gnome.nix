@@ -13,7 +13,6 @@
     gnome-tour
     gnome-text-editor # text editor
     gnome-console
-  ]) ++ (with pkgs.gnome; [
     cheese # webcam tool
     gnome-music
     epiphany # web browser
@@ -29,7 +28,6 @@
 
   environment.systemPackages = (with pkgs; [
     zafiro-icons
-  ]) ++ (with pkgs.gnome; [
     gnome-tweaks
     gnome-screenshot
   ]);
