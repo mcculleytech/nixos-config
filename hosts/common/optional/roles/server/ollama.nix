@@ -10,7 +10,8 @@
       package = pkgs.unstable.ollama;
       enable = true;
       acceleration = "cuda";
-      listenAddress = "0.0.0.0:11434";
+      host = "0.0.0.0";
+      port = 11434;
     };
 
     # Have to use docker for open-webui. Hopefully this will get packaged in the future.
