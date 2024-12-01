@@ -1,6 +1,16 @@
-{pkgs, ... }: {
-	programs.steam = {
-		enable = true;
+{pkgs, lib, config, ... }: {
+
+	options = {
+		steam.enable =
+			lib.mkEnableOption "enables steam";
 	};
-	hardware.steam-hardware.enable = true;
+
+	config = lib.mkIf config.steam.enable {
+
+		programs.steam = {
+			enable = true;
+		};
+		hardware.steam-hardware.enable = true;
+	
+	};
 }
