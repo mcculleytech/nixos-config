@@ -2,9 +2,9 @@
   description = "NixOS and Home Manager flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager/release-24.05";
+    home-manager.url = "github:nix-community/home-manager/release-24.11";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware/master";
@@ -103,7 +103,7 @@
               trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
             };
           }
-          #hardware.nixosModules.common-gpu-nvidia-nonprime
+          hardware.nixosModules.common-gpu-nvidia-nonprime
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
