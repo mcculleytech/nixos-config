@@ -33,7 +33,7 @@
   #   enableNvidia = true;
   # };
 
-  hardware.nvidia.open = true;
+  hardware.nvidia.open = false;
 
   networking.hostName = "saruman";
   networking.networkmanager.enable = true;

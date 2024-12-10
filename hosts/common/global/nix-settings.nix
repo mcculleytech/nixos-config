@@ -6,7 +6,11 @@
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
-      substituters = [ "https://cosmic.cachix.org/" ];
+      substituters = [ 
+        "https://cosmic.cachix.org/"
+        "https://cuda-maintainers.cachix.org"
+        "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
+       ];
       trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
       trusted-users = ["root" "alex"];
     };
