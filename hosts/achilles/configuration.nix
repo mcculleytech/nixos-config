@@ -6,6 +6,8 @@
       ../common/optional/docker.nix
       #../common/optional/nfs.nix
       #../common/optional/roles/workstation/cosmic.nix
+      ../common/optional/nvidia.nix
+      ../common/optional/opengl.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/steam.nix
@@ -20,6 +22,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # additional services and configs
   workstation-user-options.enable = true;
@@ -29,13 +32,12 @@
     unstable.flameshot
   ];
 
-  # virtualbox setup for tcm course
-  virtualisation.virtualbox.host.enable = true;
-  virtualisation.virtualbox.host.enableHardening = false;
-  users.extraGroups.vboxusers.members = [ "alex" ];
+  # # virtualbox setup for tcm course
+  # virtualisation.virtualbox.host.enable = true;
+  # virtualisation.virtualbox.host.enableHardening = false;
+  # users.extraGroups.vboxusers.members = [ "alex" ];
 
   hardware.nvidia-container-toolkit.enable = true;
-  hardware.nvidia.open = false;
 
   networking.hostName = "achilles";
   networking.networkmanager.enable = true;

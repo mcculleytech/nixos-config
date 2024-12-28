@@ -103,7 +103,7 @@
               trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
             };
           }
-          hardware.nixosModules.common-gpu-nvidia-nonprime
+          #hardware.nixosModules.common-gpu-nvidia-nonprime
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
