@@ -14,6 +14,6 @@
     ./gitea
     ./traefik
     ./tailscale-server.nix
-    ./syncthing-server.ni
+    ./syncthing-server.nix
   ];
 }
