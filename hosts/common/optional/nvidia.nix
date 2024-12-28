@@ -5,7 +5,7 @@
     powerManagement.enable = true;
     # powerManagement.finegrained = false;
 
-    open = true;
+    open = false;
 
     nvidiaSettings = true;
 
