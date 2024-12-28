@@ -8,6 +8,8 @@
       ../common/optional/roles/workstation/kde.nix
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/server/ollama.nix
+      ../common/optional/nvidia.nix
+      ../common/optional/opengl.nix
       ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/saruman.nix
     ];
@@ -32,8 +34,6 @@
   # virtualisation.docker = {
   #   enableNvidia = true;
   # };
-
-  hardware.nvidia.open = false;
 
   networking.hostName = "saruman";
   networking.networkmanager.enable = true;
