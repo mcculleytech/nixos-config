@@ -8,11 +8,11 @@
       ../../disko/vader.nix
       ../common/global
       ../common/optional/roles/server
-      ../common/optional/roles/server/gitea
-      ../common/optional/roles/server/qemu-config.nix
     ];
 
   xonotic.enable = true;
+  qemuGuest.enable = true;
+  gitea.enable = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;

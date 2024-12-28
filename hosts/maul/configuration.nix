@@ -6,14 +6,16 @@
       ./hardware-configuration.nix
       ../../disko/maul.nix
       ../common/global
-      ../common/optional/roles/server/remote-backup-server.nix
+      ../common/optional/roles/server
     ];
+
+  remote-backup-server.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "maul"; 
-  networking.networkmanager.enable = true; 
+  networking.hostName = "maul";
+  networking.networkmanager.enable = true;
 
   time.timeZone = "America/Chicago";
 

@@ -6,7 +6,7 @@
       ./hardware-configuration.nix
       ../common/global
       ../common/optional/docker.nix
-      ../common/optional/pam-auth.nix
+      #../common/optional/pam-auth.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/hyprland
       #../common/optional/roles/workstation/cosmic.nix

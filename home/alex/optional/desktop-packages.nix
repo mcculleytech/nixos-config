@@ -33,6 +33,7 @@
     isoimagewriter
     ollama
     logseq
+    ventoy-full
     # Unstable pkgs
     unstable.hexchat
     #unstable.cura
