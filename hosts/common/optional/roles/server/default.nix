@@ -15,5 +15,6 @@
     ./traefik
     ./tailscale-server.nix
     ./syncthing-server.nix
+    ./open-webui.nix
   ];
 }

@@ -12,6 +12,7 @@
 				enable = true;
 				openFirewall = true;
 				host = "0.0.0.0";
+        mediaLocation = "/var/lib/immich/media";
 		};
 
 
@@ -38,7 +39,7 @@
     [
       (commonMountOptions // {
         what = "10.1.8.4:/mnt/billthepony/pictures";
-        where = "/var/lib/immich";
+        where = "/var/lib/immich/media";
       })
     ];
 
@@ -52,7 +53,7 @@
     in
 
     [
-      (commonAutoMountOptions // { where = "/var/lib/immich"; })
+      (commonAutoMountOptions // { where = "/var/lib/immich/media"; })
     ];
 
 	   };

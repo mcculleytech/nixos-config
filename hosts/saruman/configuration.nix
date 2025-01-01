@@ -19,6 +19,7 @@
   ollama.enable = true;
   steam.enable = true;
   immich.enable = true;
+  open-webui.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
