@@ -11,6 +11,7 @@
 			enable = true;
 			host = "0.0.0.0";
 			openFirewall = true;
+			stateDir = "/var/lib/open-webui";
 		};
 
 
