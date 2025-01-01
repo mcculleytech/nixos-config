@@ -42,6 +42,10 @@ in
 	      what = "10.1.8.4:/mnt/billthepony/movies";
 	      where = "/var/lib/jellyfin/movies";
 	    })
+	    (commonMountOptions // {
+	      what = "10.1.8.4:/mnt/billthepony/tv-shows";
+	      where = "/var/lib/jellyfin/tv-shows";
+	    })
 	  ];
 
 	  systemd.automounts = let commonAutoMountOptions = {
@@ -55,6 +59,7 @@ in
 
 	  [
 	    (commonAutoMountOptions // { where = "/var/lib/jellyfin/movies"; })
+	    (commonAutoMountOptions // { where = "/var/lib/jellyfin/tv-shows"; })
 	  ];
 
 	};
