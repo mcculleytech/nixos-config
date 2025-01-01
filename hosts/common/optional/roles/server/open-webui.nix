@@ -8,7 +8,6 @@
 
 	config = lib.mkIf config.open-webui.enable {
 		services.open-webui = {
-			package = pkgs.unstable.open-webui;
 			enable = true;
 			host = "0.0.0.0";
 			openFirewall = true;

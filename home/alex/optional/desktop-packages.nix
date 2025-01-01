@@ -34,6 +34,7 @@
     ollama
     logseq
     ventoy-full
+    jellyfin-media-player
     # Unstable pkgs
     unstable.hexchat
     #unstable.cura
@@ -46,7 +47,6 @@
     unstable.distrobox
     unstable.bolt
     unstable.thunderbolt
-    unstable.jellyfin-media-player
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
     unstable.element-desktop
