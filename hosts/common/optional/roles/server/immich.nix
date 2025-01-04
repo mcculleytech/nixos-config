@@ -1,29 +1,24 @@
-	{ pkgs, lib, config, ... }:
-	{
+  { pkgs, lib, config, ... }:
+  {
 
-	options = {
-		immich.enable =
-			lib.mkEnableOption "enables immich server";
-	};
+  options = {
+    immich.enable =
+      lib.mkEnableOption "enables immich server";
+  };
 
-	config = lib.mkIf config.immich.enable {
+  config = lib.mkIf config.immich.enable {
 
-	  services.immich = {
-				enable = true;
-				openFirewall = true;
-				host = "0.0.0.0";
+    services.immich = {
+        enable = true;
+        openFirewall = true;
+        host = "0.0.0.0";
         mediaLocation = "/var/lib/immich/media";
-		};
-
-
-		environment.persistence = {
-  	  "/persist" = {
-  	  hideMounts = true;
-  	    directories = [
-  	      "/var/lib/immich"
-  	    ];
-  	  };
-		};
+        user = "immich";
+        group = "immich";
+        environment = {
+                  REDIS_HOSTNAME = "immich_redis";
+        };
+    };
 
     services.rpcbind.enable = true; # needed for NFS
     boot.supportedFilesystems = [ "nfs" ];
@@ -38,8 +33,12 @@
 
     [
       (commonMountOptions // {
-        what = "10.1.8.4:/mnt/billthepony/pictures";
+        what = "10.1.8.4:/mnt/billthepony/immich";
         where = "/var/lib/immich/media";
+      })
+      (commonMountOptions // {
+        what = "10.1.8.4:/mnt/billthepony/pictures";
+        where = "/mnt/nfs-photos";
       })
     ];
 
@@ -54,8 +53,9 @@
 
     [
       (commonAutoMountOptions // { where = "/var/lib/immich/media"; })
+      (commonAutoMountOptions // { where = "/var/lib/immich/media"; })
     ];
 
-	   };
+     };
 
-	}
+  }
