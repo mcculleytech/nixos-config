@@ -53,7 +53,7 @@
 
     [
       (commonAutoMountOptions // { where = "/var/lib/immich/media"; })
-      (commonAutoMountOptions // { where = "/var/lib/immich/media"; })
+      (commonAutoMountOptions // { where = "/mnt/nfs-photos"; })
     ];
 
      };
