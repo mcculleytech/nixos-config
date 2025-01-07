@@ -37,6 +37,7 @@ in
      					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      					"source.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      					"ai.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+     					"immich.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";

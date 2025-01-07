@@ -67,6 +67,15 @@ in
 	   				};
 	   				service = "ai";
 	   			};
+	   			immich = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`immich.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "immich";
+	   			};
 	   			gitea = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`source.${tr_secrets.traefik.homelab_domain}`)";
@@ -177,6 +186,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.6:8080";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			immich = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.6:2283";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

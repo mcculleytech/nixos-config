@@ -20,6 +20,16 @@
         };
     };
 
+    environment.persistence = {
+      "/persist" = {
+      hideMounts = true;
+        directories = [
+          "/var/lib/postgresql"
+          "/var/lib/redis-immich"
+        ];
+      };
+    };
+
     services.rpcbind.enable = true; # needed for NFS
     boot.supportedFilesystems = [ "nfs" ];
     systemd.mounts = let commonMountOptions = {
