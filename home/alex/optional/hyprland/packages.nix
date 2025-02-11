@@ -13,7 +13,7 @@
 		sway-audio-idle-inhibit
 		networkmanagerapplet
 		wdisplays
-		gnome.nautilus
+		nautilus
 		unstable.grimblast
 		eww
 		udiskie

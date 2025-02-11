@@ -51,6 +51,13 @@ in
                     description = "Home Media Server";
                   };
                 }
+                {
+                  "Immich" = {
+                    icon = "immich.png";
+                    href = "https://immich.${tr_secrets.traefik.homelab_domain}";
+                    description = "Photo Server";
+                  };
+                }
               ];
             }
             {
@@ -101,6 +108,13 @@ in
                     description = "Proxmox Hypervisor";
                   };
                 }
+                {
+                   "Ludus" = {
+                    icon = "https://ludus.cloud/opengraph-image.png";
+                     href = "https://ludus.${tr_secrets.traefik.homelab_domain}";
+                     description = "Ludus Cyber Range";
+                   };
+                 }
                 {
                   "Tailscale" = {
                   	icon = "tailscale.png";

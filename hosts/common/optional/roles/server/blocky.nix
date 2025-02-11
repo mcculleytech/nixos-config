@@ -25,7 +25,6 @@ in
       		customDNS = {
       			mapping = {
       				# nix subnet
-      				"transmission.${tr_secrets.traefik.server_domain}" = "10.1.8.3";
       				"atredies.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
       				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
       				# dmz subnet
@@ -41,6 +40,7 @@ in
       				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+      				"ludus.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"unifi.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"truenas.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"octoprint.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";

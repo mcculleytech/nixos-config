@@ -121,6 +121,15 @@ in
 	   				};
 	   				service = "syncthing";
 	   			};
+	   			ludus = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`ludus.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "ludus";
+	   			};
 	   			radicale = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`) && PathPrefix(`/radicale`)";
@@ -226,6 +235,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "https://10.1.8.121:8384";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			ludus = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "https://10.1.8.233:8006";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

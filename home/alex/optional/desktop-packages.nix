@@ -35,9 +35,11 @@
     logseq
     ventoy-full
     jellyfin-media-player
+    beeper
+    python312Packages.meshtastic
     # Unstable pkgs
     unstable.hexchat
-    #unstable.cura
+    unstable.cura-appimage
     unstable.zed-editor
     unstable.signal-desktop
     unstable.hugo
@@ -52,6 +54,5 @@
     unstable.element-desktop
     unstable.obsidian
     unstable.sublime4
-    unstable.beeper
   ];
 }
