@@ -7,7 +7,7 @@
       ./optional/security-tooling.nix
       ./optional/terminator.nix
       ./optional/zsh.nix
-      ./optional/hyprland
+      #./optional/hyprland
       ./optional/nvim
     ];
 

@@ -40,6 +40,8 @@
     # Unstable pkgs
     unstable.hexchat
     unstable.cura-appimage
+    unstable.vmware-workstation
+    unstable.quickemu
     unstable.zed-editor
     unstable.signal-desktop
     unstable.hugo

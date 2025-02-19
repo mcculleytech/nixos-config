@@ -24,6 +24,8 @@
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  virtualisation.vmware.host.enable = true;
+
   # additional services and configs
   workstation-user-options.enable = true;
 

@@ -8,7 +8,7 @@
       ../common/optional/docker.nix
       #../common/optional/pam-auth.nix
       ../common/optional/roles/workstation
-      ../common/optional/roles/workstation/hyprland
+      #../common/optional/roles/workstation/hyprland
       #../common/optional/roles/workstation/cosmic.nix
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
@@ -20,7 +20,9 @@
   networking.hostName = "aeneas";
   networking.networkmanager.enable = true;
 
-  hardware.opengl.enable = true; 
+  hardware.graphics.enable = true; 
+
+  virtualisation.vmware.host.enable = true;
 
   # additional services and configs
   workstation-user-options.enable = true;
@@ -29,11 +31,6 @@
 
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  # # virtualbox setup for tcm course
-  # virtualisation.virtualbox.host.enable = true;
-  # virtualisation.virtualbox.host.enableHardening = false;
-  # users.extraGroups.vboxusers.members = [ "alex" ];
 
   services.hardware.bolt.enable = true;
   
