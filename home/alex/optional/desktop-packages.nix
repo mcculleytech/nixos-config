@@ -14,7 +14,6 @@
     ranger
     vlc
     appimage-run
-    retroarchFull
     wakeonlan
     firefox
     drawing
@@ -37,12 +36,17 @@
     jellyfin-media-player
     beeper
     python312Packages.meshtastic
+    zoom-us
     # Unstable pkgs
+    unstable.awscli2
+    unstable.vscode
+      dotnetCorePackages.dotnet_9.sdk
+      dotnetCorePackages.dotnet_9.runtime
+    unstable.terraform
     unstable.hexchat
     unstable.cura-appimage
     unstable.vmware-workstation
     unstable.quickemu
-    unstable.zed-editor
     unstable.signal-desktop
     unstable.hugo
     unstable.xonotic
@@ -53,7 +57,6 @@
     unstable.thunderbolt
     unstable.libreoffice-fresh
     unstable.protonmail-bridge
-    unstable.element-desktop
     unstable.obsidian
     unstable.sublime4
   ];
