@@ -22,7 +22,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   virtualisation.vmware.host.enable = true;
 
@@ -33,11 +32,6 @@
     unstable.nvidia-docker
     unstable.flameshot
   ];
-
-  # # virtualbox setup for tcm course
-  # virtualisation.virtualbox.host.enable = true;
-  # virtualisation.virtualbox.host.enableHardening = false;
-  # users.extraGroups.vboxusers.members = [ "alex" ];
 
   hardware.nvidia-container-toolkit.enable = true;
 
