@@ -31,7 +31,4 @@
     gnome-tweaks
     gnome-screenshot
   ]);
-
-
-
 }

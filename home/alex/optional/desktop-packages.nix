@@ -39,9 +39,6 @@
     zoom-us
     # Unstable pkgs
     unstable.awscli2
-    unstable.vscode
-      dotnetCorePackages.dotnet_9.sdk
-      dotnetCorePackages.dotnet_9.runtime
     unstable.terraform
     unstable.hexchat
     unstable.cura-appimage

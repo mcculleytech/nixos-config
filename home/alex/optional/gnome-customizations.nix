@@ -6,7 +6,7 @@
     vitals
     user-themes
     tray-icons-reloaded
-  ]); 
+  ]);
 
   gtk = {
     enable = true;
@@ -24,6 +24,11 @@
     cursorTheme = {
       name = "Adwaita";
       package = pkgs.unstable.adwaita-icon-theme;
+    };
+    gtk3 = {
+      extraConfig = {
+        gtk_application_prefer_dark_theme = "1";
+      };
     };
   };
 
@@ -46,7 +51,7 @@
         "element-desktop.desktop"
         "beeper.desktop"
         "sublime_text.desktop"
-        "code.desktop"
+        # "code.desktop"
         "bitwarden.desktop"
         "spotify.desktop"
         "org.remmina.Remmina.desktop"
@@ -89,5 +94,4 @@
     };
   
   };
-
 }
