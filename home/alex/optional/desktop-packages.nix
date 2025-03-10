@@ -37,6 +37,7 @@
     beeper
     python312Packages.meshtastic
     zoom-us
+    go
     # Unstable pkgs
     unstable.awscli2
     unstable.terraform
