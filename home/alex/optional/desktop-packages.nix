@@ -20,7 +20,7 @@
     rpcs3
     game-devices-udev-rules
     remmina
-    google-chrome
+    brave
     zrok
     calibre
     protonvpn-gui
@@ -38,6 +38,7 @@
     python312Packages.meshtastic
     zoom-us
     go
+    cli-visualizer
     # Unstable pkgs
     unstable.awscli2
     unstable.terraform

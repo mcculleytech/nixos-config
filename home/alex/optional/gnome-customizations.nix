@@ -42,7 +42,7 @@
       disable-user-extensions = false;
       favorite-apps = [
         "firefox.desktop"
-        "google-chrome.desktop"
+        "brave-browser.desktop"
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
         "logseq.desktop"
