@@ -45,6 +45,7 @@
         "brave-browser.desktop"
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
+        "obsidian.desktop"
         "logseq.desktop"
         "vmware-workstation.desktop"
         "virt-manager.desktop"

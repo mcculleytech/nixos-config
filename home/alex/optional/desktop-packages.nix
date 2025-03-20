@@ -39,6 +39,11 @@
     zoom-us
     go
     cli-visualizer
+    # Rev Eng and compiling pkgs
+    gnumake
+    gcc
+    nasm
+    gdb
     # Unstable pkgs
     unstable.awscli2
     unstable.terraform
