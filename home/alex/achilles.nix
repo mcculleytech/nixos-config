@@ -7,6 +7,7 @@
       ./optional/terminator.nix
       ./optional/zsh.nix
       ./optional/security-tooling.nix
+      ./optional/flameshot-gui.nix
     ];
 
 }

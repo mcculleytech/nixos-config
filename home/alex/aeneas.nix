@@ -7,6 +7,7 @@
       ./optional/security-tooling.nix
       ./optional/terminator.nix
       ./optional/zsh.nix
+      ./optional/flameshot-gui.nix
       #./optional/hyprland
       ./optional/nvim
     ];

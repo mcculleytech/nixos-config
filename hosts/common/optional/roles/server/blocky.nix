@@ -34,6 +34,7 @@ in
       				"housetohome.${tr_secrets.traefik.dmz_domain}" = "10.2.1.113";
      					# homelab domain
      					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+     					"ilo.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      					"source.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      					"ai.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      					"immich.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";

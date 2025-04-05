@@ -3,7 +3,6 @@
   home.packages = with pkgs;
   [
     spotify
-    bitwarden
     terminator
     guake
     evince
@@ -34,22 +33,30 @@
     logseq
     ventoy-full
     jellyfin-media-player
-    beeper
     python312Packages.meshtastic
     zoom-us
     go
     cli-visualizer
-    # Rev Eng and compiling pkgs
+    anki
+    yt-dlp
+    flameshot
+    angband
+    vmware-workstation
+    # software dev packages
+    python3
     gnumake
     gcc
     nasm
     gdb
+    valgrind
+    unstable.devenv
     # Unstable pkgs
+    unstable.beeper
+    unstable.bitwarden
     unstable.awscli2
     unstable.terraform
     unstable.hexchat
     unstable.cura-appimage
-    unstable.vmware-workstation
     unstable.quickemu
     unstable.signal-desktop
     unstable.hugo

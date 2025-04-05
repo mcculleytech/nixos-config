@@ -112,6 +112,15 @@ in
 	   				};
 	   				service = "jellyfin";
 	   			};
+	   			ilo = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`ilo.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "ilo";
+	   			};
 	   			syncthing = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`syncthing.${tr_secrets.traefik.homelab_domain}`)";
@@ -171,6 +180,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.6:8096";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			ilo = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "https://10.3.29.4";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

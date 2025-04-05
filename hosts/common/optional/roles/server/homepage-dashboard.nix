@@ -11,6 +11,12 @@ in
 	};
 
 	config = lib.mkIf config.homepage-dashboard.enable {
+
+    # Silly issue with homepage needing an additional env var file for access
+    sops.secrets.HOMEPAGE_ALLOWED_HOSTS = {
+      sopsFile = ../../../../../hosts/atreides/secrets.yaml;
+    };
+
     ##############################
     #    Pulls from unstable     #
     ##############################
@@ -25,6 +31,7 @@ in
 	   	package = pkgs.unstable.homepage-dashboard;
 	   	# default port is 8082
 	   	openFirewall = true;
+      environmentFile = config.sops.secrets.HOMEPAGE_ALLOWED_HOSTS.path;
 	   	enable = true;
 	   	widgets = [
 	   		  {
@@ -64,7 +71,7 @@ in
               "Services" = [
                 {
                   "OpenWebUI" = {
-                    icon = "https://api.openwebui.com/api/v1/models/017d6414-6bd3-46c8-9dfe-bcf6f23e6803/image";
+                    icon = "https://builders.mozilla.org/wp-content/uploads/2024/11/favicon.png";
                     href = "https://ai.${tr_secrets.traefik.homelab_domain}";
                     description = "Locally Hosted LLM";
                   };
@@ -139,24 +146,31 @@ in
                 {
                    "Syncthing" = {
                     icon = "syncthing.png";
-                     href = "https://syncthing.${tr_secrets.traefik.homelab_domain}";
-                     description = "Syncthing Server";
+                    href = "https://syncthing.${tr_secrets.traefik.homelab_domain}";
+                    description = "Syncthing Server";
                    };
                  }
                 {
                    "Azure" = {
                     icon = "azure.png";
-                     href = "https://portal.azure.com/#home";
-                     description = "Azure Services";
+                    href = "https://portal.azure.com/#home";
+                    description = "Azure Services";
                    };
                  }
                  {
                     "Traefik" = {
                      icon = "traefik.png";
-                      href = "https://traefik.${tr_secrets.traefik.homelab_domain}/dashboard/";
-                      description = "Traefik Reverse Proxy";
+                     href = "https://traefik.${tr_secrets.traefik.homelab_domain}/dashboard/";
+                     description = "Traefik Reverse Proxy";
                     };
                   }
+                  {
+                     "iLO" = {
+                      icon = "https://avatars.githubusercontent.com/u/6004705?s=200&v=4";
+                      href = "https://ilo.${tr_secrets.traefik.homelab_domain}";
+                      description = "Integrated Lights Out for HP Server";
+                     };
+                   }
               ];
 	   				}
 	   			];
