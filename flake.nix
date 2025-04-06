@@ -15,7 +15,7 @@
     disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
     nixos-cosmic = {
       url = "github:lilyinstarlight/nixos-cosmic";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixvim = {
       url = "github:nix-community/nixvim";
@@ -71,6 +71,12 @@
         specialArgs = { inherit inputs outputs; };
         modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
+          {
+            nix.settings = {
+              substituters = [ "https://cosmic.cachix.org/" ];
+              trusted-public-keys = [ "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" ];
+            };
+          }
           hardware.nixosModules.framework-13-7040-amd
           nixos-cosmic.nixosModules.default
           home-manager.nixosModules.home-manager
