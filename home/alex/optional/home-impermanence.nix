@@ -7,10 +7,12 @@
           "Downloads"
           "Repositories"
           ".local/bin"
+          ".local/state"
           ".local/share/nix"
           ".ssh"
-          ".local"
           ".config"
+        ];
+        files = [
           ".bash_history"
         ];
         allowOther = true;

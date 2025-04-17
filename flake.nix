@@ -54,8 +54,8 @@
           home-manager.users.alex = {
             # Import impermanence to home-manager
             imports = [
-            (impermanence + "/home-manager.nix")
             ./home/alex/server.nix
+            (impermanence + "/home-manager.nix")
             ];
           };
           home-manager.backupFileExtension = "bak";

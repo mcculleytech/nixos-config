@@ -47,7 +47,7 @@ in
           ROOT_URL = "${gitea_secrets.gitea.url}";
           HTTP_PORT = 3008;
           PROTOCOL = "http";
-          SSH_PORT = 2222;
+          SSH_PORT = 22;
         };
         ui = {
           SHOW_USER_EMAIL = false;
@@ -83,11 +83,6 @@ in
       };
     };
 
-    # Configure SSH to use a non-standard port
-    networking.firewall.allowedTCPPorts = [ 3008 2222 ];  # Open ports 3008 (HTTP) and 2222 (SSH)
-    services.openssh.enable = true;
-    services.openssh.listenAddresses = [
-      { port = 2222; addr = "0.0.0.0"; }
-    ];
+    networking.firewall.allowedTCPPorts = [ 3008 ];  # Open ports 3008 (HTTP)
 	};
 }

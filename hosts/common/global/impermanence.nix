@@ -7,6 +7,7 @@
       directories = [
         "/var/lib/systemd"
         "/var/lib/NetworkManager"
+        "/var/lib/bluetooth"
         "/var/lib/nixos"
         "/var/lib/sops-nix"
         "/var/lib/libvirt"

@@ -6,9 +6,7 @@
     terminator
     guake
     evince
-    thunderbird
     nfs-utils
-    yubikey-manager
     transmission_4-gtk
     ranger
     vlc
@@ -27,21 +25,19 @@
     minetestclient
     gparted
     rpi-imager
-    unetbootin
-    isoimagewriter
     ollama
     logseq
     ventoy-full
     jellyfin-media-player
-    python312Packages.meshtastic
     zoom-us
-    go
     cli-visualizer
     anki
     yt-dlp
     flameshot
     angband
     vmware-workstation
+    lunarvim
+    python312Packages.meshtastic
     # software dev packages
     python3
     gnumake

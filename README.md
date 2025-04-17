@@ -65,6 +65,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Gitea server fix ✅ 2024-10-04
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
+- [ ] Need to fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 
 
 ### Other
