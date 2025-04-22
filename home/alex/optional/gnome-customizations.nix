@@ -62,6 +62,8 @@
         "dash-to-dock@micxgx.gmail.com"
         "trayIconsReloaded@selfmade.pl"
         "Vitals@CoreCoding.com"
+        "tiling-assistant@leleat-on-github"
+        "fullscreen-avoider@noobsai.github.com"
       ];
     };
 
