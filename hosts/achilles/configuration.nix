@@ -9,6 +9,7 @@
       ../common/optional/nvidia.nix
       ../common/optional/opengl.nix
       ../common/optional/roles/workstation
+      ../common/optional/roles/workstation/vmware.nix
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/workstation/bluetooth.nix
@@ -22,8 +23,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.interfaces.enp4s0.wakeOnLan.enable = true;
-
-  virtualisation.vmware.host.enable = true;
 
   # additional services and configs
   workstation-user-options.enable = true;

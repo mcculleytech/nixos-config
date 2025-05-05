@@ -35,7 +35,7 @@
     yt-dlp
     flameshot
     angband
-    vmware-workstation
+    unstable.vmware-workstation
     lunarvim
     python312Packages.meshtastic
     # software dev packages

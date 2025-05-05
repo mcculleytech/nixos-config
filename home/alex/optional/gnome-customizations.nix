@@ -6,6 +6,8 @@
     vitals
     user-themes
     tray-icons-reloaded
+    fullscreen-avoider
+    tiling-shell
   ]);
 
   gtk = {
@@ -49,8 +51,7 @@
         "logseq.desktop"
         "vmware-workstation.desktop"
         "virt-manager.desktop"
-        "element-desktop.desktop"
-        "beeper.desktop"
+        "beepertexts.desktop"
         "sublime_text.desktop"
         # "code.desktop"
         "bitwarden.desktop"
@@ -62,7 +63,7 @@
         "dash-to-dock@micxgx.gmail.com"
         "trayIconsReloaded@selfmade.pl"
         "Vitals@CoreCoding.com"
-        "tiling-assistant@leleat-on-github"
+        "tilingshell@ferrarodomenico.com"
         "fullscreen-avoider@noobsai.github.com"
       ];
     };

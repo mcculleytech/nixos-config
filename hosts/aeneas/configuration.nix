@@ -11,6 +11,7 @@
       #../common/optional/roles/workstation/hyprland
       #../common/optional/roles/workstation/cosmic.nix
       ../common/optional/roles/workstation/gnome.nix
+      ../common/optional/roles/workstation/vmware.nix
       ../common/optional/roles/workstation/custom-udev-wakeup.nix
       ../common/optional/roles/workstation/acpi_wakeup.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
@@ -23,8 +24,6 @@
   networking.networkmanager.enable = true;
 
   hardware.graphics.enable = true; 
-
-  virtualisation.vmware.host.enable = true;
 
   # additional services and configs
   workstation-user-options.enable = true;
