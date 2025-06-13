@@ -54,6 +54,7 @@ options = {
                 "maul"
                 "pixel"
                 "truenas"
+                "mac"
               ];
             };
             "Synced-Documents" = {
@@ -69,6 +70,7 @@ options = {
                 "maul"
                 "pixel"
                 "truenas"
+                "mac"
               ];
             };
             "Pixel-Photos" = {
@@ -84,6 +86,7 @@ options = {
                 "maul"
                 "pixel"
                 "truenas"
+                "mac"
               ];
             };
           };
@@ -102,6 +105,9 @@ options = {
             };
             "truenas" = {
               id = "${st_secrets.syncthing.truenas_id}";
+            };
+            "mac" = {
+              id = "${st_secrets.syncthing.mac_id}";
             };
           };
           gui = {
