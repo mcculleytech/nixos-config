@@ -35,7 +35,6 @@
     flameshot
     angband
     protonmail-desktop
-    standardnotes
     #unstable.vmware-workstation
     lunarvim
     python312Packages.meshtastic
