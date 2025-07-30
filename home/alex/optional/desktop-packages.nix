@@ -27,7 +27,6 @@
     rpi-imager
     ollama
     logseq
-    ventoy-full
     jellyfin-media-player
     zoom-us
     cli-visualizer
@@ -35,7 +34,9 @@
     yt-dlp
     flameshot
     angband
-    unstable.vmware-workstation
+    protonmail-desktop
+    standardnotes
+    #unstable.vmware-workstation
     lunarvim
     python312Packages.meshtastic
     # software dev packages

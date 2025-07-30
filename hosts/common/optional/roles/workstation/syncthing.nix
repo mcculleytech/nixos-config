@@ -68,7 +68,6 @@ in
           };
         };
       };
-      overrideFolders = true;
     };
   };
 }

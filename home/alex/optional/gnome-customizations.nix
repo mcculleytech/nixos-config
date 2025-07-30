@@ -48,15 +48,14 @@
         "org.gnome.Nautilus.desktop" 
         "terminator.desktop"
         "obsidian.desktop"
-        "logseq.desktop"
-        "vmware-workstation.desktop"
+        # "vmware-workstation.desktop"
         "virt-manager.desktop"
         "beepertexts.desktop"
         "sublime_text.desktop"
-        # "code.desktop"
         "bitwarden.desktop"
         "spotify.desktop"
-        "org.remmina.Remmina.desktop"
+        #"org.remmina.Remmina.desktop"
+        "proton-mail.desktop"
       ];
       enabled-extensions = [
         "user-theme@gnome-shell-extensions.gcampax.github.com"
