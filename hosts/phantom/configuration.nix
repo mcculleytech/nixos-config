@@ -16,8 +16,7 @@
   blocky.enable = true;
   tailscale-server.enable = true;
   syncthing-server.enable = true;
-  rustdesk-server.enable = true;
-
+  
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = true;
