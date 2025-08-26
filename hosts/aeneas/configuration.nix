@@ -32,6 +32,7 @@
 
   # Latest Kernel fixes some issues on Framework
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxKernel.packages.linux_6_12;
 
   services.hardware.bolt.enable = true;
   
@@ -40,6 +41,7 @@
   services.xserver.xkb.layout = "us";
   
   services.printing.enable = true;
+
 
   hardware.bluetooth.enable = true;
   

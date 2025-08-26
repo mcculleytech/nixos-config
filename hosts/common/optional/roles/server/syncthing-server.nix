@@ -27,36 +27,36 @@ options = {
         guiAddress = "0.0.0.0:8384";
         settings = {
           folders = {
-            "Logseq" = {
-              id = "Logseq";
-              path = "${config.services.syncthing.dataDir}/Logseq";
-              versioning = {
-                type = "simple";
-                params.keep = "5";
-              };
-              devices = [
-                "achilles"
-                "aeneas"
-                "pixel"
-                "truenas"
-              ];
-            };
-            "Obsidian" = {
-              id = "Obsidian";
-              path = "/var/lib/syncthing/Obsidian";
-              versioning = {
-                type = "simple";
-                params.keep = "5";
-              };
-              devices = [
-                "achilles"
-                "aeneas"
-                "maul"
-                "pixel"
-                "truenas"
-                "mac"
-              ];
-            };
+            # "Logseq" = {
+            #   id = "Logseq";
+            #   path = "${config.services.syncthing.dataDir}/Logseq";
+            #   versioning = {
+            #     type = "simple";
+            #     params.keep = "5";
+            #   };
+            #   devices = [
+            #     "achilles"
+            #     "aeneas"
+            #     "pixel"
+            #     "truenas"
+            #   ];
+            # };
+            # "Obsidian" = {
+            #   id = "Obsidian";
+            #   path = "/var/lib/syncthing/Obsidian";
+            #   versioning = {
+            #     type = "simple";
+            #     params.keep = "5";
+            #   };
+            #   devices = [
+            #     "achilles"
+            #     "aeneas"
+            #     "maul"
+            #     "pixel"
+            #     "truenas"
+            #     "mac"
+            #   ];
+            # };
             "Synced-Documents" = {
               id = "Synced-Documents";
               path = "/var/lib/syncthing/Synced-Documents";
@@ -68,8 +68,8 @@ options = {
                 "achilles"
                 "aeneas"
                 "maul"
-                "pixel"
-                "truenas"
+                # "pixel"
+                # "truenas"
                 "mac"
               ];
             };
@@ -85,7 +85,7 @@ options = {
                 "aeneas"
                 "maul"
                 "pixel"
-                "truenas"
+                # "truenas"
                 "mac"
               ];
             };
@@ -103,9 +103,9 @@ options = {
             "maul" = {
               id = "${st_secrets.syncthing.maul_id}";
             };
-            "truenas" = {
-              id = "${st_secrets.syncthing.truenas_id}";
-            };
+            # "truenas" = {
+            #   id = "${st_secrets.syncthing.truenas_id}";
+            # };
             "mac" = {
               id = "${st_secrets.syncthing.mac_id}";
             };

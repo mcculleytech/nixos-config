@@ -11,7 +11,12 @@
         	swtpm.enable = true;
         };
       };
+      spiceUSBRedirection.enable = true;
     };
+
+    services.spice-vdagentd.enable = true;
+
+    boot.extraModprobeConfig = "options kvm_intel nested=1";
 
     environment.sessionVariables.LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
     environment.systemPackages = with pkgs; [ 
@@ -23,6 +28,7 @@
       win-spice
       spice-protocol
       bridge-utils
+      quickemu
     ];
     users.users.alex = {
       extraGroups = [ "libvirtd" "kvm" "qemu-libvirtd" ];

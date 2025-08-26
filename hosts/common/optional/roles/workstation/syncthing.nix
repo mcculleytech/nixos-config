@@ -22,28 +22,28 @@ in
           };
         };
         folders = {
-          "Obsidian" = {
-            id = "Obsidian";
-            path = "~/Documents/Obsidian";
-            versioning = {
-              type = "simple";
-              params.keep = "5";
-            };            
-            devices = [
-              "phantom"
-            ];
-          };
-          "Logseq" = {
-            id = "Logseq";
-            path = "~/Documents/Logseq";
-            versioning = {
-              type = "simple";
-              params.keep = "5";
-            };            
-            devices = [
-              "phantom"
-            ];
-          };
+          # "Obsidian" = {
+          #   id = "Obsidian";
+          #   path = "~/Documents/Obsidian";
+          #   versioning = {
+          #     type = "simple";
+          #     params.keep = "5";
+          #   };            
+          #   devices = [
+          #     "phantom"
+          #   ];
+          # };
+          # "Logseq" = {
+          #   id = "Logseq";
+          #   path = "~/Documents/Logseq";
+          #   versioning = {
+          #     type = "simple";
+          #     params.keep = "5";
+          #   };            
+          #   devices = [
+          #     "phantom"
+          #   ];
+          # };
           "Synced-Documents" = {
             id = "Synced-Documents";
             path = "~/Documents/Synced-Documents";

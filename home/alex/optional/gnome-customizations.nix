@@ -54,6 +54,7 @@
         "sublime_text.desktop"
         "bitwarden.desktop"
         "spotify.desktop"
+        "ghidra.desktop"
         #"org.remmina.Remmina.desktop"
         "proton-mail.desktop"
       ];

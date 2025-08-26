@@ -35,6 +35,7 @@
     flameshot
     angband
     protonmail-desktop
+    ghidra
     #unstable.vmware-workstation
     lunarvim
     python312Packages.meshtastic
