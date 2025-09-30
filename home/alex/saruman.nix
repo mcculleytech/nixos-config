@@ -17,7 +17,7 @@
     firefox
     unstable.ollama
     unstable.xonotic
-    unstable.jellyfin-media-player
+    # unstable.jellyfin-media-player
   ];
 
 }
