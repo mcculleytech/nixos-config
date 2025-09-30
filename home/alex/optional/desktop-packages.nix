@@ -26,8 +26,7 @@
     gparted
     rpi-imager
     ollama
-    logseq
-    jellyfin-media-player
+    # jellyfin-media-player - insecure package, reinstall when updated
     zoom-us
     cli-visualizer
     anki
