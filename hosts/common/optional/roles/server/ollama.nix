@@ -2,7 +2,7 @@
   # Have to add this for the 1080Ti since the arch is 6.1, nix doesn't have that in the prebuilt
   let
     custom-ollama-cuda = pkgs.ollama-cuda.overrideAttrs (old: {
-      cmakeFlags = (old.cmakeFlags or []) ++ [ "-DCMAKE_CUDA_ARCHITECTURES=61" ];
+      NIX_CMAKE_FLAGS = (old.cmakeFlags or []) ++ [ "-DCMAKE_CUDA_ARCHITECTURES=61" ];
     });
   in
 {
