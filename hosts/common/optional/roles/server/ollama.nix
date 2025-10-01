@@ -2,19 +2,9 @@
   # Have to add this for the 1080Ti since the arch is 6.1, nix doesn't have that in the prebuilt
 let
   custom-ollama-cuda = pkgs.ollama-cuda.overrideAttrs (old: rec {
-    # Enable CUDA and set the architecture for your GTX 1080 Ti
-    enableCuda = true;
     cudaArches = [ "sm_61" ];
+    cmakeFlags = old.cmakeFlags or "" + " -DCMAKE_CUDA_ARCHITECTURES=61";
 
-    # Make sure CMake sees the correct architecture
-    buildPhase = ''
-      cmake -B build \
-        -DCMAKE_SKIP_BUILD_RPATH=ON \
-        -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-        -DCMAKE_CUDA_ARCHITECTURES=${builtins.concatStringsSep ";" (builtins.map (s: builtins.substring 3 (builtins.stringLength s - 3) s) cudaArches)} \
-
-      cmake --build build -j $NIX_BUILD_CORES
-    '';
   });
 in
 {
