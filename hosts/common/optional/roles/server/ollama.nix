@@ -49,7 +49,7 @@
     ];
 
     services.ollama = {
-      package = pkgs.ollama-cuda;  # point to the custom CUDA build
+      package = pkgs.callPackage pkgs.ollama-cuda {};  # point to the custom CUDA build
       enable = true;
       # handled in overlay
       # acceleration = "cuda";
