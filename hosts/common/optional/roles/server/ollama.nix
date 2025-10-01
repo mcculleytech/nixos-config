@@ -27,11 +27,11 @@
       package = pkgs.ollama-cuda.overrideAttrs (old: {
         patches = (old.patches or []) ++ [
           (pkgs.writeText "force-cuda-61.patch" ''
-            --- a/pkgs/by-name/ol/ollama/package.nix
-            +++ b/pkgs/by-name/ol/ollama/package.nix
-            @@
-            -      cmakeFlagsCudaArchitectures = lib.optionalString enableCuda "-DCMAKE_CUDA_ARCHITECTURES='${cudaArchitectures}'";
-            +      cmakeFlagsCudaArchitectures = "-DCMAKE_CUDA_ARCHITECTURES=61";
+          --- a/ml/backend/ggml/ggml/CMakeLists.txt
+          +++ b/ml/backend/ggml/ggml/CMakeLists.txt
+          @@
+          -cmakeFlagsCudaArchitectures = lib.optionalString enableCuda "-DCMAKE_CUDA_ARCHITECTURES='${cudaArchitectures}'";
+          +cmakeFlagsCudaArchitectures = "-DCMAKE_CUDA_ARCHITECTURES=61";
           '')
     ];
   });
