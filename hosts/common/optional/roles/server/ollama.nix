@@ -54,7 +54,7 @@
       acceleration = "cuda";
       host = "0.0.0.0";
       port = 11434;
-      environment = {
+      environmentVariables = {
         # Ensure Ollama sees CUDA at runtime
         LD_LIBRARY_PATH = "${pkgs.cudaPackages.cudatoolkit}/lib64:${pkgs.cudaPackages.cudnn}/lib";
       };
