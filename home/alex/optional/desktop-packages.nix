@@ -26,6 +26,7 @@
     gparted
     rpi-imager
     ollama
+    arduino-ide
     # jellyfin-media-player - insecure package, reinstall when updated
     zoom-us
     cli-visualizer

@@ -5,7 +5,7 @@ in
 {
   services = {
     syncthing = {
-      package = pkgs.unstable.syncthing;
+      package = pkgs.syncthing;
       enable = true;
       openDefaultPorts = true;
       user = "alex";
