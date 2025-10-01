@@ -12,7 +12,6 @@ let
         -DCMAKE_SKIP_BUILD_RPATH=ON \
         -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
         -DCMAKE_CUDA_ARCHITECTURES=${builtins.concatStringsSep ";" (builtins.map (s: builtins.substring 3 (builtins.stringLength s - 3) s) cudaArches)} \
-        ${lib.optionalString enableRocm "-DAMDGPU_TARGETS=${rocmGpuTargets}"} \
 
       cmake --build build -j $NIX_BUILD_CORES
     '';
