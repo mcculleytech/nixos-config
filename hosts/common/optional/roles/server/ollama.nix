@@ -20,7 +20,7 @@
             sha256 = "<fill-in-later>";
           };
 
-          nativeBuildInputs = [ super.cmake super.gcc super.git super.pkgconfig ];
+          nativeBuildInputs = [ super.cmake super.gcc super.git super."pkg-config" ];
 
           buildInputs = [
             super.cudaPackages.cudatoolkit
