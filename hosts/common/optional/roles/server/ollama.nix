@@ -17,7 +17,6 @@
 
       };
     };
-  };
     
     environment.persistence = {
       "/persist" = {
