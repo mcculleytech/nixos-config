@@ -3,7 +3,7 @@
 let
   custom-ollama-cuda = pkgs.ollama-cuda.overrideAttrs (old: rec {
     cudaArches = [ "sm_61" ];
-    cmakeFlags = (old.cmakeFlags or []) ++ [ "-DCMAKE_CUDA_ARCHITECTURES=61" ];
+    cmakeFlagsCudaArchitectures = (old.cmakeFlagsCudaArchitectures or []) ++ [ "-DCMAKE_CUDA_ARCHITECTURES=61" ];
 
   });
 in
