@@ -1,19 +1,19 @@
 { pkgs, config, lib, ... }: 
   # Have to add this for the 1080Ti since the arch is 6.1, nix doesn't have that in the prebuilt
-let
-  custom-ollama-cuda = pkgs.ollama-cuda.overrideAttrs (old: rec {
-   buildPhase = ''
-      # Compute CUDA architectures manually for the build
-      cmake -B build \
-        -DCMAKE_SKIP_BUILD_RPATH=ON \
-        -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-        -DCMAKE_CUDA_ARCHITECTURES=61 \
-
-      cmake --build build -j $NIX_BUILD_CORES
-    '';
-
-  });
-in
+# let
+# custom-ollama-cuda = pkgs.ollama-cuda.overrideAttrs (old: rec {
+#  buildPhase = ''
+#     # Compute CUDA architectures manually for the build
+#     cmake -B build \
+#       -DCMAKE_SKIP_BUILD_RPATH=ON \
+#       -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+#       -DCMAKE_CUDA_ARCHITECTURES=61 \
+#
+#      cmake --build build -j $NIX_BUILD_CORES
+#   '';
+#
+#  });
+# in
 {
 
   options = {
@@ -24,7 +24,17 @@ in
   config = lib.mkIf config.ollama.enable {
 
     services.ollama = {
-      package = custom-ollama-cuda;
+      package = pkgs.ollama-cuda.overrideAttrs (old: {
+        patches = (old.patches or []) ++ [
+          (pkgs.writeText "force-cuda-61.patch" ''
+            --- a/pkgs/by-name/ol/ollama/package.nix
+            +++ b/pkgs/by-name/ol/ollama/package.nix
+            @@
+            -      cmakeFlagsCudaArchitectures = lib.optionalString enableCuda "-DCMAKE_CUDA_ARCHITECTURES='${cudaArchitectures}'";
+            +      cmakeFlagsCudaArchitectures = "-DCMAKE_CUDA_ARCHITECTURES=61";
+          '')
+    ];
+  });
       enable = true;
       acceleration = "cuda";
       host = "0.0.0.0";
