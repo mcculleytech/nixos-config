@@ -51,7 +51,8 @@
     services.ollama = {
       package = pkgs.ollama-cuda;  # point to the custom CUDA build
       enable = true;
-      acceleration = "cuda";
+      # handled in overlay
+      # acceleration = "cuda";
       host = "0.0.0.0";
       port = 11434;
       environmentVariables = {
