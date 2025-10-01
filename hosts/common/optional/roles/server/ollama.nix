@@ -17,7 +17,7 @@
             owner = "ollama";
             repo = "ollama";
             rev = "v${version}";
-            sha256 = lib.fakeSha256;
+            sha256 = "CRlrq2vFdk+YlxCSg6FNVg6YpAZ4PSMHeAaGwkx9QFw=";
           };
 
           nativeBuildInputs = [ super.cmake super.gcc super.git super."pkg-config" ];
