@@ -9,5 +9,11 @@
 
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+
+  environment.systemPackages = with pkgs; [
+    cudatoolkit
+    cudnn
+  ];
+  
   services.xserver.videoDrivers = [ "nvidia" ];
 }
