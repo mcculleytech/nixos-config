@@ -11,8 +11,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    cudatoolkit
-    cudnn
+    cudaPackages.cudatoolkit
+    cudaPackages.cudnn
   ];
   
   services.xserver.videoDrivers = [ "nvidia" ];
