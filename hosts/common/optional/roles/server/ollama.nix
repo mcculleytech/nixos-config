@@ -31,7 +31,7 @@
   config = lib.mkIf config.ollama.enable {
 
     services.ollama = {
-      package = custom-ollama-cuda
+      package = custom-ollama-cuda;
       enable = true;
       acceleration = "cuda";
       host = "0.0.0.0";
