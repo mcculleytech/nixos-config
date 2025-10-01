@@ -10,6 +10,7 @@ let
         -DCMAKE_CUDA_ARCHITECTURES=61 \
 
       cmake --build build -j $NIX_BUILD_CORES
+    '';
 
   });
 in
