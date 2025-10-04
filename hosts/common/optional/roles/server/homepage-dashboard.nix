@@ -198,16 +198,16 @@ in
             	}
           ];
       };
-	};
 
-  # allow for config writing to persist dir
-  environment.persistence = {
-    "/persist" = {
-    hideMounts = true;
-      directories = [
-        "/var/lib/homepage-dashboard"
-      ];
+    # allow for config writing to persist dir
+    environment.persistence = {
+      "/persist" = {
+      hideMounts = true;
+        directories = [
+          "/var/lib/homepage-dashboard"
+        ];
+      };
     };
-  };
+	};
 
 }
