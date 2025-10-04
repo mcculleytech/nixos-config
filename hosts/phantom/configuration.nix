@@ -14,6 +14,7 @@
   radicale.enable = true;
   qemuGuest.enable = true;
   blocky.enable = true;
+  home-impermanence = true;
   tailscale-server.enable = true;
   syncthing-server.enable = true;
   

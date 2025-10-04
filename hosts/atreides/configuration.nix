@@ -16,6 +16,7 @@
   blocky.enable = true;
   homepage-dashboard.enable = true;
   traefik.enable = true;
+  home-impermanence = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
