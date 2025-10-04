@@ -11,7 +11,7 @@
     ./qemu-config.nix
     ./blocky.nix
     ./homepage-dashboard.nix
-    ./rustdesk-server.nix
+    ./home-impermanence.nix
     ./gitea
     ./traefik
     ./tailscale-server.nix

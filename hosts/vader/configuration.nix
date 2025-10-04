@@ -13,6 +13,7 @@
   xonotic.enable = true;
   qemuGuest.enable = true;
   gitea.enable = true;
+  home-impermanence.enable = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;

@@ -4,6 +4,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    cosmic-nightly = {
+      url = "github:busyboredom/cosmic-nightly-flake";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     home-manager.url = "github:nix-community/home-manager/release-25.05";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -23,6 +27,7 @@
     self, 
     nixpkgs,
     home-manager,
+    cosmic-nightly,
     hyprland, 
     hardware,
     nix-colors,
@@ -67,6 +72,9 @@
         modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd
+          ({
+            nixpkgs.overlays = [ cosmic-nightly.overlays.default ];
+          })
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;

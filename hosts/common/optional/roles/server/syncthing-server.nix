@@ -19,7 +19,7 @@ options = {
 
     services = {
       syncthing = {
-        package = pkgs.unstable.syncthing;
+        package = pkgs.syncthing;
         enable = true;
         user = "syncthing";
         openDefaultPorts = true;
@@ -27,36 +27,6 @@ options = {
         guiAddress = "0.0.0.0:8384";
         settings = {
           folders = {
-            # "Logseq" = {
-            #   id = "Logseq";
-            #   path = "${config.services.syncthing.dataDir}/Logseq";
-            #   versioning = {
-            #     type = "simple";
-            #     params.keep = "5";
-            #   };
-            #   devices = [
-            #     "achilles"
-            #     "aeneas"
-            #     "pixel"
-            #     "truenas"
-            #   ];
-            # };
-            # "Obsidian" = {
-            #   id = "Obsidian";
-            #   path = "/var/lib/syncthing/Obsidian";
-            #   versioning = {
-            #     type = "simple";
-            #     params.keep = "5";
-            #   };
-            #   devices = [
-            #     "achilles"
-            #     "aeneas"
-            #     "maul"
-            #     "pixel"
-            #     "truenas"
-            #     "mac"
-            #   ];
-            # };
             "Synced-Documents" = {
               id = "Synced-Documents";
               path = "/var/lib/syncthing/Synced-Documents";
@@ -68,9 +38,6 @@ options = {
                 "achilles"
                 "aeneas"
                 "maul"
-                # "pixel"
-                # "truenas"
-                "mac"
               ];
             };
             "Pixel-Photos" = {
@@ -85,8 +52,6 @@ options = {
                 "aeneas"
                 "maul"
                 "pixel"
-                # "truenas"
-                "mac"
               ];
             };
           };
@@ -102,12 +67,6 @@ options = {
             };
             "maul" = {
               id = "${st_secrets.syncthing.maul_id}";
-            };
-            # "truenas" = {
-            #   id = "${st_secrets.syncthing.truenas_id}";
-            # };
-            "mac" = {
-              id = "${st_secrets.syncthing.mac_id}";
             };
           };
           gui = {

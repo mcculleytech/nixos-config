@@ -2,7 +2,8 @@
 
     imports = [
       ./global
-      ./optional/gnome-customizations.nix
+      #./optional/gnome-customizations.nix
+      ./optional/cosmic-customizations.nix
       ./optional/desktop-packages.nix
       ./optional/security-tooling.nix
       ./optional/terminator.nix
@@ -11,5 +12,6 @@
       #./optional/hyprland
       ./optional/nvim
     ];
+
 
 }

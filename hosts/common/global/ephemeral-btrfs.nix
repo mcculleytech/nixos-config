@@ -1,4 +1,4 @@
-{ lib, config, ... }:
+{ lib, config, pkgs, ... }:
 # Taken from Misterio77's config
 
 let
@@ -57,4 +57,24 @@ in
     interval = "weekly";
     fileSystems = [ "/" ];
   };
+
+  systemd.services."btrfs-balance" = {
+    description = "Run periodic btrfs balance";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = [
+        # Adjust filters to taste
+        "${pkgs.btrfs-progs}/bin/btrfs balance start -dusage=50 -musage=50 /"
+      ];
+    };
+  };
+
+  systemd.timers."btrfs-balance" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
 }
