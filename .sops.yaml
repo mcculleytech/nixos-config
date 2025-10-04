@@ -26,24 +26,28 @@ creation_rules:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *maul_server
   - path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *vader_server 
   - path_regex: hosts/phantom/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *phantom_server 
   - path_regex: hosts/atreides/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *atreides_server
   - path_regex: hosts/saruman/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -56,10 +60,12 @@ creation_rules:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *aeneas_workstation 
   - path_regex: hosts/achilles/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
         - *aeneas_alex
         - *achilles_alex
+        - *saruman_server
         - *achilles_workstation
