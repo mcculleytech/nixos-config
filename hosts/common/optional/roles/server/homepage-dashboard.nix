@@ -28,7 +28,7 @@ in
     # 	];
     ##############################
 	   services.homepage-dashboard ={
-	   	package = pkgs.unstable.homepage-dashboard;
+	   	package = pkgs.homepage-dashboard;
 	   	# default port is 8082
 	   	openFirewall = true;
       environmentFile = config.sops.secrets.HOMEPAGE_ALLOWED_HOSTS.path;
@@ -199,4 +199,15 @@ in
           ];
       };
 	};
+
+  # allow for config writing to persist dir
+  environment.persistence = {
+    "/persist" = {
+    hideMounts = true;
+      directories = [
+        "/var/lib/homepage-dashboard"
+      ];
+    };
+  };
+
 }
