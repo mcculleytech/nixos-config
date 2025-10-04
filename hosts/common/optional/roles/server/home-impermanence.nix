@@ -22,6 +22,9 @@
 	        { directory = ".local"; mode = "0700"; }
 	        { directory = ".config"; mode = "0700"; }
 	      ];
+	      files = [
+	        ".bash_history"
+	      ];
 	    };
 	  };
 	};

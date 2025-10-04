@@ -10,7 +10,7 @@
     ];
 
   remote-backup-server.enable = true;
-  home-impermanence = true;
+  home-impermanence.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
