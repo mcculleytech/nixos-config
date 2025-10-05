@@ -27,6 +27,7 @@
     rpi-imager
     ollama
     arduino-ide
+    fastfetch
     # jellyfin-media-player - insecure package, reinstall when updated
     zoom-us
     cli-visualizer
