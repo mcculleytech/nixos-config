@@ -5,18 +5,22 @@
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    hardware.url = "github:nixos/nixos-hardware/master";
+    sops-nix.url = "github:Mic92/sops-nix";    
+    impermanence.url = "github:nix-community/impermanence";
     cosmic-nightly = {
       url = "github:busyboredom/cosmic-nightly-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
-    hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    hardware.url = "github:nixos/nixos-hardware/master";
-    sops-nix.url = "github:Mic92/sops-nix";    
-    impermanence.url = "github:nix-community/impermanence";
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nixvim = {
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -60,6 +64,7 @@
       # Framework 13 AMD Laptop
       "aeneas" = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs outputs; };
+        system = "x86_64-linux";
         modules = defaultModules ++ [
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd

@@ -10,7 +10,7 @@
 
     services.immich = {
         enable = true;
-        package = unstable.pkgs.immich;
+        package = pkgs.unstable.immich;
         openFirewall = true;
         host = "0.0.0.0";
         mediaLocation = "/var/lib/immich/media";
