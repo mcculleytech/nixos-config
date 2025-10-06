@@ -2,8 +2,9 @@
   description = "NixOS and Home Manager flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     cosmic-nightly = {
       url = "github:busyboredom/cosmic-nightly-flake";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -12,7 +13,6 @@
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hardware.url = "github:nixos/nixos-hardware/master";
-    nix-colors.url = "github:misterio77/nix-colors";
     sops-nix.url = "github:Mic92/sops-nix";    
     impermanence.url = "github:nix-community/impermanence";
     disko.url = "github:nix-community/disko";
@@ -27,23 +27,16 @@
     self, 
     nixpkgs,
     home-manager,
-    cosmic-nightly,
-    hyprland, 
     hardware,
-    nix-colors,
-    sops-nix,
-    impermanence,
-    disko,
-    nixvim,
      ...
-  }@inputs:
+  } @ inputs:
     let
       inherit (self) outputs;
 
       defaultModules = [
-        disko.nixosModules.disko
-        impermanence.nixosModules.impermanence
-        sops-nix.nixosModules.sops
+        inputs.disko.nixosModules.disko
+        inputs.impermanence.nixosModules.impermanence
+        inputs.sops-nix.nixosModules.sops
       ];
 
       homeManagerServerModule = [
@@ -52,10 +45,8 @@
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = { inherit inputs outputs; };
           home-manager.users.alex = {
-            # Import impermanence to home-manager
             imports = [
             ./home/alex/server.nix
-            (impermanence + "/home-manager.nix")
             ];
           };
           home-manager.backupFileExtension = "bak";
@@ -73,18 +64,17 @@
           ./hosts/aeneas/configuration.nix
           hardware.nixosModules.framework-13-7040-amd
           ({
-            nixpkgs.overlays = [ cosmic-nightly.overlays.default ];
+            nixpkgs.overlays = [ inputs.cosmic-nightly.overlays.default ];
           })
+          inputs.determinate.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.users.alex = {
-              # Import impermanence to home-manager
               imports = [
-              # (impermanence + "/home-manager.nix")
               ./home/alex/aeneas.nix
-              nixvim.homeModules.nixvim
+              inputs.nixvim.homeModules.nixvim
               ];
             };
             home-manager.backupFileExtension = "bak";
@@ -104,11 +94,9 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.users.alex = {
-              # Import impermanence to home-manager
               imports = [
-              # (impermanence + "/home-manager.nix")
               ./home/alex/achilles.nix
-              nixvim.homeModules.nixvim
+              inputs.nixvim.homeModules.nixvim
               ];
             };
             home-manager.backupFileExtension = "bak";
@@ -128,9 +116,7 @@
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs outputs; };
             home-manager.users.alex = {
-              # Import impermanence to home-manager
               imports = [
-              # (impermanence + "/home-manager.nix")
               ./home/alex/saruman.nix
               ];
             };
