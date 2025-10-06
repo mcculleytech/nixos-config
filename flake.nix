@@ -41,6 +41,7 @@
         inputs.disko.nixosModules.disko
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
+        inputs.determinate.nixosModules.default
       ];
 
       homeManagerServerModule = [
@@ -71,7 +72,6 @@
           ({
             nixpkgs.overlays = [ inputs.cosmic-nightly.overlays.default ];
           })
-          inputs.determinate.nixosModules.default
           home-manager.nixosModules.home-manager
           {
             home-manager.useUserPackages = true;
