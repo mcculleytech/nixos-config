@@ -199,15 +199,24 @@ in
           ];
       };
 
-    # allow for config writing to persist dir
-    environment.persistence = {
-      "/persist" = {
-      hideMounts = true;
-        directories = [
-          "/var/lib/homepage-dashboard"
-        ];
-      };
-    };
+    # # allow for config writing to persist dir
+    # environment.persistence = {
+    #   "/persist" = {
+    #   hideMounts = true;
+    #     directories = [
+    #       "/var/lib/homepage-dashboard"
+    #     ];
+    #   };
+    # };
+
+    # fix filesystem freakout with impermanence 
+    # systemd.services.homepage-dashboard.serviceConfig = {
+    #   StateDirectory = lib.mkForce "";
+    #   DynamicUser = lib.mkDefault true;
+    #   User = "homepage-dashboard";
+    #   Group = "homepage-dashboard";
+    # };
+
 	};
 
 }
