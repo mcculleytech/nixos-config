@@ -10,11 +10,11 @@
 	config = lib.mkIf config.octoprint.enable {
 
 	# Pulls unstable, stable is broken atm
-	nixpkgs.overlays = [
-	  (final: prev: {
-	    octoprint = pkgs.octoprint;
-	  })
-	];
+	# nixpkgs.overlays = [
+	#   (final: prev: {
+	#     octoprint = pkgs.octoprint;
+	#   })
+	# ];
 
 	services.octoprint = {
 		enable = true;
