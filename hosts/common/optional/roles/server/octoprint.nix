@@ -12,7 +12,7 @@
 	# Pulls unstable, stable is broken atm
 	nixpkgs.overlays = [
 	  (final: prev: {
-	    octoprint = pkgs.unstable.octoprint;
+	    octoprint = pkgs.octoprint;
 	  })
 	];
 
