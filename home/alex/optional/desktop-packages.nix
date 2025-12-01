@@ -24,7 +24,7 @@
     watchmate
     minetestclient
     gparted
-    rpi-imager
+    # rpi-imager
     ollama
     arduino-ide
     fastfetch
@@ -50,7 +50,7 @@
     unstable.devenv
     # Unstable pkgs
     unstable.beeper
-    unstable.bitwarden
+    unstable.bitwarden-desktop
     unstable.awscli2
     unstable.terraform
     unstable.hexchat
