@@ -4,10 +4,10 @@
       libvirtd = {
         enable = true;
         qemu = {
-        	ovmf = {
-            enable = true;
-            packages = [pkgs.OVMFFull.fd];
-          };
+        	# ovmf = {
+          #   enable = true;
+          #   packages = [pkgs.OVMFFull.fd];
+          # };
         	swtpm.enable = true;
         };
       };
@@ -22,7 +22,7 @@
     environment.systemPackages = with pkgs; [ 
       spice 
       virt-manager 
-      win-virtio
+      virtio-win
       virt-viewer
       spice-gtk
       win-spice

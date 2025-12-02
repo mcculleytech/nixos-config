@@ -22,7 +22,7 @@
     calibre
     protonvpn-gui
     watchmate
-    minetestclient
+    luanti-client
     gparted
     # rpi-imager
     ollama
@@ -30,7 +30,6 @@
     fastfetch
     # jellyfin-media-player - insecure package, reinstall when updated
     zoom-us
-    cli-visualizer
     anki
     yt-dlp
     flameshot

@@ -2,19 +2,19 @@
   description = "NixOS and Home Manager flake";
 
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
     hardware.url = "github:nixos/nixos-hardware/master";
     sops-nix.url = "github:Mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
-    cosmic-nightly = {
-      url = "github:busyboredom/cosmic-nightly-flake";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # cosmic-nightly = {
+    #   url = "github:busyboredom/cosmic-nightly-flake";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -64,9 +64,9 @@
           modules = defaultModules ++ [
             ./hosts/aeneas/configuration.nix
             hardware.nixosModules.framework-13-7040-amd
-            ({
-              nixpkgs.overlays = [ inputs.cosmic-nightly.overlays.default ];
-            })
+            # ({
+            #   nixpkgs.overlays = [ inputs.cosmic-nightly.overlays.default ];
+            # })
             home-manager.nixosModules.home-manager
             {
               home-manager.useUserPackages = true;
