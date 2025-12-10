@@ -9,7 +9,7 @@
       ../common/optional/nvidia.nix
       ../common/optional/opengl.nix
       ../common/optional/roles/workstation
-      #../common/optional/roles/workstation/vmware.nix
+      ../common/optional/roles/workstation/vmware.nix
       ../common/optional/roles/workstation/gnome.nix
       ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/workstation/bluetooth.nix

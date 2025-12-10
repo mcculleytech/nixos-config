@@ -1,11 +1,10 @@
 {pkgs, ... }: {
 	programs.nixvim = {
 		enable = true;
+		enableMan = true;
 
-	  	colorschemes.nord.enable = true;
-	  	opts = {
-	  		number = true;         # Show line numbers
-	  		shiftwidth = 2;        # Tab width should be 2
-	  	};
+		# Keep files local to config. Path of least resistance to get lazyvim setup
+		# git clone https://github.com/LazyVim/starter ~/.config/nvim
+		
 	};
 }

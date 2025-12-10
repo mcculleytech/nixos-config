@@ -14,4 +14,7 @@
     xdg-desktop-portal-gtk
     xdg-desktop-portal-wlr
   ];
+
+  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  
 }

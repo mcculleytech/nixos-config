@@ -36,8 +36,7 @@
     angband
     protonmail-desktop
     ghidra
-    #unstable.vmware-workstation
-    lunarvim
+    unstable.vmware-workstation
     python312Packages.meshtastic
     # software dev packages
     python3

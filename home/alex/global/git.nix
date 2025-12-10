@@ -1,5 +1,5 @@
 {
-  programs.git = {
+  programs.git.settings = {
     enable = true;
     userName = "alex";
     userEmail = "alex@mcculley.tech";
