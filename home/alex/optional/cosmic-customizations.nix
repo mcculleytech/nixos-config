@@ -2,6 +2,7 @@
 {
 	home.packages = with pkgs; [
 		adw-gtk3
+		nerd-fonts._0xproto
 	];
 
 	xdg.configFile."gtk-3.0/settings.ini".text = ''

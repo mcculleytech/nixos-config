@@ -7,7 +7,17 @@
     [
       unstable.cosmic-ext-tweaks
       unstable.zafiro-icons
+      unstable.wdisplays
+      quick-webapps
+      tasks
+      cosmic-ext-applet-caffeine
+      examine
     ];
+
+   environment.cosmic.excludePackages = with pkgs; [
+    cosmic-edit
+    cosmic-term
+  ];
 
   xdg.portal.enable = true;
   xdg.portal.extraPortals = with pkgs; [

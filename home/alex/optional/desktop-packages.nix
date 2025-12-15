@@ -29,6 +29,7 @@
     arduino-ide
     fastfetch
     # jellyfin-media-player - insecure package, reinstall when updated
+    ghostty
     zoom-us
     anki
     yt-dlp
