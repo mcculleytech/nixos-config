@@ -24,6 +24,7 @@
     watchmate
     luanti-client
     gparted
+    contact # meshtastic console UI
     # rpi-imager
     ollama
     arduino-ide

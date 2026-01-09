@@ -9,4 +9,5 @@
 	[Settings]
 	gtk-theme-name=adw-gtk3
 	'';
+
 }
