@@ -9,8 +9,8 @@
 
   home.packages = with pkgs; 
   [
-    bitwarden
-    retroarchFull
+    bitwarden-desktop
+    #retroarch-Full
     nixos-anywhere
     rpcs3
     game-devices-udev-rules
