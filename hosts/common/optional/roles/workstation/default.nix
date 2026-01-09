@@ -8,5 +8,6 @@
       ./custom-udev.nix
       ./game-controllers.nix
       ./steam.nix
+      ./waydroid.nix
     ];
 }
