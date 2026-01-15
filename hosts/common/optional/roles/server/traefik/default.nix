@@ -29,6 +29,12 @@ options = {
       environmentFiles = [ config.sops.secrets.cloudflare_email.path config.sops.secrets.cloudflare_api_key.path  ];
 	   };
 
+        systemd.services.traefik.serviceConfig = {
+          ProtectSystem = "full";
+          ReadWritePaths = [ "/var/run/docker.sock" ];
+        };
+
+
     users.users.traefik.extraGroups = ["docker" "acme"];
 
     networking.firewall.allowedTCPPorts = [ 80 443 8080 ];

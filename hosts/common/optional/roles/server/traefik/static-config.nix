@@ -28,7 +28,7 @@ in
         		serversTransport.insecureSkipVerify = true;
         		providers = {
         			docker = {
-        				endpoint = "unix://var/run/docker.sock";
+        				endpoint = "unix:///var/run/docker.sock";
         				exposedByDefault = false;
         			};
         		};

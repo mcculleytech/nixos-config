@@ -21,10 +21,10 @@
 			};
 		};
 		certs = {
-			"test.chonkywolf.live" = {
+			"home.mcculley.tech" = {
 			  inheritDefaults = true;
-			  domain = "*.test.chonkywolf.live";
-			  extraDomainNames = ["test.chonkywolf.live"];
+			  domain = "*.home.mcculley.tech";
+			  extraDomainNames = ["home.mcculley.tech"];
 			};
 		};
 	};
