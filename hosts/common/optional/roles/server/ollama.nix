@@ -8,11 +8,7 @@
   config = lib.mkIf config.ollama.enable {
 
     services.ollama = {
-      package = pkgs.unstable.ollama.override {
-        cudaArches = [
-          "61"
-        ];
-      };
+      package = pkgs.unstable.ollama-cuda;
       enable = true;
       acceleration = "cuda";
       host = "0.0.0.0";
