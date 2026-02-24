@@ -18,7 +18,7 @@
               type = "EF00";
               label = "ESP";
               content = {
-                extraArgs = [ "-n ESP" ];
+                extraArgs = [ "-n" "ESP" ];
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
@@ -105,4 +105,3 @@
       };
     };
   }
-
