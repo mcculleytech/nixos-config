@@ -14,6 +14,10 @@
 			stateDir = "/var/lib/open-webui";
 		};
 
+		systemd.tmpfiles.rules = [
+			"d /var/lib/private 0700 root root -"
+		];
+
 
 
 	environment.persistence = {
