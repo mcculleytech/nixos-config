@@ -11,10 +11,11 @@ in
   sops = {
     age = { 
       sshKeyPaths = map getKeyPath keys;
-      keyFile = "/var/lib/sops-nix/key.txt";
+      # Read directly from the persisted path so key access doesn't depend on
+      # impermanence bind-mount timing for /var/lib/sops-nix.
+      keyFile = "/persist/var/lib/sops-nix/key.txt";
       generateKey = true;
     };
   };
 
 }
-

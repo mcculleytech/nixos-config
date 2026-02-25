@@ -11,7 +11,7 @@ let
       trap 'umount "$MNTPOINT"' EXIT
 
       echo "Creating needed directories"
-      mkdir -p "$MNTPOINT"/persist/var/{log,lib/{nixos,systemd}}
+      mkdir -p "$MNTPOINT"/persist/var/{log,lib/{nixos,systemd,sops-nix}}
 
       echo "Cleaning root subvolume"
       btrfs subvolume list -o "$MNTPOINT/root" | cut -f9 -d ' ' |
