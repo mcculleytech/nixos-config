@@ -11,14 +11,13 @@
 			enable = true;
 			host = "0.0.0.0";
 			openFirewall = true;
-			stateDir = "/var/lib/open-webui";
+			# Use the real state path instead of the symlink target.
+			stateDir = "/var/lib/private/open-webui";
 		};
 
 		systemd.tmpfiles.rules = [
-			"d /var/lib/private 0700 root root -"
+			"d /var/lib/private/open-webui 0750 open-webui open-webui -"
 		];
-
-
 
 	environment.persistence = {
 	  "/persist" = {

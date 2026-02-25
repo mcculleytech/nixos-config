@@ -26,8 +26,6 @@
 
   networking.interfaces.enp5s0.wakeOnLan.enable = true;
 
-  fileSystems."/persist".neededForBoot = true;
-
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
     unstable.flameshot
