@@ -10,24 +10,29 @@ options = {
 			lib.mkEnableOption "enables traefik functionality";
 	};
 
-	config = lib.mkIf config.traefik.enable {
+		config = lib.mkIf config.traefik.enable {
 
-    sops.secrets = {
-      cloudflare_email = {
-        sopsFile = ../../../../../atreides/secrets.yaml;
-      };
-      cloudflare_api_key = {
-        sopsFile = ../../../../../atreides/secrets.yaml;
-      };
-    };
+	    sops.secrets = {
+	      cloudflare_email = {
+	        sopsFile = ../../../../../atreides/secrets.yaml;
+	      };
+	      cloudflare_api_key = {
+	        sopsFile = ../../../../../atreides/secrets.yaml;
+	      };
+	    };
+
+	    sops.templates."traefik-cloudflare.env".content = ''
+	      CF_API_EMAIL=${config.sops.placeholder.cloudflare_email}
+	      CF_API_KEY=${config.sops.placeholder.cloudflare_api_key}
+	    '';
 
 
-	   services.traefik = {
-	   	package = pkgs.unstable.traefik;
-	   	enable = true;
-      dataDir = "/var/lib/traefik";
-      environmentFiles = [ config.sops.secrets.cloudflare_email.path config.sops.secrets.cloudflare_api_key.path  ];
-	   };
+		   services.traefik = {
+		   	package = pkgs.unstable.traefik;
+		   	enable = true;
+	      dataDir = "/var/lib/traefik";
+	      environmentFiles = [ config.sops.templates."traefik-cloudflare.env".path ];
+		   };
 
         systemd.services.traefik.serviceConfig = {
           ProtectSystem = "full";
