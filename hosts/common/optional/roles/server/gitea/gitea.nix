@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 let
-  gitea_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_gitea.json);
+  tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_traefik.json);
+  giteaHost = "source.${tr_secrets.traefik.homelab_domain}";
 in
 # This configuration disables registration, but you can use the gitea cli to add a user.
 {
@@ -43,10 +44,12 @@ in
       appName = "McCulley Tech Gitea";
       settings = {
         server = {
-          DOMAIN = "${gitea_secrets.gitea.domain}";
-          ROOT_URL = "${gitea_secrets.gitea.url}";
+          DOMAIN = giteaHost;
+          ROOT_URL = "https://${giteaHost}/";
           HTTP_PORT = 3008;
           PROTOCOL = "http";
+          HTTP_ADDR = "0.0.0.0";
+          SSH_DOMAIN = giteaHost;
           SSH_PORT = 22;
         };
         ui = {
