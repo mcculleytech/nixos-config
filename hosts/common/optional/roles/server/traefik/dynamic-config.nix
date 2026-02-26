@@ -227,7 +227,7 @@ in
 	   			gitea = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.2.1.245:3008";}
+	   						{url = "http://vader.tail5c738.ts.net:3008";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
