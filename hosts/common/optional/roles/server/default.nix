@@ -10,6 +10,7 @@
     ./immich.nix
     ./qemu-config.nix
     ./blocky.nix
+    ./acme.nix
     ./homepage-dashboard.nix
     ./home-impermanence.nix
     ./gitea
