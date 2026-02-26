@@ -9,5 +9,6 @@
       ./game-controllers.nix
       ./steam.nix
       ./waydroid.nix
+      ./localsend.nix
     ];
 }

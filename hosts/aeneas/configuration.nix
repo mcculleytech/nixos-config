@@ -20,6 +20,7 @@
   # module enable
   steam.enable = true;
   waydroid.enable = true;
+  localsend.enable = true;
   
   networking.hostName = "aeneas";
   networking.networkmanager.enable = true;

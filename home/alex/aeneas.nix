@@ -13,5 +13,4 @@
       ./optional/nvim
     ];
 
-
 }
