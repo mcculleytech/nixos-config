@@ -9,7 +9,7 @@
   saruman = {
     deployment = {
       targetHost = "saruman";
-      targetUser = "alex";
+      targetUser = "root";
       allowLocalDeployment = true;
       tags = [ "server" "gpu" ];
     };
@@ -29,7 +29,7 @@
   vader = {
     deployment = {
       targetHost = "vader";
-      targetUser = "alex";
+      targetUser = "root";
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
@@ -40,7 +40,7 @@
   phantom = {
     deployment = {
       targetHost = "phantom";
-      targetUser = "alex";
+      targetUser = "root";
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
@@ -51,7 +51,7 @@
   atreides = {
     deployment = {
       targetHost = "atreides";
-      targetUser = "alex";
+      targetUser = "root";
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
@@ -62,7 +62,7 @@
   maul = {
     deployment = {
       targetHost = "maul";
-      targetUser = "alex";
+      targetUser = "root";
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [

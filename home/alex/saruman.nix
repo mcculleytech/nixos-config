@@ -12,6 +12,7 @@
     bitwarden-desktop
     #retroarch-Full
     nixos-anywhere
+    colmena
     rpcs3
     game-devices-udev-rules
     firefox
