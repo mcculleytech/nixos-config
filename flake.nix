@@ -55,6 +55,8 @@
     rec {
       overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
 
+      colmena = import ./colmena.nix { inherit inputs outputs defaultModules homeManagerServerModule; };
+
       # NixOS Configs
       nixosConfigurations = {
         # Framework 13 AMD Laptop
