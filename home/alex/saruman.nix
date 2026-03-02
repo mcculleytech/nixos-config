@@ -16,6 +16,7 @@
     game-devices-udev-rules
     firefox
     unstable.ollama
+    unstable.lmstudio
     unstable.xonotic
     # unstable.jellyfin-media-player
   ];
