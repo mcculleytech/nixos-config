@@ -5,7 +5,7 @@
 			lib.mkEnableOption "enables waydroid";
 	};
 
-	config = lib.mkIf config.steam.enable {
+	config = lib.mkIf config.waydroid.enable {
 		virtualisation.waydroid = {
 		  enable = true;
 		  package = pkgs.waydroid-nftables;
