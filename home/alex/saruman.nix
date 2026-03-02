@@ -15,6 +15,7 @@
     rpcs3
     game-devices-udev-rules
     firefox
+    obsidian
     unstable.ollama
     unstable.lmstudio
     unstable.xonotic
