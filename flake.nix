@@ -32,6 +32,7 @@
       inherit (self) outputs;
 
       defaultModules = [
+        { nixpkgs.hostPlatform = "x86_64-linux"; }
         inputs.disko.nixosModules.disko
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
@@ -63,7 +64,6 @@
         "aeneas" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/aeneas/configuration.nix
             hardware.nixosModules.framework-13-7040-amd
             # ({
@@ -88,7 +88,6 @@
         "achilles" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/achilles/configuration.nix
             #hardware.nixosModules.common-gpu-nvidia-nonprime
             home-manager.nixosModules.home-manager
@@ -110,7 +109,6 @@
         "saruman" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/saruman/configuration.nix
             home-manager.nixosModules.home-manager
             hardware.nixosModules.common-gpu-nvidia-nonprime
@@ -130,7 +128,6 @@
         "vader" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ homeManagerServerModule ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/vader/configuration.nix
           ];
         };
@@ -139,7 +136,6 @@
         "phantom" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ homeManagerServerModule ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/phantom/configuration.nix
           ];
         };
@@ -148,7 +144,6 @@
         "atreides" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ homeManagerServerModule ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/atreides/configuration.nix
           ];
         };
@@ -157,7 +152,6 @@
         "maul" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
           modules = defaultModules ++ homeManagerServerModule ++ [
-            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/maul/configuration.nix
           ];
         };

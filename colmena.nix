@@ -1,8 +1,5 @@
 { inputs, outputs, defaultModules, homeManagerServerModule }:
 
-let
-  platformModule = { nixpkgs.hostPlatform = "x86_64-linux"; };
-in
 {
   meta = {
     nixpkgs = import inputs.nixpkgs { localSystem = "x86_64-linux"; };
@@ -17,7 +14,6 @@ in
       tags = [ "server" "gpu" ];
     };
     imports = defaultModules ++ [
-      platformModule
       inputs.hardware.nixosModules.common-gpu-nvidia-nonprime
       inputs.home-manager.nixosModules.home-manager
       ./hosts/saruman/configuration.nix
@@ -37,7 +33,6 @@ in
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
-      platformModule
       ./hosts/vader/configuration.nix
     ];
   };
@@ -49,7 +44,6 @@ in
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
-      platformModule
       ./hosts/phantom/configuration.nix
     ];
   };
@@ -61,7 +55,6 @@ in
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
-      platformModule
       ./hosts/atreides/configuration.nix
     ];
   };
@@ -73,7 +66,6 @@ in
       tags = [ "server" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
-      platformModule
       ./hosts/maul/configuration.nix
     ];
   };
