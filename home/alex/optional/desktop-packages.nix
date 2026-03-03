@@ -49,6 +49,7 @@
     valgrind
     unstable.devenv
     # Unstable pkgs
+    unstable.claude-code
     unstable.beeper
     unstable.bitwarden-desktop
     unstable.awscli2

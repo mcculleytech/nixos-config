@@ -7,12 +7,24 @@
 	};
 
 	config = lib.mkIf config.open-webui.enable {
+		users.users.open-webui = {
+			isSystemUser = true;
+			group = "open-webui";
+		};
+		users.groups.open-webui = {};
+
 		services.open-webui = {
 			enable = true;
 			host = "0.0.0.0";
 			openFirewall = true;
-			# Use the real state path instead of the symlink target.
 			stateDir = "/var/lib/private/open-webui";
+		};
+
+		systemd.services.open-webui.serviceConfig = {
+			DynamicUser = lib.mkForce false;
+			PrivateUsers = lib.mkForce false;
+			User = "open-webui";
+			Group = "open-webui";
 		};
 
 		systemd.tmpfiles.rules = [

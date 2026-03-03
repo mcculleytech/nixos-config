@@ -17,6 +17,7 @@
     game-devices-udev-rules
     firefox
     obsidian
+    unstable.claude-code
     unstable.ollama
     unstable.lmstudio
     unstable.xonotic
