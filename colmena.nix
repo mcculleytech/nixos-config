@@ -30,7 +30,7 @@
     deployment = {
       targetHost = "vader";
       targetUser = "root";
-      tags = [ "server" ];
+      tags = [ "server" "vm" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
       ./hosts/vader/configuration.nix
@@ -41,7 +41,7 @@
     deployment = {
       targetHost = "phantom";
       targetUser = "root";
-      tags = [ "server" ];
+      tags = [ "server" "vm" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
       ./hosts/phantom/configuration.nix
@@ -52,7 +52,7 @@
     deployment = {
       targetHost = "atreides";
       targetUser = "root";
-      tags = [ "server" ];
+      tags = [ "server" "vm" ];
     };
     imports = defaultModules ++ homeManagerServerModule ++ [
       ./hosts/atreides/configuration.nix
