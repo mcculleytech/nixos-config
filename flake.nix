@@ -62,8 +62,8 @@
         # Framework 13 AMD Laptop
         "aeneas" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/aeneas/configuration.nix
             hardware.nixosModules.framework-13-7040-amd
             # ({
@@ -87,8 +87,8 @@
         # Main Custom Desktop
         "achilles" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/achilles/configuration.nix
             #hardware.nixosModules.common-gpu-nvidia-nonprime
             home-manager.nixosModules.home-manager
@@ -109,8 +109,8 @@
         # Dedicated GPU Server
         "saruman" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/saruman/configuration.nix
             home-manager.nixosModules.home-manager
             hardware.nixosModules.common-gpu-nvidia-nonprime
@@ -129,8 +129,8 @@
         # Testing Server
         "vader" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/vader/configuration.nix
           ];
         };
@@ -138,8 +138,8 @@
         # Tailscale Subnet Router
         "phantom" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/phantom/configuration.nix
           ];
         };
@@ -147,8 +147,8 @@
         # Blocky DNS Server
         "atreides" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/atreides/configuration.nix
           ];
         };
@@ -156,8 +156,8 @@
         # Backup Server
         "maul" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
+            { nixpkgs.hostPlatform = "x86_64-linux"; }
             ./hosts/maul/configuration.nix
           ];
         };
