@@ -32,6 +32,7 @@
       inherit (self) outputs;
 
       defaultModules = [
+        { nixpkgs.hostPlatform = "x86_64-linux"; }
         inputs.disko.nixosModules.disko
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
@@ -55,12 +56,13 @@
     rec {
       overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
 
+      colmena = import ./colmena.nix { inherit inputs outputs defaultModules homeManagerServerModule; };
+
       # NixOS Configs
       nixosConfigurations = {
         # Framework 13 AMD Laptop
         "aeneas" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
             ./hosts/aeneas/configuration.nix
             hardware.nixosModules.framework-13-7040-amd
@@ -85,7 +87,6 @@
         # Main Custom Desktop
         "achilles" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
             ./hosts/achilles/configuration.nix
             #hardware.nixosModules.common-gpu-nvidia-nonprime
@@ -107,7 +108,6 @@
         # Dedicated GPU Server
         "saruman" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ [
             ./hosts/saruman/configuration.nix
             home-manager.nixosModules.home-manager
@@ -127,7 +127,6 @@
         # Testing Server
         "vader" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
             ./hosts/vader/configuration.nix
           ];
@@ -136,7 +135,6 @@
         # Tailscale Subnet Router
         "phantom" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
             ./hosts/phantom/configuration.nix
           ];
@@ -145,7 +143,6 @@
         # Blocky DNS Server
         "atreides" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
             ./hosts/atreides/configuration.nix
           ];
@@ -154,7 +151,6 @@
         # Backup Server
         "maul" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          system = "x86_64-linux";
           modules = defaultModules ++ homeManagerServerModule ++ [
             ./hosts/maul/configuration.nix
           ];
