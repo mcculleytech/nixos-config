@@ -42,30 +42,30 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 			- [ ] Hyprlock
 			- [ ] Hypridle
 			- [ ] kanshi
-			- [ ] Hyprpaper
+			- [x] Hyprpaper
 	- [x] KDE ✅ 2024-07-12
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
 
 ### Servers
-- [ ] Colmena setup
-- [ ] KVM Server (?)
+- [x] Colmena setup
+- [x] KVM Server
 - [ ] Standalone home manager config for wsl2 or Mac
 - [x] Tailscale Subnet Router ✅ 2024-03-10
 - [x] Syncthing ✅ 2024-03-10
 	- [x] username and password ✅ 2024-03-10
 	- [x] standalone server - make syncthing more configurable for all endpoints. ✅ 2024-03-10
-- [ ] Homelab Dashboard - WIP
+- [x] Homelab Dashboard
 	- [x] Basic config
-	- [ ] Configure services (?)
-	- [ ] Configure Widgets (?)
+	- [x] Configure services
+	- [x] Configure Widgets
 - [x] Traefik Reverse Proxy ✅ 2024-03-20
 	- [x] Let's Encrypt auto cert renewal ✅ 2024-03-20
 - [x] Radicale CardDav and CalDav Server ✅ 2024-03-23
 - [x] Gitea server fix ✅ 2024-10-04
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
-- [ ] Need to fix home-manager impermanence issue where the systemd units aren't mounted for hm.
+- [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 
 
 ### Other
@@ -74,13 +74,14 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
  	- [x] Set as part of global config ✅ 2024-03-08
 - [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20
-- [ ] Clean up `flake.nix`
+- [x] Clean up `flake.nix`
 - [x] Fix GitHub Action that should autoupdate flake.lock ✅ 2024-08-01
 - [ ] Blocky DNS
 	- [ ] Multiple Nodes connected via Redis (?)
 	- [x] Multiple Servers ✅ 2024-03-20
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
-	- [ ] Figure out best way to consolidate configs for Desktop and Server (i.e have a function that checks what group the machine is in and apply settings - one file for packages, etc.)
+	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
+	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
 	- [x] aeneas ✅ 2024-02-20
