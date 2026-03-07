@@ -46,9 +46,11 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] KDE ✅ 2024-07-12
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
+- [ ] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern)
 
 ### Servers
 - [x] Colmena setup
+	- [ ] Switch Colmena `targetHost` from Tailscale hostnames to local IPs — all boxes are on-prem, no need for Tailscale
 - [x] KVM Server
 - [ ] Standalone home manager config for wsl2 or Mac
 - [x] Tailscale Subnet Router ✅ 2024-03-10
@@ -82,6 +84,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
 	- [ ] Further consolidation (e.g. single function for group-based settings)
+- [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
 	- [x] aeneas ✅ 2024-02-20
