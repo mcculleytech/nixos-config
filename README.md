@@ -88,7 +88,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
 	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
-- [ ] Full Homelab Automation — push-to-deploy GitOps (see [Automation Roadmap](#automation-roadmap) below)
+- [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](#automation-roadmap) below)
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
 	- [x] aeneas ✅ 2024-02-20
@@ -130,9 +130,13 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 ## Automation Roadmap
 
-A phased plan to fully automate homelab deployment — from manual `colmena apply` to push-to-deploy GitOps.
+Two parallel tracks for automating the homelab — pick one or run both side by side. Both tracks share the same **Phase 0** foundation.
 
-### Phase 1: Colmena on Local IPs
+### Phase 0: Shared Foundation (both tracks)
+
+These steps are prerequisites regardless of which track you follow.
+
+**Colmena on Local IPs:**
 
 All servers are on-prem, so there's no reason to route Colmena through Tailscale. Replace hostname-based `targetHost` in `colmena.nix` with static IPs and centralize the IP map in one place (e.g. a shared attrset or `hosts.nix` file) so Colmena, Blocky DNS, and Traefik all reference the same source of truth.
 
@@ -144,7 +148,26 @@ All servers are on-prem, so there's no reason to route Colmena through Tailscale
 | atreides | `10.1.8.0/24` | `atreides`           | static IP           |
 | maul     | offsite       | `maul`               | static IP or VPN    |
 
-### Phase 2: Self-Hosted CI/CD Runner
+- [ ] Switch Colmena `targetHost` values to static IPs
+- [ ] Centralize IP mappings in a single `hosts.nix` attrset
+
+**Monitoring Stack (Prometheus + Grafana):**
+
+Shared across both tracks — observability is useful regardless of how deploys happen.
+
+- [ ] Deploy Prometheus as a NixOS module (likely on atreides or a new VM)
+- [ ] `prometheus-node-exporter` on every host for hardware/OS metrics
+- [ ] Grafana dashboards for system health, disk usage, service status
+- [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
+- [ ] Optional: Loki for centralized log aggregation
+
+---
+
+### Track A: Traditional Ops (zero AI)
+
+A fully deterministic, script-driven pipeline. Every decision is encoded in shell scripts, GitHub Actions workflows, and Nix expressions. No LLMs, no inference, no magic — just well-understood tools.
+
+#### A1: Self-Hosted CI/CD Runner
 
 Deploy a GitHub Actions self-hosted runner on **saruman** (Ryzen 5, Nvidia 1080 — already the beefiest box). This keeps builds on LAN with direct SSH access to every host.
 
@@ -153,7 +176,7 @@ Deploy a GitHub Actions self-hosted runner on **saruman** (Ryzen 5, Nvidia 1080 
 - [ ] Create a dedicated SSH deploy key (sops-managed) that the runner uses to reach all hosts
 - [ ] Label the runner (e.g. `self-hosted`, `nix`, `homelab`) for workflow targeting
 
-### Phase 3: CI/CD Pipeline
+#### A2: CI/CD Pipeline
 
 Two GitHub Actions workflows:
 
@@ -172,7 +195,7 @@ nix flake check → cachix push → colmena apply → health check → notify
 - [ ] Notifications via ntfy, Slack webhook, or email on deploy success/failure
 - [ ] Manual workflow dispatch for deploying a single host on demand
 
-### Phase 4: Proxmox VM Automation
+#### A3: Proxmox VM Automation
 
 Declaratively manage VM lifecycle so spinning up a new NixOS server is a single PR.
 
@@ -182,25 +205,14 @@ Declaratively manage VM lifecycle so spinning up a new NixOS server is a single 
 - [ ] Store Terraform state encrypted in the repo or in a remote backend
 - [ ] Alternative: evaluate `nixos-generators` for building Proxmox-ready images directly from flake
 
-### Phase 5: Monitoring and Rollback
+#### A4: Health Checks and Rollback
 
-**Monitoring Stack (Prometheus + Grafana):**
-- [ ] Deploy Prometheus as a NixOS module (likely on atreides or a new VM)
-- [ ] `prometheus-node-exporter` on every host for hardware/OS metrics
-- [ ] Grafana dashboards for system health, disk usage, service status
-- [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
-- [ ] Optional: Loki for centralized log aggregation
-
-**Post-Deploy Health Checks:**
 - [ ] CI step after `colmena apply`: SSH into each host, verify systemd units are healthy
 - [ ] Check critical services (Traefik, Blocky, Jellyfin, etc.) respond on expected ports
 - [ ] On failure: `colmena apply --on @failed-host` with previous known-good revision, or `nixos-rebuild switch --rollback`
-
-**Rollback Strategy:**
-- [ ] NixOS generations are already preserved — rollback is always one command away
 - [ ] CI tags each successful deploy commit so there's always a known-good ref to roll back to
 
-### Phase 6: Full GitOps Loop
+#### A5: Full GitOps Loop
 
 Close the loop — the repo becomes the single source of truth with zero manual intervention.
 
@@ -209,7 +221,7 @@ Close the loop — the repo becomes the single source of truth with zero manual 
 - [ ] Scheduled drift detection: nightly `colmena apply --evaluator streaming --verbose --what-if` dry-run, alert if actual state diverges from repo
 - [ ] Self-healing: if drift is detected, auto-apply to bring hosts back in line (optional, aggressive)
 
-### End State
+#### Track A End State
 
 ```
 git push → GitHub Actions (saruman runner) → nix flake check → cachix push
@@ -219,4 +231,70 @@ git push → GitHub Actions (saruman runner) → nix flake check → cachix push
 Weekly: flake.lock update PR → auto-merge if green → full deploy cycle
 
 New VM: Terraform apply → nixos-anywhere bootstrap → sops enroll → colmena apply
+```
+
+---
+
+### Track B: AI-Augmented Ops
+
+Layer AI into the operations workflow. The underlying infrastructure (Colmena, Prometheus, NixOS) stays the same — AI acts as an intelligent operator on top of it, handling triage, analysis, and generation of changes that still go through normal review.
+
+#### B1: AI-Assisted Config Generation
+
+Use an LLM to generate NixOS module configs from natural language descriptions, reducing boilerplate and speeding up new service onboarding.
+
+- [ ] Local LLM on **saruman** (Ollama + CodeLlama/Deepseek-Coder or similar) — keep everything on-prem, no API keys
+- [ ] Prompt templates for common tasks: "add a new NixOS service", "create a Colmena node", "write a disko config for X"
+- [ ] CLI wrapper script: `./ai-gen service --name foo --port 8080` → generates a module scaffold
+- [ ] All AI output lands in a feature branch for human review — never auto-merged
+
+#### B2: Intelligent Alerting and Triage
+
+Replace static Alertmanager rules with an AI layer that correlates metrics and provides actionable context when things break.
+
+- [ ] Feed Prometheus alerts + recent metrics into a local LLM for root-cause analysis
+- [ ] Alert enrichment: when Alertmanager fires, an AI summary is appended to the ntfy/Slack notification with probable cause and suggested remediation
+- [ ] Runbook generation: AI produces step-by-step remediation based on the alert type and host context
+- [ ] Correlation: group related alerts (e.g. high load + OOM + service restart) into a single incident summary
+
+#### B3: Log Analysis with AI
+
+Use AI to surface anomalies and patterns in logs that static rules would miss.
+
+- [ ] Loki for centralized log aggregation (shared with Track A if both run)
+- [ ] Periodic log summarization: cron job feeds recent logs to LLM, outputs a daily digest of notable events
+- [ ] Anomaly detection: flag log patterns that deviate from baseline (e.g. sudden spike in auth failures, unusual systemd restarts)
+- [ ] Query interface: natural language queries against logs — "what happened on phantom between 2am and 4am?"
+
+#### B4: AI-Assisted PR Review and Drift Remediation
+
+Use AI to review incoming Nix changes and auto-generate fixes for config drift.
+
+- [ ] PR review bot: on new PR, LLM analyzes the Nix diff for common mistakes (missing `mkEnableOption`, wrong option types, security issues like open ports)
+- [ ] Drift remediation: when scheduled drift detection (from Phase 0) finds divergence, AI generates a PR with the fix instead of just alerting
+- [ ] Dependency analysis: when `flake.lock` updates, AI summarizes what changed upstream and flags breaking changes
+- [ ] Nix evaluation error helper: on CI failure, AI reads the eval error and suggests a fix in a PR comment
+
+#### B5: Conversational Homelab Management
+
+A chat interface for managing the homelab through natural language.
+
+- [ ] Local chatbot (Ollama-backed) with access to the repo, Prometheus API, and Colmena
+- [ ] Commands like: "deploy the latest config to all VMs", "show me saruman's CPU usage this week", "what services are running on atreides?"
+- [ ] Safety rails: destructive actions (deploy, rollback, VM delete) require explicit confirmation
+- [ ] Context-aware: bot knows the repo structure, host inventory, and current Prometheus state
+
+#### Track B End State
+
+```
+Alert fires → Prometheus → Alertmanager → AI triage (local LLM)
+  → enriched notification with root cause + suggested fix
+  → if auto-remediable: AI opens a PR → human approves → colmena apply
+
+New service request → natural language → AI generates Nix module
+  → PR opened → AI + human review → merge → deploy
+
+Daily: AI log digest → anomaly report → flag issues before they alert
+
+Drift detected → AI generates remediation PR → auto-deploy if approved
 ```
