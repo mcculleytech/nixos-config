@@ -69,6 +69,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Arion for docker compose configurations
 - [ ] RSS feed server
 - [ ] n8n automation platform
+- [ ] Prometheus + Grafana monitoring stack
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 
 
@@ -87,28 +88,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
 	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
-- [ ] Full Homelab Automation (push-to-deploy)
-	- [ ] **Phase 1: Colmena on local IPs** — Replace Tailscale hostnames with static IPs in `colmena.nix`, centralize IP mappings
-	- [ ] **Phase 2: Self-hosted CI/CD runner on saruman** — GitHub Actions self-hosted runner for build + deploy
-		- [ ] Install and register `actions-runner` as a NixOS service on saruman
-		- [ ] SSH key for runner → all hosts (sops-managed deploy key)
-	- [ ] **Phase 3: CI/CD pipeline** — GitHub Actions workflow: `main` merge → `nix flake check` → `colmena apply`
-		- [ ] Workflow: lint/check on PR, deploy on merge to `main`
-		- [ ] Cachix integration for binary cache (speed up builds)
-		- [ ] Selective deploys via Colmena tags (e.g. only `--on @vm` or `--on @server`)
-		- [ ] Slack/ntfy/email notifications on deploy success/failure
-	- [ ] **Phase 4: Proxmox VM automation** — Terraform + Proxmox provider or NixOS Proxmox modules
-		- [ ] Declarative VM lifecycle (create/resize/destroy) via Terraform
-		- [ ] Auto-bootstrap new VMs with `nixos-anywhere` post-provision
-		- [ ] Automate sops key enrollment for new hosts (`sops-check.sh` → CI integration)
-	- [ ] **Phase 5: Monitoring & rollback**
-		- [ ] Health checks post-deploy (SSH reachability, systemd service status)
-		- [ ] Auto-rollback on failed deploy (`colmena apply` exit code → `nixos-rebuild switch --rollback`)
-		- [ ] Prometheus + Grafana or simple uptime monitoring (e.g. Uptime Kuma)
-	- [ ] **Phase 6: Full GitOps loop**
-		- [ ] Automated flake.lock update PR (already have weekly cron) → auto-merge if checks pass
-		- [ ] Branch protection: require `nix flake check` pass before merge
-		- [ ] Drift detection: scheduled Colmena dry-run to flag config drift
+- [ ] Full Homelab Automation — push-to-deploy GitOps (see [Automation Roadmap](#automation-roadmap) below)
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
 	- [x] aeneas ✅ 2024-02-20
@@ -147,3 +127,96 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [nix.dev](https://nix.dev/index.html) - nix documentation <br>
 - [Helpful Nix Tutorials and Docs](https://nixos-and-flakes.thiscute.world/) - great nix tutorials and documentation I need to work through. <br>
 - [Docker Compose to Nix Config](https://github.com/aksiksi/compose2nix) - Easy way to convert existing docker compose files into Nix. <br>
+
+## Automation Roadmap
+
+A phased plan to fully automate homelab deployment — from manual `colmena apply` to push-to-deploy GitOps.
+
+### Phase 1: Colmena on Local IPs
+
+All servers are on-prem, so there's no reason to route Colmena through Tailscale. Replace hostname-based `targetHost` in `colmena.nix` with static IPs and centralize the IP map in one place (e.g. a shared attrset or `hosts.nix` file) so Colmena, Blocky DNS, and Traefik all reference the same source of truth.
+
+| Host     | Subnet        | Current `targetHost` | New `targetHost`    |
+| -------- | ------------- | -------------------- | ------------------- |
+| saruman  | `10.1.8.0/24` | `saruman`            | static IP           |
+| vader    | `10.2.1.0/24` | `vader`              | static IP           |
+| phantom  | `10.1.8.0/24` | `phantom`            | static IP           |
+| atreides | `10.1.8.0/24` | `atreides`           | static IP           |
+| maul     | offsite       | `maul`               | static IP or VPN    |
+
+### Phase 2: Self-Hosted CI/CD Runner
+
+Deploy a GitHub Actions self-hosted runner on **saruman** (Ryzen 5, Nvidia 1080 — already the beefiest box). This keeps builds on LAN with direct SSH access to every host.
+
+- [ ] Add `services.github-runners` NixOS module to saruman's config
+- [ ] Generate and sops-encrypt a GitHub runner registration token
+- [ ] Create a dedicated SSH deploy key (sops-managed) that the runner uses to reach all hosts
+- [ ] Label the runner (e.g. `self-hosted`, `nix`, `homelab`) for workflow targeting
+
+### Phase 3: CI/CD Pipeline
+
+Two GitHub Actions workflows:
+
+**On Pull Request:**
+```
+nix flake check → colmena build (dry-build, no deploy)
+```
+
+**On Merge to `main`:**
+```
+nix flake check → cachix push → colmena apply → health check → notify
+```
+
+- [ ] Cachix binary cache integration to avoid redundant builds
+- [ ] Selective deploys using Colmena tags (`--on @vm`, `--on @server`, `--on @gpu`)
+- [ ] Notifications via ntfy, Slack webhook, or email on deploy success/failure
+- [ ] Manual workflow dispatch for deploying a single host on demand
+
+### Phase 4: Proxmox VM Automation
+
+Declaratively manage VM lifecycle so spinning up a new NixOS server is a single PR.
+
+- [ ] Terraform with the `bpg/proxmox` provider — define VMs (CPU, RAM, disk, network) as code
+- [ ] Post-provision hook: `nixos-anywhere --copy-host-keys --flake '.#hostname' root@ip`
+- [ ] Integrate `sops-check.sh` into the pipeline to auto-enroll new host keys
+- [ ] Store Terraform state encrypted in the repo or in a remote backend
+- [ ] Alternative: evaluate `nixos-generators` for building Proxmox-ready images directly from flake
+
+### Phase 5: Monitoring and Rollback
+
+**Monitoring Stack (Prometheus + Grafana):**
+- [ ] Deploy Prometheus as a NixOS module (likely on atreides or a new VM)
+- [ ] `prometheus-node-exporter` on every host for hardware/OS metrics
+- [ ] Grafana dashboards for system health, disk usage, service status
+- [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
+- [ ] Optional: Loki for centralized log aggregation
+
+**Post-Deploy Health Checks:**
+- [ ] CI step after `colmena apply`: SSH into each host, verify systemd units are healthy
+- [ ] Check critical services (Traefik, Blocky, Jellyfin, etc.) respond on expected ports
+- [ ] On failure: `colmena apply --on @failed-host` with previous known-good revision, or `nixos-rebuild switch --rollback`
+
+**Rollback Strategy:**
+- [ ] NixOS generations are already preserved — rollback is always one command away
+- [ ] CI tags each successful deploy commit so there's always a known-good ref to roll back to
+
+### Phase 6: Full GitOps Loop
+
+Close the loop — the repo becomes the single source of truth with zero manual intervention.
+
+- [ ] Automated flake.lock update PR (already runs weekly) — auto-merge if `nix flake check` + `colmena build` pass
+- [ ] Branch protection on `main`: require CI checks before merge
+- [ ] Scheduled drift detection: nightly `colmena apply --evaluator streaming --verbose --what-if` dry-run, alert if actual state diverges from repo
+- [ ] Self-healing: if drift is detected, auto-apply to bring hosts back in line (optional, aggressive)
+
+### End State
+
+```
+git push → GitHub Actions (saruman runner) → nix flake check → cachix push
+  → colmena apply → health checks → notify
+  → on failure: auto-rollback + alert
+
+Weekly: flake.lock update PR → auto-merge if green → full deploy cycle
+
+New VM: Terraform apply → nixos-anywhere bootstrap → sops enroll → colmena apply
+```
