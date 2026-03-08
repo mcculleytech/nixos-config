@@ -68,7 +68,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
 - [ ] RSS feed server
-- [x] n8n automation platform (native NixOS service)
+- [ ] n8n automation platform (native NixOS service, no Docker needed)
 - [ ] Prometheus + Grafana monitoring stack
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 
