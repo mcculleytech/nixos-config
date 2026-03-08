@@ -161,6 +161,28 @@ Shared across both tracks — observability is useful regardless of how deploys 
 - [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
 - [ ] Optional: Loki for centralized log aggregation
 
+**Auto-Update Pipeline:**
+
+The weekly `update-flake.yml` workflow already creates flake.lock update PRs via `DeterminateSystems/update-flake-lock`. The remaining work connects that to a full validate → merge → staged deploy loop.
+
+- [ ] **CI validation job:** add a workflow that runs `nix flake check` + `colmena build` (dry-build) on every flake.lock update PR
+- [ ] **Auto-merge:** enable GitHub auto-merge on the update PR when CI passes (`gh pr merge --auto --merge`)
+- [ ] **Staged deploy workflow** triggered on merge to `main`:
+  - Stage 1: `colmena apply --on @vm` (vader, phantom, atreides)
+  - Health check: SSH into each VM, verify systemd units are healthy and critical services respond on expected ports
+  - Stage 2: `colmena apply` on physical servers (saruman, maul) — only runs if Stage 1 health checks pass
+  - Health check on physical hosts
+  - Notify on success/failure via ntfy or webhook
+- [ ] **Rollback on failure:** if health checks fail, `nixos-rebuild switch --rollback` on affected hosts and send alert
+
+```
+Weekly cron → update-flake.yml → flake.lock PR
+  → CI: nix flake check + colmena build → auto-merge if green
+  → Deploy Stage 1: colmena apply --on @vm → health check
+  → Deploy Stage 2: colmena apply (physical) → health check
+  → on failure: rollback + alert
+```
+
 ---
 
 ### Track A: Traditional Ops (zero AI)
@@ -178,22 +200,11 @@ Deploy a GitHub Actions self-hosted runner on **saruman** (Ryzen 5, Nvidia 1080 
 
 #### A2: CI/CD Pipeline
 
-Two GitHub Actions workflows:
+Builds on the shared [Auto-Update Pipeline](#phase-0-shared-foundation-both-tracks) from Phase 0. The staged deploy workflow and auto-merge logic live there — this section covers the additional CI/CD pieces.
 
-**On Pull Request:**
-```
-nix flake check → colmena build (dry-build, no deploy)
-```
-
-**On Merge to `main`:**
-```
-nix flake check → cachix push → colmena apply → health check → notify
-```
-
-- [ ] Cachix binary cache integration to avoid redundant builds
-- [ ] Selective deploys using Colmena tags (`--on @vm`, `--on @server`, `--on @gpu`)
-- [ ] Notifications via ntfy, Slack webhook, or email on deploy success/failure
-- [ ] Manual workflow dispatch for deploying a single host on demand
+- [ ] Cachix binary cache integration to avoid redundant builds across PR checks and deploys
+- [ ] Manual workflow dispatch for deploying a single host on demand (`colmena apply --on hostname`)
+- [ ] Extend the staged deploy workflow to also support ad-hoc deploys (not just flake.lock updates)
 
 #### A3: Proxmox VM Automation
 
@@ -214,9 +225,8 @@ Declaratively manage VM lifecycle so spinning up a new NixOS server is a single 
 
 #### A5: Full GitOps Loop
 
-Close the loop — the repo becomes the single source of truth with zero manual intervention.
+Close the loop — the repo becomes the single source of truth with zero manual intervention. The auto-update pipeline (Phase 0) handles flake.lock PRs, CI validation, auto-merge, and staged deploys. This section covers the remaining GitOps pieces.
 
-- [ ] Automated flake.lock update PR (already runs weekly) — auto-merge if `nix flake check` + `colmena build` pass
 - [ ] Branch protection on `main`: require CI checks before merge
 - [ ] Scheduled drift detection: nightly `colmena apply --evaluator streaming --verbose --what-if` dry-run, alert if actual state diverges from repo
 - [ ] Self-healing: if drift is detected, auto-apply to bring hosts back in line (optional, aggressive)
@@ -272,7 +282,7 @@ Use AI to review incoming Nix changes and auto-generate fixes for config drift.
 
 - [ ] PR review bot: on new PR, LLM analyzes the Nix diff for common mistakes (missing `mkEnableOption`, wrong option types, security issues like open ports)
 - [ ] Drift remediation: when scheduled drift detection (from Phase 0) finds divergence, AI generates a PR with the fix instead of just alerting
-- [ ] Dependency analysis: when `flake.lock` updates, AI summarizes what changed upstream and flags breaking changes
+- [ ] Dependency analysis: when `flake.lock` updates, AI summarizes what changed upstream and flags breaking changes before the auto-update pipeline (Phase 0) auto-merges
 - [ ] Nix evaluation error helper: on CI failure, AI reads the eval error and suggests a fix in a PR comment
 
 #### B5: Conversational Homelab Management
