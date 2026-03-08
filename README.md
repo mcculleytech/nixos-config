@@ -87,6 +87,28 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
 	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
+- [ ] Full Homelab Automation (push-to-deploy)
+	- [ ] **Phase 1: Colmena on local IPs** — Replace Tailscale hostnames with static IPs in `colmena.nix`, centralize IP mappings
+	- [ ] **Phase 2: Self-hosted CI/CD runner on saruman** — GitHub Actions self-hosted runner for build + deploy
+		- [ ] Install and register `actions-runner` as a NixOS service on saruman
+		- [ ] SSH key for runner → all hosts (sops-managed deploy key)
+	- [ ] **Phase 3: CI/CD pipeline** — GitHub Actions workflow: `main` merge → `nix flake check` → `colmena apply`
+		- [ ] Workflow: lint/check on PR, deploy on merge to `main`
+		- [ ] Cachix integration for binary cache (speed up builds)
+		- [ ] Selective deploys via Colmena tags (e.g. only `--on @vm` or `--on @server`)
+		- [ ] Slack/ntfy/email notifications on deploy success/failure
+	- [ ] **Phase 4: Proxmox VM automation** — Terraform + Proxmox provider or NixOS Proxmox modules
+		- [ ] Declarative VM lifecycle (create/resize/destroy) via Terraform
+		- [ ] Auto-bootstrap new VMs with `nixos-anywhere` post-provision
+		- [ ] Automate sops key enrollment for new hosts (`sops-check.sh` → CI integration)
+	- [ ] **Phase 5: Monitoring & rollback**
+		- [ ] Health checks post-deploy (SSH reachability, systemd service status)
+		- [ ] Auto-rollback on failed deploy (`colmena apply` exit code → `nixos-rebuild switch --rollback`)
+		- [ ] Prometheus + Grafana or simple uptime monitoring (e.g. Uptime Kuma)
+	- [ ] **Phase 6: Full GitOps loop**
+		- [ ] Automated flake.lock update PR (already have weekly cron) → auto-merge if checks pass
+		- [ ] Branch protection: require `nix flake check` pass before merge
+		- [ ] Drift detection: scheduled Colmena dry-run to flag config drift
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
 	- [x] aeneas ✅ 2024-02-20
