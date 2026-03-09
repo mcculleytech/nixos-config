@@ -87,6 +87,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
 	- [ ] Further consolidation (e.g. single function for group-based settings)
+- [ ] Make template files
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](#automation-roadmap) below)
 - [x] Disko configs for: ✅ 2024-03-01
