@@ -8,7 +8,7 @@
 
   saruman = {
     deployment = {
-      targetHost = "saruman";
+      targetHost = "10.1.8.6";
       targetUser = "root";
       allowLocalDeployment = true;
       tags = [ "server" "gpu" ];
@@ -28,7 +28,7 @@
 
   vader = {
     deployment = {
-      targetHost = "vader";
+      targetHost = "10.2.1.245";
       targetUser = "root";
       tags = [ "server" "vm" ];
     };
@@ -39,7 +39,7 @@
 
   phantom = {
     deployment = {
-      targetHost = "phantom";
+      targetHost = "10.1.8.121";
       targetUser = "root";
       tags = [ "server" "vm" ];
     };
@@ -50,7 +50,7 @@
 
   atreides = {
     deployment = {
-      targetHost = "atreides";
+      targetHost = "10.1.8.129";
       targetUser = "root";
       tags = [ "server" "vm" ];
     };

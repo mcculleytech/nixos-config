@@ -19,6 +19,7 @@
   steam.enable = true;
   immich.enable = true;
   open-webui.enable = true;
+  n8n.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;

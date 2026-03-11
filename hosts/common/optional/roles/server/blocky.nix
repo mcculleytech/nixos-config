@@ -25,7 +25,7 @@ in
       		customDNS = {
       			mapping = {
       				# nix subnet
-      				"atredies.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
+      				"atreides.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
       				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
       				# dmz subnet
       				"vader.${tr_secrets.traefik.dmz_domain}" = "10.2.1.245";
@@ -48,6 +48,7 @@ in
       				"octostream.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"syncthing.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"radicale.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+      				"n8n.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       			};
       		};
       		blocking = {

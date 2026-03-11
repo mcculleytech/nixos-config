@@ -158,7 +158,14 @@ in
                    };
                  }
                  {
-                    "Traefik" = {
+                    "n8n" = {
+                     icon = "n8n.png";
+                     href = "https://n8n.${tr_secrets.traefik.homelab_domain}";
+                     description = "AI Automation Platform";
+                    };
+                  }
+                  {
+                  "Traefik" = {
                      icon = "traefik.png";
                      href = "https://traefik.${tr_secrets.traefik.homelab_domain}/dashboard/";
                      description = "Traefik Reverse Proxy";

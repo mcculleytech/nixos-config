@@ -148,6 +148,15 @@ in
 	   				};
 	   				service = "radicale";
 	   			};
+	   			n8n = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`n8n.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "n8n";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -268,6 +277,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.121:5232/";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			n8n = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.6:5678";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

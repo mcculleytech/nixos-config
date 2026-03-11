@@ -15,8 +15,8 @@ What it does:
   6. Optionally runs sops updatekeys -y on files that need it (--apply)
 
 Examples:
-  ./scripts/check-sops-host-key.sh --host saruman --ssh root@10.1.8.50
-  ./scripts/check-sops-host-key.sh --host saruman --ssh root@10.1.8.50 --apply
+  ./scripts/check-sops-host-key.sh --host saruman --ssh root@10.1.8.6
+  ./scripts/check-sops-host-key.sh --host saruman --ssh root@10.1.8.6 --apply
 EOF
 }
 
