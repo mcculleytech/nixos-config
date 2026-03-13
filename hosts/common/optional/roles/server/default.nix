@@ -19,5 +19,6 @@
     ./syncthing-server.nix
     ./open-webui.nix
     ./n8n.nix
+    ./miniflux.nix
   ];
 }

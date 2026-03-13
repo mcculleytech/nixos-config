@@ -157,6 +157,15 @@ in
 	   				};
 	   				service = "n8n";
 	   			};
+	   			miniflux = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`miniflux.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "miniflux";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -285,6 +294,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.6:5678";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			miniflux = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.121:8080";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

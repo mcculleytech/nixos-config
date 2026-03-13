@@ -67,7 +67,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Gitea server fix ✅ 2024-10-04
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
-- [ ] RSS feed server
+- [x] RSS feed server (Miniflux on phantom) ✅ 2026-03-12
 - [ ] n8n automation platform (native NixOS service, no Docker needed)
 - [ ] Prometheus + Grafana monitoring stack
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
@@ -92,6 +92,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Host configuration template
 	- [ ] Colmena node template
 	- [ ] Home Manager module template
+- [ ] Secrets organization (consolidate SOPS and git-crypt usage, standardize secret paths)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
@@ -167,6 +168,17 @@ To add a new service to a host:
 	```bash
 	colmena apply --on hostname
 	```
+
+### Pre-Commit Hook
+
+A pre-commit hook verifies that staged secrets are properly encrypted before allowing a commit. It checks:
+- **SOPS files** — any file matching a `path_regex` in `.sops.yaml` must contain the `sops:` metadata key
+- **git-crypt files** — any file matching `secrets/git_crypt*` must have the `filter=git-crypt` attribute set in `.gitattributes`
+
+To install:
+```bash
+./scripts/setup-hooks.sh
+```
 
 ### Documentation
 

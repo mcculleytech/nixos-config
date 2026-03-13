@@ -65,6 +65,13 @@ in
                     description = "Photo Server";
                   };
                 }
+                {
+                  "Miniflux" = {
+                    icon = "miniflux.png";
+                    href = "https://miniflux.${tr_secrets.traefik.homelab_domain}";
+                    description = "RSS Feed Reader";
+                  };
+                }
               ];
             }
             {

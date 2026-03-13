@@ -17,6 +17,7 @@
   home-impermanence.enable = true;
   tailscale-server.enable = true;
   syncthing-server.enable = true;
+  miniflux.enable = true;
   
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
