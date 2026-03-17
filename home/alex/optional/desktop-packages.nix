@@ -17,6 +17,8 @@
     rpcs3
     game-devices-udev-rules
     remmina
+    ansible
+    packer
     brave
     zrok
     calibre
