@@ -105,6 +105,13 @@ in
                   };
                 }
                 {
+                  "Paperless-ngx" = {
+                    icon = "paperless-ngx.png";
+                    href = "https://paperless.${tr_secrets.traefik.homelab_domain}";
+                    description = "Document Management System";
+                  };
+                }
+                {
                   "Proton" = {
                     icon = "proton-mail.svg";
                     href = "https://proton.me";

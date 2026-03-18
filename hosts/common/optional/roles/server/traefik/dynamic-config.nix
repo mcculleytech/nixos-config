@@ -166,6 +166,15 @@ in
 	   				};
 	   				service = "miniflux";
 	   			};
+	   			paperless = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`paperless.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "paperless";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -302,6 +311,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.121:8080";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			paperless = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.6:28981";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

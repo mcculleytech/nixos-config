@@ -21,11 +21,11 @@
         };
     };
 
+    # PostgreSQL persistence is handled in impermanence.nix
     environment.persistence = {
       "/persist" = {
       hideMounts = true;
         directories = [
-          "/var/lib/postgresql"
           "/var/lib/redis-immich"
         ];
       };

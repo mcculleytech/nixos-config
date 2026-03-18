@@ -15,7 +15,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
 | achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
 | maul     | Offsite Backup Server    											  							| HP EliteBook 8460p          |
-| saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server 								  	| AMD Ryzen 5 <br>Nvidia 1080 |
+| saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     						| Proxmox VM                  |
@@ -69,6 +69,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Arion for docker compose configurations
 - [x] RSS feed server (Miniflux on phantom) ✅ 2026-03-12
 - [ ] n8n automation platform (native NixOS service, no Docker needed)
+- [x] Paperless-ngx document management (saruman, PostgreSQL + Tika OCR) ✅ 2026-03-17
+- [ ] Automate Proton Bridge on saruman (currently running manually in tmux; needs kwallet/keyring service dependency to run as a systemd user service on boot)
 - [ ] Prometheus + Grafana monitoring stack
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 

@@ -20,5 +20,6 @@
     ./open-webui.nix
     ./n8n.nix
     ./miniflux.nix
+    ./paperless.nix
   ];
 }

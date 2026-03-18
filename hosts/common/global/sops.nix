@@ -9,7 +9,7 @@ in
   sops.defaultSopsFile = ../../../secrets/main.yaml;
 
   sops = {
-    age = { 
+    age = {
       sshKeyPaths = map getKeyPath keys;
       # Read directly from the persisted path so key access doesn't depend on
       # impermanence bind-mount timing for /var/lib/sops-nix.
@@ -17,5 +17,7 @@ in
       generateKey = true;
     };
   };
+
+  environment.sessionVariables.SOPS_AGE_KEY_FILE = "/var/lib/sops-nix/key.txt";
 
 }

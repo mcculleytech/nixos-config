@@ -25,14 +25,7 @@
 
     networking.firewall.allowedTCPPorts = [ 8080 ];
 
-    environment.persistence = {
-      "/persist" = {
-        hideMounts = true;
-        directories = [
-          "/var/lib/postgresql"
-        ];
-      };
-    };
+    # PostgreSQL persistence is handled in impermanence.nix
   };
 
 }

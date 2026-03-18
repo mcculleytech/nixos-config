@@ -76,12 +76,12 @@ in
 
 
     # Persist storage across reboots
+    # PostgreSQL persistence is handled in impermanence.nix
     environment.persistence = {
       "/persist" = {
       hideMounts = true;
         directories = [
           "/var/lib/gitea"
-          "/var/lib/postgresql"
         ];
       };
     };

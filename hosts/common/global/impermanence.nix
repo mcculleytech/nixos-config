@@ -1,4 +1,4 @@
-{ lib, inputs, config, ... }: {
+{ lib, inputs, config, pkgs, ... }: {
   # Taken from Misterio77's config
 
   environment.persistence = {
@@ -13,7 +13,9 @@
         "/var/lib/libvirt"
         "/var/log"
         "/etc/NetworkManager"
-      ];
+      ] ++ (lib.optionals config.services.postgresql.enable [
+        "/var/lib/postgresql"
+      ]);
       files = [
         "/etc/machine-id"
         "/etc/ssh/ssh_host_ed25519_key"

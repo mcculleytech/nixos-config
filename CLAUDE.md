@@ -18,3 +18,4 @@
 - Make an entry in the traefik `dynamic-config.nix` file. Creating entries for both `router` and `service` entries. 
 - Make a dns entry for the new service in the `blocky.nix` configuration file. 
 - Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning. 
+- When adding persistence directories for services, use the attrset form (`{ directory = "..."; user = "..."; group = "..."; }`) with the service's user/group to ensure correct ownership on impermanence bind mounts.

@@ -24,4 +24,6 @@
     # unstable.jellyfin-media-player
   ];
 
+  services.protonmail-bridge.enable = true;
+
 }
