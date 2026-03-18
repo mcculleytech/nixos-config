@@ -2,6 +2,7 @@
   imports = [
     ./env-vars.nix
     ./ephemeral-btrfs.nix
+    ./node-exporter.nix
     ./impermanence.nix
     ./nix-settings.nix
     ./sops.nix

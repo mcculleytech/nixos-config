@@ -51,6 +51,8 @@ in
       				"n8n.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"miniflux.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       				"paperless.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+     				"grafana.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+     				"prometheus.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       			};
       		};
       		blocking = {

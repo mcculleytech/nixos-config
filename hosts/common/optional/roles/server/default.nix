@@ -21,5 +21,7 @@
     ./n8n.nix
     ./miniflux.nix
     ./paperless.nix
+    ./prometheus.nix
+    ./grafana.nix
   ];
 }

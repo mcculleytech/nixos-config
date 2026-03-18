@@ -18,7 +18,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
-| atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy     						| Proxmox VM                  |
+| atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy <br> Prometheus + Grafana | Proxmox VM                  |
 
 ## Features
 
@@ -68,10 +68,20 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
 - [x] RSS feed server (Miniflux on phantom) ✅ 2026-03-12
-- [ ] n8n automation platform (native NixOS service, no Docker needed)
+- [x] n8n automation platform (native NixOS service, no Docker needed) ✅ 2026-03-17
 - [x] Paperless-ngx document management (saruman, PostgreSQL + Tika OCR) ✅ 2026-03-17
 - [ ] Automate Proton Bridge on saruman (currently running manually in tmux; needs kwallet/keyring service dependency to run as a systemd user service on boot)
-- [ ] Prometheus + Grafana monitoring stack
+- [x] Prometheus + Grafana monitoring stack ✅ 2026-03-17
+	- [ ] Additional exporters/monitors:
+		- [ ] PostgreSQL exporter (`postgres_exporter`) — used by Gitea, Miniflux, Paperless, Immich
+		- [ ] Redis exporter (`redis_exporter`) — used by Immich on saruman
+		- [ ] Blocky DNS metrics (built-in Prometheus endpoint, just needs scrape config)
+		- [ ] Gitea metrics (built-in `/metrics` endpoint, enable in Gitea config)
+		- [ ] Miniflux metrics (built-in `/metrics` endpoint, enable via `METRICS_COLLECTOR=1`)
+		- [ ] Smartctl exporter (`smartctl_exporter`) — disk health on physical hosts
+		- [ ] Blackbox exporter — HTTP/TCP endpoint uptime checks for all services
+		- [ ] Tailscale client metrics (built-in `/metrics` endpoint via `tailscale set --webclient`, all hosts)
+		- [ ] Systemd service alerting rules — alert on failed units across hosts
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 
 

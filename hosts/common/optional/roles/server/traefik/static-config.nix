@@ -25,7 +25,10 @@ in
         				address = ":8080";
         			};
         		};
-        		serversTransport.insecureSkipVerify = true;
+        		metrics.prometheus = {
+       			entryPoint = "traefik";
+       		};
+       		serversTransport.insecureSkipVerify = true;
         		providers = {
         			docker = {
         				endpoint = "unix:///var/run/docker.sock";

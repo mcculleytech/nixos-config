@@ -19,3 +19,12 @@
 - Make a dns entry for the new service in the `blocky.nix` configuration file. 
 - Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning. 
 - When adding persistence directories for services, use the attrset form (`{ directory = "..."; user = "..."; group = "..."; }`) with the service's user/group to ensure correct ownership on impermanence bind mounts.
+
+## monitoring
+- Prometheus and Grafana run on **atreides**. Config files: `hosts/common/optional/roles/server/prometheus.nix` and `grafana.nix`.
+- `node_exporter` is enabled globally on all hosts via `hosts/common/global/node-exporter.nix` (port 9100).
+- To add monitoring for a new service:
+  1. If the service has a built-in Prometheus metrics endpoint (like Traefik), enable it in the service's config and add a `scrapeConfigs` entry in `prometheus.nix` with the appropriate target and `job_name`.
+  2. If the service needs a dedicated NixOS exporter (e.g., `services.prometheus.exporters.postgres`), enable it in the service's own `.nix` file, open the exporter's firewall port, and add a corresponding `scrapeConfigs` entry in `prometheus.nix`.
+  3. Available NixOS exporters can be found at `https://search.nixos.org/options?channel=25.11&query=services.prometheus.exporters`.
+  4. For Grafana dashboards, browse https://grafana.com/grafana/dashboards/ and import by ID via the Grafana UI. Key dashboard IDs: `1860` (Node Exporter Full), `17346` (Traefik).

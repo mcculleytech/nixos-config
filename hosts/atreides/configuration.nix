@@ -17,6 +17,8 @@
   homepage-dashboard.enable = true;
   traefik.enable = true;
   home-impermanence.enable = true;
+  prometheus-server.enable = true;
+  grafana.enable = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;

@@ -17,6 +17,7 @@ in
       sopsFile = ../../../../../hosts/atreides/secrets.yaml;
     };
 
+
     ##############################
     #    Pulls from unstable     #
     ##############################
@@ -177,6 +178,20 @@ in
                      href = "https://n8n.${tr_secrets.traefik.homelab_domain}";
                      description = "AI Automation Platform";
                     };
+                  }
+                  {
+                  "Grafana" = {
+                    icon = "grafana.png";
+                    href = "https://grafana.${tr_secrets.traefik.homelab_domain}";
+                    description = "Monitoring Dashboards";
+                   };
+                  }
+                  {
+                  "Prometheus" = {
+                    icon = "prometheus.png";
+                    href = "https://prometheus.${tr_secrets.traefik.homelab_domain}";
+                    description = "Metrics Collection";
+                   };
                   }
                   {
                   "Traefik" = {

@@ -175,6 +175,24 @@ in
 	   				};
 	   				service = "paperless";
 	   			};
+	   			grafana = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`grafana.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "grafana";
+	   			};
+	   			prometheus = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`prometheus.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "prometheus";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -319,6 +337,22 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.6:28981";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			grafana = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.129:3000";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			prometheus = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.129:9090";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
