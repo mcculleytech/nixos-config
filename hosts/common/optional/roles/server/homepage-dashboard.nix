@@ -194,6 +194,13 @@ in
                    };
                   }
                   {
+                  "SmokePing" = {
+                    icon = "smokeping.png";
+                    href = "https://smokeping.${tr_secrets.traefik.homelab_domain}";
+                    description = "Network Latency Monitor";
+                   };
+                  }
+                  {
                   "Traefik" = {
                      icon = "traefik.png";
                      href = "https://traefik.${tr_secrets.traefik.homelab_domain}/dashboard/";

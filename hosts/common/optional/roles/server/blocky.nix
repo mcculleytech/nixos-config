@@ -53,6 +53,7 @@ in
       				"paperless.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      				"grafana.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
      				"prometheus.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+     				"smokeping.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
       			};
       		};
       		blocking = {
@@ -62,8 +63,13 @@ in
       				];
       			};
       		};
+        		prometheus = {
+        			enable = true;
+        			path = "/metrics";
+        		};
         		ports = {
         			dns = 53;
+        			http = 4000;
         		};
         		# For initially solving DoH/DoT Requests when no system Resolver is available.
         		bootstrapDns = {
@@ -72,7 +78,7 @@ in
         		};
 	   	};
 	   };
-    	networking.firewall.allowedTCPPorts = [ 53 ];
+    	networking.firewall.allowedTCPPorts = [ 53 4000 ];
     	networking.firewall.allowedUDPPorts = [ 53 ];
 	};
 }

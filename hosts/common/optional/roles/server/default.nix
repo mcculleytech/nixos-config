@@ -23,5 +23,6 @@
     ./paperless.nix
     ./prometheus.nix
     ./grafana.nix
+    ./smokeping.nix
   ];
 }

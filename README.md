@@ -46,13 +46,13 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] KDE ✅ 2024-07-12
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
+- [ ] Standalone home manager config for wsl2 or Mac
 - [ ] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern)
 
 ### Servers
 - [x] Colmena setup
 	- [x] Switch Colmena `targetHost` from Tailscale hostnames to local IPs — all boxes are on-prem, no need for Tailscale
 - [x] KVM Server
-- [ ] Standalone home manager config for wsl2 or Mac
 - [x] Tailscale Subnet Router ✅ 2024-03-10
 - [x] Syncthing ✅ 2024-03-10
 	- [x] username and password ✅ 2024-03-10
@@ -75,7 +75,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Additional exporters/monitors:
 		- [ ] PostgreSQL exporter (`postgres_exporter`) — used by Gitea, Miniflux, Paperless, Immich
 		- [ ] Redis exporter (`redis_exporter`) — used by Immich on saruman
-		- [ ] Blocky DNS metrics (built-in Prometheus endpoint, just needs scrape config)
+		- [x] Blocky DNS metrics (built-in Prometheus endpoint, just needs scrape config) ✅ 2026-03-20
 		- [ ] Gitea metrics (built-in `/metrics` endpoint, enable in Gitea config)
 		- [ ] Miniflux metrics (built-in `/metrics` endpoint, enable via `METRICS_COLLECTOR=1`)
 		- [ ] Smartctl exporter (`smartctl_exporter`) — disk health on physical hosts

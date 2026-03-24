@@ -35,6 +35,17 @@
             }
           ];
         }
+        {
+          job_name = "blocky";
+          static_configs = [
+            {
+              targets = [
+                "10.1.8.129:4000" # atreides
+                "10.1.8.121:4000" # phantom
+              ];
+            }
+          ];
+        }
       ];
     };
 

@@ -193,6 +193,15 @@ in
 	   				};
 	   				service = "prometheus";
 	   			};
+	   			smokeping = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`smokeping.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "smokeping";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -353,6 +362,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://10.1.8.129:9090";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			smokeping = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://10.1.8.129:8090";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

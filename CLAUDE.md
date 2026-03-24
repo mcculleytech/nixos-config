@@ -20,6 +20,12 @@
 - Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning. 
 - When adding persistence directories for services, use the attrset form (`{ directory = "..."; user = "..."; group = "..."; }`) with the service's user/group to ensure correct ownership on impermanence bind mounts.
 
+## impermanence
+- All hosts use impermanence with a blank root btrfs subvol snapshot. Persistent state lives under `/persist`.
+- When a service requires subdirectories inside its state directory (e.g., `/var/lib/foo/data`), impermanence will bind-mount the parent directory but won't create subdirectories. If the service's pre-start script expects them to exist, it will fail.
+- Fix this by adding `systemd.tmpfiles.rules` to create the required subdirectories before the service starts, e.g.: `"d /var/lib/foo/data 0755 foo foo -"`.
+- Always check a new service's logs after first deploy — a crash loop with "directory does not exist" errors is a sign of this issue.
+
 ## monitoring
 - Prometheus and Grafana run on **atreides**. Config files: `hosts/common/optional/roles/server/prometheus.nix` and `grafana.nix`.
 - `node_exporter` is enabled globally on all hosts via `hosts/common/global/node-exporter.nix` (port 9100).

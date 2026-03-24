@@ -11,6 +11,10 @@ in
 
   config = lib.mkIf config.grafana.enable {
 
+    # Grafana Dashboards (import by ID):
+    # Node Exporter Full (1860): https://grafana.com/grafana/dashboards/1860
+    # Blocky (13768): https://grafana.com/grafana/dashboards/13768
+    # Traefik (17346): https://grafana.com/grafana/dashboards/17346
     services.grafana = {
       enable = true;
       settings = {
