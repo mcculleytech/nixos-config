@@ -35,7 +35,7 @@
 	  "/persist" = {
 	  hideMounts = true;
 	    directories = [
-	      "/var/lib/private/open-webui"
+	      { directory = "/var/lib/private/open-webui"; user = "open-webui"; group = "open-webui"; }
 	    ];
 	  };
 	};
