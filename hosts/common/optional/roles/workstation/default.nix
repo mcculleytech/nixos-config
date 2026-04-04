@@ -1,14 +1,23 @@
 {
   imports =
     [
+      ./acpi_wakeup.nix
       ./android.nix
+      ./bluetooth.nix
+      ./budgie.nix
+      ./cosmic.nix
       ./cups.nix
+      ./custom-udev.nix
+      ./custom-udev-wakeup.nix
+      ./framework-tweaks.nix
+      ./game-controllers.nix
+      ./gnome.nix
+      ./kde.nix
+      ./localsend.nix
+      ./steam.nix
       ./syncthing.nix
       ./virt-manager.nix
-      ./custom-udev.nix
-      ./game-controllers.nix
-      ./steam.nix
+      ./vmware.nix
       ./waydroid.nix
-      ./localsend.nix
     ];
 }

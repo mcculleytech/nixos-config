@@ -11,6 +11,12 @@
       ./optional/cava.nix
     ];
 
+    gnome-customizations.enable = true;
+    desktop-packages.enable = true;
+    terminator.enable = true;
+    zsh.enable = true;
+    security-tooling.enable = true;
+    flameshot-gui.enable = true;
     cava.enable = true;
 
 }

@@ -8,7 +8,12 @@
       ./optional/nvim
     ];
 
-  home.packages = with pkgs; 
+    terminator.enable = true;
+    zsh.enable = true;
+    security-tooling.enable = true;
+    nvim.enable = true;
+
+  home.packages = with pkgs;
   [
     bitwarden-desktop
     #retroarch-Full

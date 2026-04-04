@@ -12,6 +12,7 @@
     ];
 
   # module enable
+  docker.enable = true;
   qemuGuest.enable = true;
   blocky.enable = true;
   homepage-dashboard.enable = true;

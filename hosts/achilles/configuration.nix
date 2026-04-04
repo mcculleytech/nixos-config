@@ -7,15 +7,23 @@
       ../common/optional/nvidia.nix
       ../common/optional/opengl.nix
       ../common/optional/roles/workstation
-      ../common/optional/roles/workstation/vmware.nix
-      ../common/optional/roles/workstation/gnome.nix
-      ../common/optional/roles/workstation/steam.nix
-      ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/achilles.nix
     ];
 
   # module enable
+  docker.enable = true;
+  nvidia.enable = true;
+  opengl.enable = true;
   steam.enable = true;
+  android.enable = true;
+  cups.enable = true;
+  syncthing-workstation.enable = true;
+  virt-manager.enable = true;
+  custom-udev.enable = true;
+  game-controllers.enable = true;
+  vmware.enable = true;
+  gnome.enable = true;
+  bluetooth.enable = true;
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
