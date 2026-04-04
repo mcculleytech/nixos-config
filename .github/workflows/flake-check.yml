@@ -12,7 +12,7 @@ jobs:
       uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
     - name: Decrypt git-crypt secrets
       run: |
-        nix-env -iA nixpkgs.git-crypt
+        nix profile install nixpkgs#git-crypt
         echo "${{ secrets.GIT_CRYPT_KEY }}" | base64 -d > /tmp/git-crypt-key
         git-crypt unlock /tmp/git-crypt-key
         rm /tmp/git-crypt-key
