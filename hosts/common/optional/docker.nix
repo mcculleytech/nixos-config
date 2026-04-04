@@ -1,26 +1,32 @@
-{ pkgs, ... }: 
-{
-  environment.systemPackages = [
+{ pkgs, config, lib, ... }: {
+
+  options = {
+    docker.enable = lib.mkEnableOption "enables docker";
+  };
+
+  config = lib.mkIf config.docker.enable {
+    environment.systemPackages = [
       pkgs.arion
       pkgs.docker-client
-  ];
-  virtualisation.docker = {
+    ];
+    virtualisation.docker = {
       enable = true;
       storageDriver = "btrfs";
       rootless = {
-	    enable = true;
-	    setSocketVariable = true;
-	  };
-  };
-
-  environment.persistence = {
-    "/persist" = {
-    hideMounts = true;
-      directories = [
-        "/var/lib/docker"
-      ];
+        enable = true;
+        setSocketVariable = true;
+      };
     };
-  };
 
-  users.users.alex.extraGroups = [ "docker" ];
+    environment.persistence = {
+      "/persist" = {
+      hideMounts = true;
+        directories = [
+          "/var/lib/docker"
+        ];
+      };
+    };
+
+    users.users.alex.extraGroups = [ "docker" ];
+  };
 }

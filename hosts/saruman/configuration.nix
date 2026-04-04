@@ -5,14 +5,18 @@
       ../common/global
       ../common/optional/roles/server
       ../common/optional/docker.nix
-      ../common/optional/roles/workstation/kde.nix
-      ../common/optional/roles/workstation/steam.nix
       ../common/optional/nvidia.nix
       ../common/optional/opengl.nix
+      ../common/optional/roles/workstation/kde.nix
+      ../common/optional/roles/workstation/steam.nix
       ../common/optional/roles/workstation/bluetooth.nix
       ../../disko/saruman.nix
     ];
 
+  # module enable
+  docker.enable = true;
+  nvidia.enable = true;
+  opengl.enable = true;
   jellyfin.enable = true;
   octoprint.enable = true;
   ollama.enable = true;
@@ -21,6 +25,8 @@
   open-webui.enable = true;
   n8n.enable = true;
   paperless.enable = true;
+  kde.enable = true;
+  bluetooth.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;

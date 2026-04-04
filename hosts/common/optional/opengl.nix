@@ -1,8 +1,14 @@
-{ pkgs, ... }:
-{
-  hardware.graphics = {
-    enable = true;
+{ pkgs, config, lib, ... }: {
 
-    enable32Bit = true;
+  options = {
+    opengl.enable = lib.mkEnableOption "enables OpenGL/graphics support";
+  };
+
+  config = lib.mkIf config.opengl.enable {
+    hardware.graphics = {
+      enable = true;
+
+      enable32Bit = true;
+    };
   };
 }

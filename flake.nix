@@ -86,26 +86,6 @@
           ];
         };
 
-        # Main Custom Desktop
-        "achilles" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ [
-            ./hosts/achilles/configuration.nix
-            #hardware.nixosModules.common-gpu-nvidia-nonprime
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs outputs; };
-              home-manager.users.alex = {
-                imports = [
-                  ./home/alex/achilles.nix
-                ];
-              };
-              home-manager.backupFileExtension = "bak";
-            }
-          ];
-        };
-
         # Dedicated GPU Server
         "saruman" = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };

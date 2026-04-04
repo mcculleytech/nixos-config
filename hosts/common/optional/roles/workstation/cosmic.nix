@@ -1,10 +1,14 @@
-{ lib, pkgs, inputs, config, ... }:{
+{ lib, pkgs, inputs, config, ... }: {
 
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
+  options = {
+    cosmic.enable = lib.mkEnableOption "enables COSMIC desktop";
+  };
 
-    environment.systemPackages = with pkgs; 
-    [
+  config = lib.mkIf config.cosmic.enable {
+    services.desktopManager.cosmic.enable = true;
+    services.displayManager.cosmic-greeter.enable = true;
+
+    environment.systemPackages = with pkgs; [
       unstable.cosmic-ext-tweaks
       unstable.zafiro-icons
       unstable.wdisplays
@@ -14,17 +18,17 @@
       examine
     ];
 
-   environment.cosmic.excludePackages = with pkgs; [
-    cosmic-edit
-    cosmic-term
-  ];
+    environment.cosmic.excludePackages = with pkgs; [
+      cosmic-edit
+      cosmic-term
+    ];
 
-  xdg.portal.enable = true;
-  xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-wlr
-  ];
+    xdg.portal.enable = true;
+    xdg.portal.extraPortals = with pkgs; [
+      xdg-desktop-portal-gtk
+      xdg-desktop-portal-wlr
+    ];
 
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
-  
+    environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  };
 }

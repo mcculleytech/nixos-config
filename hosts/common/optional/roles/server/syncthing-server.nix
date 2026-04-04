@@ -35,7 +35,6 @@ options = {
                 params.keep = "5";
               };
               devices = [
-                "achilles"
                 "aeneas"
               ];
             };
@@ -47,16 +46,12 @@ options = {
                 params.keep = "5";
               };
               devices = [
-                "achilles"
                 "aeneas"
                 "pixel"
               ];
             };
           };
           devices = {
-            "achilles" = {
-              id = "${st_secrets.syncthing.achilles_id}";
-            };
             "aeneas" = {
               id = "${st_secrets.syncthing.aeneas_id}";
             };

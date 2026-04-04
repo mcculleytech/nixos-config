@@ -1,4 +1,10 @@
-{pkgs, config, ...}: {
+{ pkgs, config, lib, ... }: {
+
+  options = {
+    virt-manager.enable = lib.mkEnableOption "enables virt-manager and libvirtd";
+  };
+
+  config = lib.mkIf config.virt-manager.enable {
 
     # Disable BTRFS CoW on libvirt images to avoid double-CoW with qcow2
     # and eliminate wasted CPU on zstd compression of VM disk data.
@@ -37,9 +43,9 @@
     boot.extraModprobeConfig = "options kvm_intel nested=1";
 
     environment.sessionVariables.LIBVIRT_DEFAULT_URI = [ "qemu:///system" ];
-    environment.systemPackages = with pkgs; [ 
-      spice 
-      virt-manager 
+    environment.systemPackages = with pkgs; [
+      spice
+      virt-manager
       virtio-win
       virt-viewer
       spice-gtk
@@ -64,4 +70,5 @@
         source = config.virtualisation.libvirtd.qemu.package + "/share/qemu/edk2-i386-vars.fd";
       };
     };
+  };
 }
