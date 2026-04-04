@@ -27,6 +27,7 @@
   paperless.enable = true;
   kde.enable = true;
   bluetooth.enable = true;
+  auto-deploy.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;

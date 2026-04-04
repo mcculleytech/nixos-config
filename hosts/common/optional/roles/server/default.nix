@@ -23,5 +23,7 @@
     ./prometheus.nix
     ./grafana.nix
     ./smokeping.nix
+    ./ntfy.nix
+    ./auto-deploy.nix
   ];
 }

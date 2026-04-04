@@ -21,6 +21,7 @@
   prometheus-server.enable = true;
   grafana.enable = true;
   smokeping.enable = true;
+  ntfy.enable = true;
 
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;

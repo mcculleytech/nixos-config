@@ -38,12 +38,12 @@ The weekly `update-flake.yml` workflow already creates flake.lock update PRs via
 - [x] **git-crypt in CI:** decrypt git-crypt secrets in CI so all configs (server + workstation) can be fully evaluated ✅ 2026-04-04
 - [x] **Pinned actions:** all GitHub Actions pinned to commit SHAs to prevent supply chain attacks ✅ 2026-04-04
 - [x] **Auto-merge:** auto-merge flake lock update PRs after CI passes ✅ 2026-04-03
-- [ ] **Staged deploy workflow** triggered on merge to `main`:
+- [x] **ntfy push notifications:** self-hosted ntfy-sh on atreides for deploy notifications ✅ 2026-04-04
+- [x] **Staged deploy:** hourly systemd timer on saruman (`scripts/auto-deploy.sh`) ✅ 2026-04-04
   - Stage 1: `colmena apply --on @vm` (vader, phantom, atreides)
-  - Health check: SSH into each VM, verify systemd units are healthy and critical services respond on expected ports
-  - Stage 2: `colmena apply` on physical servers (saruman) — only runs if Stage 1 health checks pass
-  - Health check on physical hosts
-  - Notify on success/failure via ntfy or webhook
+  - Health check: SSH into each VM, verify no failed systemd units
+  - Stage 2: `colmena apply --on saruman` — only runs if Stage 1 health checks pass
+  - Notify on success/failure via ntfy
 - [ ] **Rollback on failure:** if health checks fail, `nixos-rebuild switch --rollback` on affected hosts and send alert
 
 ```
