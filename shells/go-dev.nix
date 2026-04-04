@@ -7,7 +7,7 @@
     go
     gopls
     delve
-    garble
+    # garble — disabled until it supports Go 1.25+ (linker patches not yet available)
   ];
 
   shellHook = ''
