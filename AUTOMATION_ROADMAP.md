@@ -44,7 +44,7 @@ The weekly `update-flake.yml` workflow already creates flake.lock update PRs via
   - Health check: SSH into each VM, verify no failed systemd units
   - Stage 2: `colmena apply --on saruman` — only runs if Stage 1 health checks pass
   - Notify on success/failure via ntfy
-- [ ] **Rollback on failure:** if health checks fail, `nixos-rebuild switch --rollback` on affected hosts and send alert
+- [x] **Rollback on failure:** auto-rollback to `deploy/last-known-good` tag on health check or deploy failure, ntfy notification includes rollback details ✅ 2026-04-04
 
 ```
 Weekly cron → update-flake.yml → flake.lock PR

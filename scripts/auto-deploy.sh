@@ -4,6 +4,7 @@ set -euo pipefail
 REPO="/home/alex/Repositories/nixos-config"
 NTFY_TOPIC="deploy"
 LOG_TAG="auto-deploy"
+GOOD_TAG="deploy/last-known-good"
 
 cd "$REPO"
 
@@ -13,6 +14,29 @@ if [ -z "$DOMAIN" ]; then
   DOMAIN="http://localhost:2586"
 fi
 NTFY_URL="${DOMAIN}/${NTFY_TOPIC}"
+
+# Helper: get last-known-good rev (empty string if tag doesn't exist)
+get_rollback_rev() {
+  git rev-parse "$GOOD_TAG" 2>/dev/null || echo ""
+}
+
+# Helper: rollback a set of hosts to last-known-good
+rollback() {
+  local targets="$1"
+  local rollback_rev
+  rollback_rev=$(get_rollback_rev)
+  if [ -n "$rollback_rev" ]; then
+    local rollback_short
+    rollback_short=$(git rev-parse --short "$rollback_rev")
+    logger -t "$LOG_TAG" "Rolling back $targets to $rollback_short"
+    git checkout "$rollback_rev"
+    colmena apply --on "$targets" 2>&1 | logger -t "$LOG_TAG" || true
+    git checkout master
+    echo "$rollback_short"
+  else
+    echo ""
+  fi
+}
 
 # 1. Pull latest — exit if no new commits
 git fetch origin master
@@ -34,7 +58,12 @@ logger -t "$LOG_TAG" "New commit detected: $SHORT_REV — $COMMIT_MSG"
 if colmena apply --on @vm 2>&1 | logger -t "$LOG_TAG"; then
   logger -t "$LOG_TAG" "VM deploy succeeded"
 else
-  curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV: $COMMIT_MSG" "$NTFY_URL" || true
+  ROLLED=$(rollback "@vm")
+  if [ -n "$ROLLED" ]; then
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV: $COMMIT_MSG. Rolled back to $ROLLED." "$NTFY_URL" || true
+  else
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV: $COMMIT_MSG. No known-good revision to roll back to." "$NTFY_URL" || true
+  fi
   exit 1
 fi
 
@@ -55,7 +84,12 @@ for host in vader phantom atreides; do
 done
 
 if [ "$FAILED" = "1" ]; then
-  curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Health check failed on:${FAILED_HOSTS} at $SHORT_REV" "$NTFY_URL" || true
+  ROLLED=$(rollback "@vm")
+  if [ -n "$ROLLED" ]; then
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Health check failed on:${FAILED_HOSTS} at $SHORT_REV. Rolled back to $ROLLED." "$NTFY_URL" || true
+  else
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Health check failed on:${FAILED_HOSTS} at $SHORT_REV. No known-good revision to roll back to." "$NTFY_URL" || true
+  fi
   exit 1
 fi
 
@@ -63,10 +97,17 @@ fi
 if colmena apply --on saruman 2>&1 | logger -t "$LOG_TAG"; then
   logger -t "$LOG_TAG" "Saruman deploy succeeded"
 else
-  curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV: $COMMIT_MSG" "$NTFY_URL" || true
+  ROLLED=$(rollback "saruman")
+  if [ -n "$ROLLED" ]; then
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV: $COMMIT_MSG. Rolled back to $ROLLED." "$NTFY_URL" || true
+  else
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV: $COMMIT_MSG. No known-good revision to roll back to." "$NTFY_URL" || true
+  fi
   exit 1
 fi
 
-# 5. Success notification
+# 5. Tag as last-known-good and notify
+git tag -f "$GOOD_TAG" HEAD
+git push -f origin "$GOOD_TAG" 2>&1 | logger -t "$LOG_TAG" || true
 curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG" "$NTFY_URL" || true
-logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV"
+logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)"
