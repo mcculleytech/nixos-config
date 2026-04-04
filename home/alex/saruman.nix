@@ -5,6 +5,7 @@
       ./optional/terminator.nix
       ./optional/zsh.nix
       ./optional/security-tooling.nix
+      ./optional/nvim
     ];
 
   home.packages = with pkgs; 

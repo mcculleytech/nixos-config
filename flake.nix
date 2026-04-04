@@ -21,10 +21,6 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nixvim = {
-      url = "github:nix-community/nixvim";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
   };
 
   outputs = { self, nixpkgs, home-manager, hardware, ... } @ inputs:
@@ -80,7 +76,6 @@
               home-manager.users.alex = {
                 imports = [
                   ./home/alex/aeneas.nix
-                  inputs.nixvim.homeModules.nixvim
                 ];
               };
               home-manager.backupFileExtension = "bak";
@@ -101,7 +96,6 @@
               home-manager.users.alex = {
                 imports = [
                   ./home/alex/achilles.nix
-                  inputs.nixvim.homeModules.nixvim
                 ];
               };
               home-manager.backupFileExtension = "bak";

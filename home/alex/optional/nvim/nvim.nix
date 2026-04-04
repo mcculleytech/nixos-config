@@ -1,10 +1,23 @@
 {pkgs, ... }: {
-	programs.nixvim = {
-		enable = true;
-		enableMan = true;
+  programs.neovim = {
+    enable = true;
+    viAlias = true;
+    vimAlias = true;
+    defaultEditor = true;
+    extraPackages = with pkgs; [
+      gcc
+      ripgrep
+      fd
+      nodejs
+      unzip
+      curl
+      wget
+      gnumake
+    ];
+  };
 
-		# Keep files local to config. Path of least resistance to get lazyvim setup
-		# git clone https://github.com/LazyVim/starter ~/.config/nvim
-		
-	};
+  xdg.configFile."nvim" = {
+    source = ./config;
+    recursive = true;
+  };
 }
