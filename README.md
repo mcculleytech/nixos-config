@@ -104,6 +104,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Multiple Servers ✅ 2024-03-20
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns ✅ 2026-04-04
+	- [x] Centralized host inventory (`hosts/common/hosts-data.nix`) — single source of truth for all IPs ✅ 2026-04-04
 	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [ ] Make template files
 	- [x] Service module template (`templates/service.nix`)

@@ -12,6 +12,19 @@
 - `/hosts/common/optional` holds optional services broken further into `servers` and `workstations` for specific configurations for those machines
 - The running ToDo list in the README should be the source of work. When done with a task already on there, mark it complete with the date. When discussing improvements make an entry.
 
+## pre-merge checklist
+- Before merging any branch to master, review and update the following files to reflect completed work:
+  - `README.md` — check off completed TODO items with the date, add new items for follow-up work
+  - `AUTOMATION_ROADMAP.md` — check off completed milestones, update pipeline diagrams if changed
+- This ensures documentation stays in sync with the codebase and nothing is forgotten.
+
+## host inventory
+- All host IPs are defined in `hosts/common/hosts-data.nix` — this is the single source of truth.
+- The NixOS module at `hosts/common/global/hosts.nix` exposes this data as `config.lab.hosts`.
+- `colmena.nix` imports `hosts-data.nix` directly (outside the module system).
+- When adding a new host or changing an IP, update only `hosts-data.nix` — all configs (prometheus, blocky, traefik, smokeping, colmena, etc.) reference it automatically.
+- Never hardcode IPs in service configs. Use `config.lab.hosts.<name>.ip` or `hosts.<name>.ip` instead.
+
 ## new deployments
 - For new service deployments, utilize the file `service.nix` as a template. By default place the new service under `optional` subdirectory for servers unless the configuration appears to be more desktop related in which case verify with the user on location. Reference the nix documentation for the specific service at `https://search.nixos.org/options?channel=25.11&query=<service>` and ensure all the necessary options are set for the service to run properly and are network accessible over the LAN (and tailscale) as well as via a reverse proxy (traefik). Once you have a configuration planned, present it to the user for approval before writing the file. 
 - Once you have the service file written, add the file to the `imports` section into the `default.nix` file for the `optional` subdirectory and enable the service on the host specified in prompt. If no host is given, prompt the user. 

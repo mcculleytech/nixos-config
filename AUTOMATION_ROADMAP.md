@@ -18,7 +18,7 @@ All servers are on-prem, so there's no reason to route Colmena through Tailscale
 | atreides | `10.1.8.0/24` | `atreides`           | static IP           |
 
 - [x] Switch Colmena `targetHost` values to static IPs
-- [ ] Centralize IP mappings in a single `hosts.nix` attrset
+- [x] Centralize IP mappings in `hosts/common/hosts-data.nix` — all configs reference `config.lab.hosts.<name>.ip` ✅ 2026-04-04
 
 **Monitoring Stack (Prometheus + Grafana):**
 
