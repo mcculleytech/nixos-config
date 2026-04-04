@@ -97,11 +97,13 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Fix GitHub Action that should autoupdate flake.lock ✅ 2024-08-01
 	- [x] Auto-merge flake lock update PRs after CI passes ✅ 2026-04-03
 	- [x] `nix flake check` CI workflow on PRs with branch protection on master ✅ 2026-04-03
+	- [x] git-crypt decryption in CI for full config evaluation ✅ 2026-04-04
+	- [x] Pin all GitHub Actions to commit SHAs (supply chain hardening) ✅ 2026-04-04
 - [ ] Blocky DNS
 	- [ ] Multiple Nodes connected via Redis (?)
 	- [x] Multiple Servers ✅ 2024-03-20
 - [ ] Organize different parts of NixOS & `home-manager` nix configs
-	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns
+	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns ✅ 2026-04-04
 	- [ ] Further consolidation (e.g. single function for group-based settings)
 - [ ] Make template files
 	- [x] Service module template (`templates/service.nix`)
@@ -109,6 +111,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Colmena node template
 	- [ ] Home Manager module template
 - [ ] Secrets organization (consolidate SOPS and git-crypt usage, standardize secret paths)
+- [x] `.gitignore` for defense-in-depth against accidental secret commits ✅ 2026-04-04
+- [x] Security audit — verified no secrets leaked in public repo history ✅ 2026-04-04
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
 	- [x] C maldev shell (`shells/c-maldev.nix`) ✅ 2026-04-03
 	- [x] Go dev shell (`shells/go-dev.nix`) ✅ 2026-04-03

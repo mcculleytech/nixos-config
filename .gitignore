@@ -1,0 +1,17 @@
+# Secrets and keys
+*.env
+*.key
+*.pem
+id_*
+!id_*.pub
+
+# Nix build artifacts
+result
+result-*
+
+# Editor/OS artifacts
+.direnv/
+.DS_Store
+*.swp
+*.swo
+*~

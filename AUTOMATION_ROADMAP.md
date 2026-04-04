@@ -35,6 +35,8 @@ Shared across both tracks — observability is useful regardless of how deploys 
 The weekly `update-flake.yml` workflow already creates flake.lock update PRs via `DeterminateSystems/update-flake-lock`. The remaining work connects that to a full validate → merge → staged deploy loop.
 
 - [x] **CI validation job:** `nix flake check` workflow on PRs with branch protection ✅ 2026-04-03
+- [x] **git-crypt in CI:** decrypt git-crypt secrets in CI so all configs (server + workstation) can be fully evaluated ✅ 2026-04-04
+- [x] **Pinned actions:** all GitHub Actions pinned to commit SHAs to prevent supply chain attacks ✅ 2026-04-04
 - [x] **Auto-merge:** auto-merge flake lock update PRs after CI passes ✅ 2026-04-03
 - [ ] **Staged deploy workflow** triggered on merge to `main`:
   - Stage 1: `colmena apply --on @vm` (vader, phantom, atreides)
@@ -46,7 +48,7 @@ The weekly `update-flake.yml` workflow already creates flake.lock update PRs via
 
 ```
 Weekly cron → update-flake.yml → flake.lock PR
-  → CI: nix flake check + colmena build → auto-merge if green
+  → CI: git-crypt unlock → nix flake check → auto-merge if green
   → Deploy Stage 1: colmena apply --on @vm → health check
   → Deploy Stage 2: colmena apply (physical) → health check
   → on failure: rollback + alert
@@ -96,7 +98,8 @@ Declaratively manage VM lifecycle so spinning up a new NixOS server is a single 
 
 Close the loop — the repo becomes the single source of truth with zero manual intervention. The auto-update pipeline (Phase 0) handles flake.lock PRs, CI validation, auto-merge, and staged deploys. This section covers the remaining GitOps pieces.
 
-- [x] Branch protection on `main`: require CI checks before merge ✅ 2026-04-03
+- [x] Branch protection on `master`: require CI checks before merge ✅ 2026-04-03
+- [x] Security audit: verified no secrets leaked in public repo history, added `.gitignore` ✅ 2026-04-04
 - [ ] Scheduled drift detection: nightly `colmena apply --evaluator streaming --verbose --what-if` dry-run, alert if actual state diverges from repo
 - [ ] Self-healing: if drift is detected, auto-apply to bring hosts back in line (optional, aggressive)
 
