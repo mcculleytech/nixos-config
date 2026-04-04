@@ -131,3 +131,37 @@ fi
 
 curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG${REBOOT_MSG}" "$NTFY_URL" || true
 logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)${REBOOT_MSG}"
+
+# 7. Wait for rebooted hosts to come back and send heartbeat
+if [ -n "$REBOOT_HOSTS" ]; then
+  logger -t "$LOG_TAG" "Waiting for rebooted hosts to come back..."
+  sleep 120  # wait for reboot (1 min shutdown delay + boot time)
+  BACK=""
+  DOWN=""
+  for host in $REBOOT_HOSTS; do
+    IP=$(nix eval --raw ".#nixosConfigurations.$host.config.lab.hosts.$host.ip" 2>/dev/null || echo "")
+    if [ -z "$IP" ]; then continue; fi
+    # retry a few times — host may still be booting
+    ALIVE=0
+    for attempt in 1 2 3; do
+      if ssh -o ConnectTimeout=15 -o BatchMode=yes "root@$IP" 'systemctl --failed --no-legend' 2>/dev/null; then
+        ALIVE=1
+        break
+      fi
+      sleep 30
+    done
+    if [ "$ALIVE" = "1" ]; then
+      BACK="${BACK} ${host}"
+      logger -t "$LOG_TAG" "Heartbeat OK: $host"
+    else
+      DOWN="${DOWN} ${host}"
+      logger -t "$LOG_TAG" "Heartbeat FAILED: $host did not come back"
+    fi
+  done
+
+  if [ -n "$DOWN" ]; then
+    curl -s -H "Title: REBOOT FAILED" -H "Priority: urgent" -d "Hosts did not come back after reboot:${DOWN}" "$NTFY_URL" || true
+  else
+    curl -s -H "Title: Reboot OK" -d "All hosts back:${BACK}" "$NTFY_URL" || true
+  fi
+fi
