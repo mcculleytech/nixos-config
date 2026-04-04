@@ -56,6 +56,10 @@
     rec {
       overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
 
+      devShells.x86_64-linux = import ./shells/bootstrap-shell.nix {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      };
+
       colmena = import ./colmena.nix { inherit inputs outputs defaultModules homeManagerServerModule; };
 
       # NixOS Configs

@@ -106,6 +106,19 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Home Manager module template
 - [ ] Secrets organization (consolidate SOPS and git-crypt usage, standardize secret paths)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
+- [ ] Offensive security attack box configuration
+	- [ ] New host or role with offsec tooling (nmap, Burp Suite, Metasploit, Wireshark, etc.)
+	- [ ] Wordlists and SecLists provisioning
+- [ ] Offsec dev shells (`shells/`)
+	- [ ] `recon.nix` — reconnaissance tools (nmap, amass, subfinder, httpx, nuclei, etc.)
+	- [ ] `exploit.nix` — exploitation frameworks and utilities (metasploit, sqlmap, etc.)
+	- [ ] `post-exploit.nix` — post-exploitation / lateral movement tools (chisel, ligolo, etc.)
+	- [ ] `web.nix` — web app testing (Burp, ffuf, gobuster, feroxbuster, etc.)
+	- [ ] `wireless.nix` — wireless auditing (aircrack-ng, bettercap, etc.)
+	- [ ] `osint.nix` — OSINT gathering (theHarvester, Maltego, Recon-ng, etc.)
+- [ ] Maldev shells (`shells/`)
+	- [ ] `maldev-c.nix` — C/C++ toolchain (gcc, clang, musl, mingw-w64 cross-compiler, make, cmake, nasm)
+	- [ ] `maldev-go.nix` — Go toolchain (Go, garble, cross-compilation targets for Windows/Linux)
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
@@ -128,58 +141,10 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 5. (optional) If you want encryption on your disk, ensure the `disko` config has been setup for luks. If using an interactive encryption unlock, ensure the file on the remote machine is present. An example of this can be seen in the `dekstop-template.nix` file in this project. 
 6. (optional) If using sops nix, you'll need to grab the machine's host key in order for the machine to read secrets. Use the following command on the remote host:
 	`nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'`
-7. Run the `nixos-anywhere` installation command:
-	I've found that if you need to `--copy-host-keys`, you'll have to install `nixos-anywhere` in a shell. I usually do this anyway.
-	1. `nix-shell -p nixos-anywhere`
+7. Enter the bootstrap dev shell (includes `nixos-anywhere`, `colmena`, `sops`, `age`, `ssh-to-age`, etc.):
+	1. `nix develop`
 	2. `nixos-anywhere --copy-host-keys --flake '.#your-host' root@yourip`
-
-### New Service Configuration
-
-To add a new service to a host:
-
-1. Create a new service module using the template at `templates/service.nix`. Place it in `hosts/common/optional/roles/server/` (or `workstation/` for desktop services).
-2. Add the new file to the role's `default.nix` imports:
-	```nix
-	# hosts/common/optional/roles/server/default.nix
-	{
-	  imports = [
-	    ...
-	    ./your-service.nix
-	  ];
-	}
-	```
-3. Enable the service on the target host's `configuration.nix`:
-	```nix
-	your-service.enable = true;
-	```
-4. (Optional) If the service needs HTTPS access via Traefik, add a router and service entry in `hosts/common/optional/roles/server/traefik/dynamic-config.nix`:
-	```nix
-	# Router — maps a DNS name to the service
-	your-service = {
-	    entryPoints = [ "websecure" ];
-	    rule = "Host(`your-service.${tr_secrets.traefik.homelab_domain}`)";
-	    middlewares = [ "default-headers" "https-redirectscheme" ];
-	    tls = { certResolver = "cloudflare"; };
-	    service = "your-service";
-	};
-
-	# Service — points to the backend host:port
-	your-service = {
-	    loadBalancer = {
-	        servers = [ { url = "http://<host-ip>:<port>"; } ];
-	        passHostHeader = "true";
-	    };
-	};
-	```
-5. (Optional) If using Traefik, add a DNS record in `hosts/common/optional/roles/server/blocky.nix` pointing the subdomain to atreides (`10.1.8.129`):
-	```nix
-	# Inside customDNS.mapping
-	"your-service.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-	```
-6. Deploy with Colmena:
-	```bash
-	colmena apply --on hostname
-	```
+	3. For subsequent deploys, use `colmena apply --on hostname`
 
 ### Pre-Commit Hook
 
