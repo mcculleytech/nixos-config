@@ -48,7 +48,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
 - [ ] Standalone home manager config for wsl2 or Mac
-- [ ] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern)
+- [x] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern) ✅ 2026-04-04
 
 ### Servers
 - [x] Colmena setup
