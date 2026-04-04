@@ -25,9 +25,9 @@ All servers are on-prem, so there's no reason to route Colmena through Tailscale
 
 Shared across both tracks — observability is useful regardless of how deploys happen.
 
-- [ ] Deploy Prometheus as a NixOS module (likely on atreides or a new VM)
-- [ ] `prometheus-node-exporter` on every host for hardware/OS metrics
-- [ ] Grafana dashboards for system health, disk usage, service status
+- [x] Deploy Prometheus as a NixOS module (on atreides) ✅ 2026-03-17
+- [x] `prometheus-node-exporter` on every host for hardware/OS metrics ✅ 2026-03-17
+- [x] Grafana dashboards for system health, disk usage, service status ✅ 2026-03-17
 - [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
 - [ ] Optional: Loki for centralized log aggregation
 
@@ -35,8 +35,8 @@ Shared across both tracks — observability is useful regardless of how deploys 
 
 The weekly `update-flake.yml` workflow already creates flake.lock update PRs via `DeterminateSystems/update-flake-lock`. The remaining work connects that to a full validate → merge → staged deploy loop.
 
-- [ ] **CI validation job:** add a workflow that runs `nix flake check` + `colmena build` (dry-build) on every flake.lock update PR
-- [ ] **Auto-merge:** enable GitHub auto-merge on the update PR when CI passes (`gh pr merge --auto --merge`)
+- [x] **CI validation job:** `nix flake check` workflow on PRs with branch protection ✅ 2026-04-03
+- [x] **Auto-merge:** auto-merge flake lock update PRs after CI passes ✅ 2026-04-03
 - [ ] **Staged deploy workflow** triggered on merge to `main`:
   - Stage 1: `colmena apply --on @vm` (vader, phantom, atreides)
   - Health check: SSH into each VM, verify systemd units are healthy and critical services respond on expected ports
@@ -97,7 +97,7 @@ Declaratively manage VM lifecycle so spinning up a new NixOS server is a single 
 
 Close the loop — the repo becomes the single source of truth with zero manual intervention. The auto-update pipeline (Phase 0) handles flake.lock PRs, CI validation, auto-merge, and staged deploys. This section covers the remaining GitOps pieces.
 
-- [ ] Branch protection on `main`: require CI checks before merge
+- [x] Branch protection on `main`: require CI checks before merge ✅ 2026-04-03
 - [ ] Scheduled drift detection: nightly `colmena apply --evaluator streaming --verbose --what-if` dry-run, alert if actual state diverges from repo
 - [ ] Self-healing: if drift is detected, auto-apply to bring hosts back in line (optional, aggressive)
 

@@ -32,6 +32,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - deployable via `nixos-anywhere`
 - `syncthing` setup utilizing `git-crypt` for secret management of IDs.
 - bootstrap dev shell (`nix develop`) with deployment and secrets tooling
+- LazyVim neovim config managed via home-manager (`xdg.configFile`) with nix-provided runtime deps
 - `nix flake check` CI on PRs with auto-merge for weekly flake lock updates
 
 ##  ToDo
@@ -112,6 +113,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] Home Manager module template
 - [ ] Secrets organization (consolidate SOPS and git-crypt usage, standardize secret paths)
 - [ ] Dev environment `devShells` off root of project (Go, Python, Rust, C)
+	- [x] C maldev shell (`shells/c-maldev.nix`) ✅ 2026-04-03
+	- [x] Go dev shell (`shells/go-dev.nix`) ✅ 2026-04-03
 - [ ] Offensive security attack box configuration
 	- [ ] New host or role with offsec tooling (nmap, Burp Suite, Metasploit, Wireshark, etc.)
 	- [ ] Wordlists and SecLists provisioning
@@ -123,8 +126,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [ ] `wireless.nix` — wireless auditing (aircrack-ng, bettercap, etc.)
 	- [ ] `osint.nix` — OSINT gathering (theHarvester, Maltego, Recon-ng, etc.)
 - [ ] Maldev shells (`shells/`)
-	- [ ] `maldev-c.nix` — C/C++ toolchain (gcc, clang, musl, mingw-w64 cross-compiler, make, cmake, nasm)
-	- [ ] `maldev-go.nix` — Go toolchain (Go, garble, cross-compilation targets for Windows/Linux)
+	- [x] `maldev-c.nix` — C/C++ toolchain (gcc, clang, mingw-w64 cross-compiler, make, cmake, nasm) ✅ 2026-04-03
+	- [x] `maldev-go.nix` — Go toolchain (Go, gopls, delve, garble) ✅ 2026-04-03
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
