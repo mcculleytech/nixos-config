@@ -83,6 +83,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 		- [ ] Tailscale client metrics (built-in `/metrics` endpoint via `tailscale set --webclient`, all hosts)
 		- [ ] Systemd service alerting rules — alert on failed units across hosts
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
+- [ ] Decommission maul — machine is constantly down and physically inaccessible; remove host config, colmena entry, sops keys, and Systems table entry
+- [ ] Decommission achilles — remove host config, colmena entry, sops keys, and Systems table entry
 
 
 ### Other
