@@ -19,7 +19,7 @@ creation_rules:
         - *phantom_server
         - *atreides_server
         - *saruman_server
-- path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
+  - path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
         - *aeneas_alex
