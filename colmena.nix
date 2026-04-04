@@ -59,17 +59,6 @@
     ];
   };
 
-#  maul = {
-#    deployment = {
-#      targetHost = "maul";
-#      targetUser = "root";
-#      tags = [ "server" ];
-#    };
-#    imports = defaultModules ++ homeManagerServerModule ++ [
-#      ./hosts/maul/configuration.nix
-#    ];
-#  };
-
   aeneas = {
     deployment = {
       targetHost = "aeneas";
@@ -85,7 +74,6 @@
         home-manager.extraSpecialArgs = { inherit inputs outputs; };
         home-manager.users.alex.imports = [
           ./home/alex/aeneas.nix
-          inputs.nixvim.homeModules.nixvim
         ];
         home-manager.backupFileExtension = "bak";
       }

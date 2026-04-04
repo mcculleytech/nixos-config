@@ -16,10 +16,6 @@ in
             id = "${st_secrets.syncthing.phantom_id}";
             autoAcceptFolders = true;
           };
-          "maul" = {
-            id = "${st_secrets.syncthing.maul_id}";
-            autoAcceptFolders = true;
-          };
         };
         folders = {
           "Synced-Documents" = {

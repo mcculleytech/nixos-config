@@ -37,7 +37,6 @@ options = {
               devices = [
                 "achilles"
                 "aeneas"
-                "maul"
               ];
             };
             "Pixel-Photos" = {
@@ -50,7 +49,6 @@ options = {
               devices = [
                 "achilles"
                 "aeneas"
-                "maul"
                 "pixel"
               ];
             };
@@ -64,9 +62,6 @@ options = {
             };
             "pixel" = {
               id = "${st_secrets.syncthing.pixel_id}";
-            };
-            "maul" = {
-              id = "${st_secrets.syncthing.maul_id}";
             };
           };
           gui = {

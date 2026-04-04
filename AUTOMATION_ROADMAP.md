@@ -16,7 +16,6 @@ All servers are on-prem, so there's no reason to route Colmena through Tailscale
 | vader    | `10.2.1.0/24` | `vader`              | static IP           |
 | phantom  | `10.1.8.0/24` | `phantom`            | static IP           |
 | atreides | `10.1.8.0/24` | `atreides`           | static IP           |
-| maul     | offsite       | `maul`               | static IP or VPN    |
 
 - [x] Switch Colmena `targetHost` values to static IPs
 - [ ] Centralize IP mappings in a single `hosts.nix` attrset
@@ -40,7 +39,7 @@ The weekly `update-flake.yml` workflow already creates flake.lock update PRs via
 - [ ] **Staged deploy workflow** triggered on merge to `main`:
   - Stage 1: `colmena apply --on @vm` (vader, phantom, atreides)
   - Health check: SSH into each VM, verify systemd units are healthy and critical services respond on expected ports
-  - Stage 2: `colmena apply` on physical servers (saruman, maul) — only runs if Stage 1 health checks pass
+  - Stage 2: `colmena apply` on physical servers (saruman) — only runs if Stage 1 health checks pass
   - Health check on physical hosts
   - Notify on success/failure via ntfy or webhook
 - [ ] **Rollback on failure:** if health checks fail, `nixos-rebuild switch --rollback` on affected hosts and send alert

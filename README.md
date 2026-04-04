@@ -14,7 +14,6 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
 | aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
 | achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
-| maul     | Offsite Backup Server    											  							| HP EliteBook 8460p          |
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
@@ -86,13 +85,12 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 		- [ ] Tailscale client metrics (built-in `/metrics` endpoint via `tailscale set --webclient`, all hosts)
 		- [ ] Systemd service alerting rules — alert on failed units across hosts
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
-- [ ] Decommission maul — machine is constantly down and physically inaccessible; remove host config, colmena entry, sops keys, and Systems table entry
+- [x] Decommission maul — removed host config, colmena entry, sops keys, syncthing refs, and Systems table entry ✅ 2026-04-03
 - [ ] Decommission achilles — remove host config, colmena entry, sops keys, and Systems table entry
 
 
 ### Other
 - [x] Move all machines to an `impermanence` setup ✅ 2024-03-08
-	- [x] Need to redeploy `maul.nix` - Hardware refresh ✅ 2024-03-08
  	- [x] Set as part of global config ✅ 2024-03-08
 - [ ] Investigate copy host keys in nixos-anywhere breaking on first deployment run. Might be breaking due to impermanence.
 - [x] immutable users as default ✅ 2024-02-20

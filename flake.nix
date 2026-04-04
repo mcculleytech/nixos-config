@@ -149,13 +149,6 @@
           ];
         };
 
-        # Backup Server
-        "maul" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ homeManagerServerModule ++ [
-            ./hosts/maul/configuration.nix
-          ];
-        };
       };
 
       # home-manager standalones - configure when needed

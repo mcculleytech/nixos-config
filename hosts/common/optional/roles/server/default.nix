@@ -5,7 +5,6 @@
     ./octoprint.nix
     ./jellyfin.nix
     ./laptop-disable-suspend-on-close.nix
-    ./remote-backup-server.nix
     ./ollama.nix
     ./immich.nix
     ./qemu-config.nix
