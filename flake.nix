@@ -52,8 +52,11 @@
     rec {
       overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
 
-      devShells.x86_64-linux = import ./shells/bootstrap-shell.nix {
+      devShells.x86_64-linux = let
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      in (import ./shells/bootstrap-shell.nix { inherit pkgs; }) // {
+        c-maldev = import ./shells/c-maldev.nix { inherit pkgs; };
+        go-dev = import ./shells/go-dev.nix { inherit pkgs; };
       };
 
       colmena = import ./colmena.nix { inherit inputs outputs defaultModules homeManagerServerModule; };
