@@ -59,14 +59,36 @@
     ];
   };
 
-  maul = {
+#  maul = {
+#    deployment = {
+#      targetHost = "maul";
+#      targetUser = "root";
+#      tags = [ "server" ];
+#    };
+#    imports = defaultModules ++ homeManagerServerModule ++ [
+#      ./hosts/maul/configuration.nix
+#    ];
+#  };
+
+  aeneas = {
     deployment = {
-      targetHost = "maul";
+      targetHost = "aeneas";
       targetUser = "root";
-      tags = [ "server" ];
+      tags = [ "workstation" ];
     };
-    imports = defaultModules ++ homeManagerServerModule ++ [
-      ./hosts/maul/configuration.nix
+    imports = defaultModules ++ [
+      inputs.hardware.nixosModules.framework-13-7040-amd
+      inputs.home-manager.nixosModules.home-manager
+      ./hosts/aeneas/configuration.nix
+      {
+        home-manager.useUserPackages = true;
+        home-manager.extraSpecialArgs = { inherit inputs outputs; };
+        home-manager.users.alex.imports = [
+          ./home/alex/aeneas.nix
+          inputs.nixvim.homeModules.nixvim
+        ];
+        home-manager.backupFileExtension = "bak";
+      }
     ];
   };
 }

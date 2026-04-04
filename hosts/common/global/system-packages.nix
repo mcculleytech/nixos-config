@@ -6,6 +6,7 @@
     bitwarden-cli
     dnsutils
     wget
+    gh
     git
     git-crypt
     tmux
