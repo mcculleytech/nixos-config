@@ -8,7 +8,7 @@
 
     systemd.services.auto-deploy = {
       description = "Auto-deploy nixos-config on new commits";
-      path = with pkgs; [ git colmena openssh curl nix util-linux ];
+      path = with pkgs; [ bash git colmena openssh curl nix util-linux ];
       serviceConfig = {
         Type = "oneshot";
         User = "alex";
