@@ -11,12 +11,12 @@ jobs:
       pull-requests: write
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
     - name: Install Nix
-      uses: cachix/install-nix-action@v27
+      uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
     - name: Update flake.lock
       id: update
-      uses: DeterminateSystems/update-flake-lock@main
+      uses: DeterminateSystems/update-flake-lock@3c4f567004c3b0f7bb85177df020f3825028d2b1 # main
     - name: Enable auto-merge
       if: steps.update.outputs.pull-request-number != ''
       env:

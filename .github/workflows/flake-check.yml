@@ -7,16 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
     - name: Install Nix
-      uses: cachix/install-nix-action@v27
-    - name: Evaluate server configs and devShells
+      uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+    - name: Decrypt git-crypt secrets
       run: |
-        # Evaluate configs that don't require git-crypt secrets
-        # Workstation configs (aeneas) reference git-crypt encrypted files
-        # and cannot be evaluated without decryption
-        nix eval .#nixosConfigurations.vader.config.system.build.toplevel 2>&1
-        nix eval .#nixosConfigurations.phantom.config.system.build.toplevel 2>&1
-        nix eval .#nixosConfigurations.atreides.config.system.build.toplevel 2>&1
-        nix eval .#nixosConfigurations.saruman.config.system.build.toplevel 2>&1
-        nix eval .#devShells.x86_64-linux 2>&1
+        nix-env -iA nixpkgs.git-crypt
+        echo "${{ secrets.GIT_CRYPT_KEY }}" | base64 -d > /tmp/git-crypt-key
+        git-crypt unlock /tmp/git-crypt-key
+        rm /tmp/git-crypt-key
+    - name: Run flake check
+      run: nix flake check --no-build
