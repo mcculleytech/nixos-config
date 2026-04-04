@@ -15,4 +15,10 @@ jobs:
     - name: Install Nix
       uses: cachix/install-nix-action@v27
     - name: Update flake.lock
+      id: update
       uses: DeterminateSystems/update-flake-lock@main
+    - name: Enable auto-merge
+      if: steps.update.outputs.pull-request-number != ''
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh pr merge ${{ steps.update.outputs.pull-request-number }} --auto --merge
