@@ -15,8 +15,8 @@ jobs:
         # Evaluate configs that don't require git-crypt secrets
         # Workstation configs (aeneas) reference git-crypt encrypted files
         # and cannot be evaluated without decryption
-        nix eval .#nixosConfigurations.vader.config.system.build.toplevel --no-build 2>&1
-        nix eval .#nixosConfigurations.phantom.config.system.build.toplevel --no-build 2>&1
-        nix eval .#nixosConfigurations.atreides.config.system.build.toplevel --no-build 2>&1
-        nix eval .#nixosConfigurations.saruman.config.system.build.toplevel --no-build 2>&1
-        nix eval .#devShells.x86_64-linux --no-build 2>&1
+        nix eval .#nixosConfigurations.vader.config.system.build.toplevel 2>&1
+        nix eval .#nixosConfigurations.phantom.config.system.build.toplevel 2>&1
+        nix eval .#nixosConfigurations.atreides.config.system.build.toplevel 2>&1
+        nix eval .#nixosConfigurations.saruman.config.system.build.toplevel 2>&1
+        nix eval .#devShells.x86_64-linux 2>&1
