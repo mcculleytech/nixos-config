@@ -1,3 +1,4 @@
+# LazyVim in Nix — neovim + runtime deps managed by nix, plugin config via lazy.nvim
 {pkgs, ... }: {
   programs.neovim = {
     enable = true;
@@ -13,6 +14,9 @@
       curl
       wget
       gnumake
+      tree-sitter
+      lazygit
+      fzf
     ];
   };
 
