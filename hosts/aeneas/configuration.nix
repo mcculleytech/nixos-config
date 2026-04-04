@@ -8,7 +8,6 @@
       ../common/optional/docker.nix
       ../common/optional/roles/workstation
       ../common/optional/roles/workstation/cosmic.nix
-      ../common/optional/roles/workstation/vmware.nix
       ../common/optional/roles/workstation/custom-udev-wakeup.nix
       ../common/optional/roles/workstation/framework-tweaks.nix
     ];

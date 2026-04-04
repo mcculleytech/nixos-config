@@ -10,7 +10,7 @@
         "/var/lib/bluetooth"
         "/var/lib/nixos"
         "/var/lib/sops-nix"
-        "/var/lib/libvirt"
+        { directory = "/var/lib/libvirt"; user = "root"; group = "root"; }
         "/var/log"
         "/etc/NetworkManager"
       ] ++ (lib.optionals config.services.postgresql.enable [

@@ -1,5 +1,23 @@
 {pkgs, config, ...}: {
 
+    # Disable BTRFS CoW on libvirt images to avoid double-CoW with qcow2
+    # and eliminate wasted CPU on zstd compression of VM disk data.
+    systemd.tmpfiles.rules = [
+      "d /var/lib/libvirt/images 0711 root root -"
+    ];
+
+    systemd.services.libvirt-nocow = {
+      description = "Disable BTRFS CoW on libvirt images directory";
+      wantedBy = [ "libvirtd.service" ];
+      before = [ "libvirtd.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        ExecStart = "${pkgs.e2fsprogs}/bin/chattr +C /var/lib/libvirt/images";
+      };
+      unitConfig.ConditionPathIsDirectory = "/var/lib/libvirt/images";
+    };
+
     virtualisation = {
       libvirtd = {
         enable = true;
