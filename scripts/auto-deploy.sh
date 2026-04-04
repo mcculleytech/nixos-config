@@ -39,7 +39,7 @@ rollback() {
 }
 
 # 1. Pull latest — exit if no new commits
-git fetch origin master
+git fetch origin
 LOCAL=$(git rev-parse master)
 REMOTE=$(git rev-parse origin/master)
 if [ "$LOCAL" = "$REMOTE" ]; then
