@@ -11,6 +11,9 @@
       ./optional/flameshot-gui.nix
       #./optional/hyprland
       ./optional/nvim
+      ./optional/cava.nix
     ];
+
+    cava.enable = true;
 
 }

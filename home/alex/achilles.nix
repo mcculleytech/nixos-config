@@ -8,6 +8,9 @@
       ./optional/zsh.nix
       ./optional/security-tooling.nix
       ./optional/flameshot-gui.nix
+      ./optional/cava.nix
     ];
+
+    cava.enable = true;
 
 }
