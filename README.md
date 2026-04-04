@@ -13,7 +13,6 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | **Name** | Purpose                  											  							| Hardware                    |
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
 | aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
-| achilles | Personal Desktop         											  							| AMD Ryzen 5 <br>Nvidia 3050 |
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
@@ -86,7 +85,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 		- [ ] Systemd service alerting rules — alert on failed units across hosts
 - [x] Fix home-manager impermanence issue where the systemd units aren't mounted for hm.
 - [x] Decommission maul — removed host config, colmena entry, sops keys, syncthing refs, and Systems table entry ✅ 2026-04-03
-- [ ] Decommission achilles — remove host config, colmena entry, sops keys, and Systems table entry
+- [x] Decommission achilles — removed host config, sops keys, syncthing refs, SSH keys, and Systems table entry ✅ 2026-04-04
 
 
 ### Other
