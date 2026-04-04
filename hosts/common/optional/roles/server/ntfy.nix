@@ -20,6 +20,11 @@ in
 
     networking.firewall.allowedTCPPorts = [ 2586 ];
 
+    # DynamicUser requires /var/lib/private with mode 0700
+    systemd.tmpfiles.rules = [
+      "d /var/lib/private 0700 root root -"
+    ];
+
     # DynamicUser uses /var/lib/private; persist that path for impermanence
     environment.persistence = {
       "/persist" = {
