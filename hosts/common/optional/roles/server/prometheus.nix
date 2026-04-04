@@ -1,4 +1,8 @@
-{ config, lib, ... }: {
+{ config, lib, ... }:
+let
+  hosts = config.lab.hosts;
+in
+{
 
   options = {
     prometheus-server.enable =
@@ -19,10 +23,10 @@
           static_configs = [
             {
               targets = [
-                "10.1.8.129:9100" # atreides
-                "10.1.8.121:9100" # phantom
-                "10.1.8.6:9100"   # saruman
-                "10.2.1.245:9100" # vader
+                "${hosts.atreides.ip}:9100"
+                "${hosts.phantom.ip}:9100"
+                "${hosts.saruman.ip}:9100"
+                "${hosts.vader.ip}:9100"
               ];
             }
           ];
@@ -31,7 +35,7 @@
           job_name = "traefik";
           static_configs = [
             {
-              targets = [ "10.1.8.129:8080" ];
+              targets = [ "${hosts.atreides.ip}:8080" ];
             }
           ];
         }
@@ -40,8 +44,8 @@
           static_configs = [
             {
               targets = [
-                "10.1.8.129:4000" # atreides
-                "10.1.8.121:4000" # phantom
+                "${hosts.atreides.ip}:4000"
+                "${hosts.phantom.ip}:4000"
               ];
             }
           ];

@@ -1,6 +1,7 @@
 { config, lib, ... }:
 let
   tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
+  hosts = config.lab.hosts;
 in
 {
 
@@ -28,23 +29,23 @@ in
 
         ++ atreides
         menu = atreides
-        title = atreides (10.1.8.129)
-        host = 10.1.8.129
+        title = atreides (${hosts.atreides.ip})
+        host = ${hosts.atreides.ip}
 
         ++ phantom
         menu = phantom
-        title = phantom (10.1.8.121)
-        host = 10.1.8.121
+        title = phantom (${hosts.phantom.ip})
+        host = ${hosts.phantom.ip}
 
         ++ saruman
         menu = saruman
-        title = saruman (10.1.8.6)
-        host = 10.1.8.6
+        title = saruman (${hosts.saruman.ip})
+        host = ${hosts.saruman.ip}
 
         ++ vader
         menu = vader
-        title = vader (10.2.1.245)
-        host = 10.2.1.245
+        title = vader (${hosts.vader.ip})
+        host = ${hosts.vader.ip}
 
         + Infrastructure
         menu = Infrastructure
@@ -52,18 +53,18 @@ in
 
         ++ unifi
         menu = Unifi Router
-        title = Unifi Router (10.1.8.1)
-        host = 10.1.8.1
+        title = Unifi Router (${hosts.unifi.ip})
+        host = ${hosts.unifi.ip}
 
         ++ truenas
         menu = TrueNAS
-        title = TrueNAS (10.1.8.4)
-        host = 10.1.8.4
+        title = TrueNAS (${hosts.truenas.ip})
+        host = ${hosts.truenas.ip}
 
         ++ proxmox
         menu = Proxmox
-        title = Proxmox (10.3.29.2)
-        host = 10.3.29.2
+        title = Proxmox (${hosts.proxmox.ip})
+        host = ${hosts.proxmox.ip}
 
         + External
         menu = External

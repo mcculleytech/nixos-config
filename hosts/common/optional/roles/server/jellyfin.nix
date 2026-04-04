@@ -39,11 +39,11 @@ in
 
 	  [
 	    (commonMountOptions // {
-	      what = "10.1.8.4:/mnt/billthepony/movies";
+	      what = "${config.lab.hosts.truenas.ip}:/mnt/billthepony/movies";
 	      where = "/var/lib/jellyfin/movies";
 	    })
 	    (commonMountOptions // {
-	      what = "10.1.8.4:/mnt/billthepony/tv-shows";
+	      what = "${config.lab.hosts.truenas.ip}:/mnt/billthepony/tv-shows";
 	      where = "/var/lib/jellyfin/tv-shows";
 	    })
 	  ];

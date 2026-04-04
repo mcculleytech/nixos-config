@@ -1,5 +1,6 @@
 {
   imports = [
+    ./hosts.nix
     ./env-vars.nix
     ./ephemeral-btrfs.nix
     ./node-exporter.nix
