@@ -72,6 +72,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] n8n automation platform (native NixOS service, no Docker needed) ✅ 2026-03-17
 - [x] Paperless-ngx document management (saruman, PostgreSQL + Tika OCR) ✅ 2026-03-17
 - [ ] Automate Proton Bridge on saruman (currently running manually in tmux; needs kwallet/keyring service dependency to run as a systemd user service on boot)
+- [x] ntfy push notification server (atreides, reverse-proxied via traefik) ✅ 2026-04-04
+- [x] Auto-deploy pipeline — hourly systemd timer on saruman, staged VM→physical deploy with health checks and ntfy notifications ✅ 2026-04-04
 - [x] Prometheus + Grafana monitoring stack ✅ 2026-03-17
 	- [ ] Additional exporters/monitors:
 		- [ ] PostgreSQL exporter (`postgres_exporter`) — used by Gitea, Miniflux, Paperless, Immich

@@ -52,6 +52,7 @@ in
       				"grafana.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"prometheus.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"smokeping.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"ntfy.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       			};
       		};
       		blocking = {

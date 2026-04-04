@@ -185,6 +185,15 @@ in
 	   				};
 	   				service = "prometheus";
 	   			};
+	   			ntfy = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`ntfy.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "ntfy";
+	   			};
 	   			smokeping = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`smokeping.${tr_secrets.traefik.homelab_domain}`)";
@@ -346,6 +355,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.atreides.ip}:9090";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			ntfy = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.atreides.ip}:2586";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
