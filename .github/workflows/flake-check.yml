@@ -10,5 +10,13 @@ jobs:
       uses: actions/checkout@v4
     - name: Install Nix
       uses: cachix/install-nix-action@v27
-    - name: Run flake check
-      run: nix flake check --no-build
+    - name: Evaluate server configs and devShells
+      run: |
+        # Evaluate configs that don't require git-crypt secrets
+        # Workstation configs (aeneas) reference git-crypt encrypted files
+        # and cannot be evaluated without decryption
+        nix eval .#nixosConfigurations.vader.config.system.build.toplevel --no-build 2>&1
+        nix eval .#nixosConfigurations.phantom.config.system.build.toplevel --no-build 2>&1
+        nix eval .#nixosConfigurations.atreides.config.system.build.toplevel --no-build 2>&1
+        nix eval .#nixosConfigurations.saruman.config.system.build.toplevel --no-build 2>&1
+        nix eval .#devShells.x86_64-linux --no-build 2>&1
