@@ -109,5 +109,25 @@ fi
 # 5. Tag as last-known-good and notify
 git tag -f "$GOOD_TAG" HEAD
 git push -f origin "$GOOD_TAG" 2>&1 | logger -t "$LOG_TAG" || true
-curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG" "$NTFY_URL" || true
-logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)"
+
+# 6. Check if VMs need a reboot (kernel changed)
+REBOOT_HOSTS=""
+for host in vader phantom atreides; do
+  IP=$(nix eval --raw ".#nixosConfigurations.$host.config.lab.hosts.$host.ip" 2>/dev/null || echo "")
+  if [ -z "$IP" ]; then continue; fi
+  NEEDS_REBOOT=$(ssh -o ConnectTimeout=10 -o BatchMode=yes "root@$IP" \
+    'booted=$(readlink /run/booted-system/kernel); current=$(readlink /run/current-system/kernel); [ "$booted" != "$current" ] && echo "yes" || echo "no"' 2>/dev/null || echo "no")
+  if [ "$NEEDS_REBOOT" = "yes" ]; then
+    logger -t "$LOG_TAG" "Kernel changed on $host — scheduling reboot"
+    ssh -o ConnectTimeout=10 -o BatchMode=yes "root@$IP" 'shutdown -r +1 "Kernel update — auto-reboot"' 2>/dev/null || true
+    REBOOT_HOSTS="${REBOOT_HOSTS} ${host}"
+  fi
+done
+
+REBOOT_MSG=""
+if [ -n "$REBOOT_HOSTS" ]; then
+  REBOOT_MSG=" Rebooting:${REBOOT_HOSTS}"
+fi
+
+curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG${REBOOT_MSG}" "$NTFY_URL" || true
+logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)${REBOOT_MSG}"

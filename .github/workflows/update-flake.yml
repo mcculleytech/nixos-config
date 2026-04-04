@@ -2,7 +2,7 @@ name: "nix flake update"
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * 0'
+    - cron: '0 0 */3 * *'
 jobs:
   lockfile:
     runs-on: ubuntu-latest

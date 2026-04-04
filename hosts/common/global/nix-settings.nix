@@ -20,10 +20,14 @@
     };
     gc = {
       automatic = true;
-      dates = "daily";
-      options = "--delete-older-than 7d";
+      dates = "weekly";
+      options = "--delete-older-than 14d";
     };
   };
+  # Keep 5 boot generations across both bootloaders
+  boot.loader.systemd-boot.configurationLimit = 5;
+  boot.loader.grub.configurationLimit = 5;
+
   nixpkgs = {
     overlays = [
       outputs.overlays.unstable-packages
