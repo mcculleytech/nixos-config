@@ -40,6 +40,7 @@ fi
 
 # 3. Health check VMs
 FAILED=0
+FAILED_HOSTS=""
 for host in vader phantom atreides; do
   IP=$(nix eval --raw ".#nixosConfigurations.$host.config.lab.hosts.$host.ip" 2>/dev/null || echo "")
   if [ -z "$IP" ]; then continue; fi
@@ -49,11 +50,12 @@ for host in vader phantom atreides; do
   else
     logger -t "$LOG_TAG" "Health check FAILED: $host — $FAILED_UNITS"
     FAILED=1
+    FAILED_HOSTS="${FAILED_HOSTS} ${host}"
   fi
 done
 
 if [ "$FAILED" = "1" ]; then
-  curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Health check failed on VMs at $SHORT_REV" "$NTFY_URL" || true
+  curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Health check failed on:${FAILED_HOSTS} at $SHORT_REV" "$NTFY_URL" || true
   exit 1
 fi
 
