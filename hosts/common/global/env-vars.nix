@@ -1,9 +1,10 @@
+{ config, ... }:
 {
 
   environment = {
     variables = {
       EDITOR = "vim";
-      OLLAMA_HOST= "10.1.8.6";
+      OLLAMA_HOST = config.lab.hosts.saruman.ip;
     };
     shellAliases = {
       ga           = "git add .";

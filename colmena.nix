@@ -1,5 +1,7 @@
 { inputs, outputs, defaultModules, homeManagerServerModule }:
-
+let
+  hostData = import ./hosts/common/hosts-data.nix;
+in
 {
   meta = {
     nixpkgs = import inputs.nixpkgs { localSystem = "x86_64-linux"; };
@@ -8,7 +10,7 @@
 
   saruman = {
     deployment = {
-      targetHost = "10.1.8.6";
+      targetHost = hostData.saruman.ip;
       targetUser = "root";
       allowLocalDeployment = true;
       tags = [ "server" "gpu" ];
@@ -28,7 +30,7 @@
 
   vader = {
     deployment = {
-      targetHost = "10.2.1.245";
+      targetHost = hostData.vader.ip;
       targetUser = "root";
       tags = [ "server" "vm" ];
     };
@@ -39,7 +41,7 @@
 
   phantom = {
     deployment = {
-      targetHost = "10.1.8.121";
+      targetHost = hostData.phantom.ip;
       targetUser = "root";
       tags = [ "server" "vm" ];
     };
@@ -50,7 +52,7 @@
 
   atreides = {
     deployment = {
-      targetHost = "10.1.8.129";
+      targetHost = hostData.atreides.ip;
       targetUser = "root";
       tags = [ "server" "vm" ];
     };

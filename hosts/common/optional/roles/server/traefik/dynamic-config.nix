@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
   tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_traefik.json);
+  hosts = config.lab.hosts;
 in
 {
 	config = lib.mkIf config.traefik.enable {
@@ -130,15 +131,6 @@ in
 	   				};
 	   				service = "syncthing";
 	   			};
-	   			ludus = {
-	   				entryPoints = [ "websecure" ];
-	   				rule = "Host(`ludus.${tr_secrets.traefik.homelab_domain}`)";
-	   				middlewares = [ "default-headers" "https-redirectscheme" ];
-	   				tls =  {
-	   					certResolver = "cloudflare";
-	   				};
-	   				service = "ludus";
-	   			};
 	   			radicale = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`radicale.${tr_secrets.traefik.homelab_domain}`) && PathPrefix(`/radicale`)";
@@ -217,7 +209,7 @@ in
 	   			dashboard = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.129:8082";}
+	   						{url = "http://${hosts.atreides.ip}:8082";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -225,7 +217,7 @@ in
 	   			proxmox = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "https://10.3.29.2:8006";}
+	   						{url = "https://${hosts.proxmox.ip}:8006";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -233,7 +225,7 @@ in
 	   			jellyfin = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:8096";}
+	   						{url = "http://${hosts.saruman.ip}:8096";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -241,7 +233,7 @@ in
 	   			ilo = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "https://10.3.29.4";}
+	   						{url = "https://${hosts.ilo.ip}";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -249,7 +241,7 @@ in
 	   			unifi = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "https://10.1.8.1";}
+	   						{url = "https://${hosts.unifi.ip}";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -257,7 +249,7 @@ in
 	   			truenas = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "https://10.1.8.4";}
+	   						{url = "https://${hosts.truenas.ip}";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -265,7 +257,7 @@ in
 	   			ai = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:8080";}
+	   						{url = "http://${hosts.saruman.ip}:8080";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -273,7 +265,7 @@ in
 	   			immich = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:2283";}
+	   						{url = "http://${hosts.saruman.ip}:2283";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -289,7 +281,7 @@ in
 	   			octoprint = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:5000";}
+	   						{url = "http://${hosts.saruman.ip}:5000";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -297,7 +289,7 @@ in
 	   			octostream = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:8081";}
+	   						{url = "http://${hosts.saruman.ip}:8081";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -305,15 +297,7 @@ in
 	   			syncthing = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "https://10.1.8.121:8384";}
-	   					];
-	   					passHostHeader = "true";
-	   				};
-	   			};
-	   			ludus = {
-	   				loadBalancer = {
-	   					servers = [
-	   						{url = "https://10.1.8.233:8006";}
+	   						{url = "https://${hosts.phantom.ip}:8384";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -321,7 +305,7 @@ in
 	   			radicale = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.121:5232/";}
+	   						{url = "http://${hosts.phantom.ip}:5232/";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -329,7 +313,7 @@ in
 	   			n8n = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:5678";}
+	   						{url = "http://${hosts.saruman.ip}:5678";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -337,7 +321,7 @@ in
 	   			miniflux = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.121:8080";}
+	   						{url = "http://${hosts.phantom.ip}:8080";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -345,7 +329,7 @@ in
 	   			paperless = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.6:28981";}
+	   						{url = "http://${hosts.saruman.ip}:28981";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -353,7 +337,7 @@ in
 	   			grafana = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.129:3000";}
+	   						{url = "http://${hosts.atreides.ip}:3000";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -361,7 +345,7 @@ in
 	   			prometheus = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.129:9090";}
+	   						{url = "http://${hosts.atreides.ip}:9090";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
@@ -369,7 +353,7 @@ in
 	   			smokeping = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{url = "http://10.1.8.129:8090";}
+	   						{url = "http://${hosts.atreides.ip}:8090";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

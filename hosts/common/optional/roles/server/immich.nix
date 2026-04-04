@@ -44,11 +44,11 @@
 
     [
       (commonMountOptions // {
-        what = "10.1.8.4:/mnt/billthepony/immich";
+        what = "${config.lab.hosts.truenas.ip}:/mnt/billthepony/immich";
         where = "/var/lib/immich/media";
       })
       (commonMountOptions // {
-        what = "10.1.8.4:/mnt/billthepony/pictures";
+        what = "${config.lab.hosts.truenas.ip}:/mnt/billthepony/pictures";
         where = "/mnt/nfs-photos";
       })
     ];

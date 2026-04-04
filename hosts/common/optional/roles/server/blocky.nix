@@ -1,6 +1,7 @@
 { inputs, config, pkgs, lib, ... }:
 let
   tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
+  hosts = config.lab.hosts;
 in
 {
 
@@ -25,35 +26,32 @@ in
       		customDNS = {
       			mapping = {
       				# nix subnet
-      				"atreides.${tr_secrets.traefik.server_domain}" = "10.1.8.129";
-      				"phantom.${tr_secrets.traefik.server_domain}" = "10.1.8.121";
+      				"atreides.${tr_secrets.traefik.server_domain}" = hosts.atreides.ip;
+      				"phantom.${tr_secrets.traefik.server_domain}" = hosts.phantom.ip;
       				# dmz subnet
-      				"vader.${tr_secrets.traefik.dmz_domain}" = "10.2.1.245";
-      				"prddockerubuntu00.${tr_secrets.traefik.dmz_domain}" = "10.2.1.17";
-      				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = "10.2.1.6";
-      				"housetohome.${tr_secrets.traefik.dmz_domain}" = "10.2.1.113";
-     					# homelab domain
-     					"jellyfin.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     					"ilo.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     					"source.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     					"ai.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     					"immich.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"dashboard.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"traefik.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"proxmox.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"ludus.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"unifi.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"truenas.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"octoprint.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"octostream.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"syncthing.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"radicale.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"n8n.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"miniflux.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-      				"paperless.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     				"grafana.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     				"prometheus.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
-     				"smokeping.${tr_secrets.traefik.homelab_domain}" = "10.1.8.129";
+      				"vader.${tr_secrets.traefik.dmz_domain}" = hosts.vader.ip;
+      				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = hosts.prdcoffeeubuntu.ip;
+      				# homelab domain — all reverse-proxied via atreides (traefik)
+      				"jellyfin.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"ilo.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"source.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"ai.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"immich.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"dashboard.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"traefik.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"proxmox.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"unifi.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"truenas.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"octoprint.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"octostream.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"syncthing.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"radicale.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"n8n.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"miniflux.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"paperless.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"grafana.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"prometheus.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"smokeping.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       			};
       		};
       		blocking = {
