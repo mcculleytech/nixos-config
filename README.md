@@ -31,6 +31,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - secret management via `sops-nix` & `git-crypt`
 - deployable via `nixos-anywhere`
 - `syncthing` setup utilizing `git-crypt` for secret management of IDs.
+- bootstrap dev shell (`nix develop`) with deployment and secrets tooling
+- `nix flake check` CI on PRs with auto-merge for weekly flake lock updates
 
 ##  ToDo
 
@@ -95,6 +97,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] immutable users as default ✅ 2024-02-20
 - [x] Clean up `flake.nix`
 - [x] Fix GitHub Action that should autoupdate flake.lock ✅ 2024-08-01
+	- [x] Auto-merge flake lock update PRs after CI passes ✅ 2026-04-03
+	- [x] `nix flake check` CI workflow on PRs with branch protection on master ✅ 2026-04-03
 - [ ] Blocky DNS
 	- [ ] Multiple Nodes connected via Redis (?)
 	- [x] Multiple Servers ✅ 2024-03-20
