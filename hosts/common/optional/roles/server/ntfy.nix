@@ -20,11 +20,12 @@ in
 
     networking.firewall.allowedTCPPorts = [ 2586 ];
 
+    # DynamicUser uses /var/lib/private; persist that path for impermanence
     environment.persistence = {
       "/persist" = {
         hideMounts = true;
         directories = [
-          { directory = "/var/lib/ntfy-sh"; user = "ntfy-sh"; group = "ntfy-sh"; }
+          { directory = "/var/lib/private/ntfy-sh"; user = "root"; group = "root"; mode = "0700"; }
         ];
       };
     };
