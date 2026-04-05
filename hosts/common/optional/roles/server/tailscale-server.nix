@@ -9,7 +9,7 @@ options = {
     services.tailscale.useRoutingFeatures = "server";
     # enable ip forwarding for TS Router.
     boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
-    boot.kernel.sysctl."'net.ipv6.conf.all.forwarding" = 1;
+    boot.kernel.sysctl."net.ipv6.conf.all.forwarding" = 1;
 
     sops.secrets.tskey-reusable = {};
     sops.templates."tskey-reusable".content = ''
@@ -39,7 +39,7 @@ options = {
         fi
 
         # otherwise authenticate with tailscale
-        ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path} --ssh --advertise-routes=10.0.0.0/24,10.1.8.0/24,10.2.1.0/24,10.3.29.0/24
+        ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path} --ssh --advertise-routes=10.0.0.0/24,10.1.8.0/24,10.2.1.0/24,10.3.29.0/24 --advertise-exit-node --reset
       '';
     };
 	};

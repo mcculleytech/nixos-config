@@ -28,6 +28,7 @@
   kde.enable = true;
   bluetooth.enable = true;
   auto-deploy.enable = true;
+  tailscale-server.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;
