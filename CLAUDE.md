@@ -9,7 +9,9 @@
 	  - `/secrets` secrets management for both sops and git-crypt.
 	  - `/shells` nix shells. Largely unused at this point.
 - `/hosts/common/global` holds various configurations applied across all hosts.
-- `/hosts/common/optional` holds optional services broken further into `servers` and `workstations` for specific configurations for those machines
+- `/hosts/common/optional` holds optional modules shared across all host types (docker, nvidia, opengl). Its `default.nix` is imported by every host.
+- `/hosts/common/optional/roles/server` holds server-specific services. Its `default.nix` is imported by server hosts.
+- `/hosts/common/optional/roles/workstation` holds workstation-specific services. Its `default.nix` is imported by workstation hosts (and saruman, which is both).
 - The running ToDo list in the README should be the source of work. When done with a task already on there, mark it complete with the date. When discussing improvements make an entry.
 
 ## pre-merge checklist
@@ -26,11 +28,17 @@
 - Never hardcode IPs in service configs. Use `config.lab.hosts.<name>.ip` or `hosts.<name>.ip` instead.
 
 ## new deployments
-- For new service deployments, utilize the file `service.nix` as a template. By default place the new service under `optional` subdirectory for servers unless the configuration appears to be more desktop related in which case verify with the user on location. Reference the nix documentation for the specific service at `https://search.nixos.org/options?channel=25.11&query=<service>` and ensure all the necessary options are set for the service to run properly and are network accessible over the LAN (and tailscale) as well as via a reverse proxy (traefik). Once you have a configuration planned, present it to the user for approval before writing the file. 
-- Once you have the service file written, add the file to the `imports` section into the `default.nix` file for the `optional` subdirectory and enable the service on the host specified in prompt. If no host is given, prompt the user. 
-- Make an entry in the traefik `dynamic-config.nix` file. Creating entries for both `router` and `service` entries. 
-- Make a dns entry for the new service in the `blocky.nix` configuration file. 
-- Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning. 
+- All services use the `mkEnableOption` pattern: the service file defines an option (e.g., `myservice.enable`) gated by `lib.mkIf`, and is imported via a role's `default.nix`. Hosts toggle services on with `myservice.enable = true` in their `configuration.nix` — no individual file imports needed.
+- For new service deployments, utilize the file `service.nix` as a template. Place the new service in the appropriate directory:
+  - `hosts/common/optional/` — for modules usable by any host type (not server or workstation specific)
+  - `hosts/common/optional/roles/server/` — for server-specific services
+  - `hosts/common/optional/roles/workstation/` — for workstation-specific services
+  - If unclear, verify with the user on location.
+- Reference the nix documentation for the specific service at `https://search.nixos.org/options?channel=25.11&query=<service>` and ensure all the necessary options are set for the service to run properly and are network accessible over the LAN (and tailscale) as well as via a reverse proxy (traefik). Once you have a configuration planned, present it to the user for approval before writing the file.
+- Once you have the service file written, add it to the `imports` list in the `default.nix` for the directory you placed it in. Then enable the service on the target host's `configuration.nix` with `myservice.enable = true`. If no host is given, prompt the user.
+- Make an entry in the traefik `dynamic-config.nix` file. Creating entries for both `router` and `service` entries.
+- Make a dns entry for the new service in the `blocky.nix` configuration file.
+- Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning.
 - When adding persistence directories for services, use the attrset form (`{ directory = "..."; user = "..."; group = "..."; }`) with the service's user/group to ensure correct ownership on impermanence bind mounts.
 
 ## impermanence
