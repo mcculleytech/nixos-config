@@ -3,13 +3,9 @@
     [
       ./hardware-configuration.nix
       ../common/global
+      ../common/optional
       ../common/optional/roles/server
-      ../common/optional/docker.nix
-      ../common/optional/nvidia.nix
-      ../common/optional/opengl.nix
-      ../common/optional/roles/workstation/kde.nix
-      ../common/optional/roles/workstation/steam.nix
-      ../common/optional/roles/workstation/bluetooth.nix
+      ../common/optional/roles/workstation
       ../../disko/saruman.nix
     ];
 

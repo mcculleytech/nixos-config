@@ -7,6 +7,7 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/phantom.nix
       ../common/global
+      ../common/optional
       ../common/optional/roles/server
     ];
 

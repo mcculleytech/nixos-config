@@ -5,7 +5,7 @@
       ../../disko/aeneas.nix
       ./hardware-configuration.nix
       ../common/global
-      ../common/optional/docker.nix
+      ../common/optional
       ../common/optional/roles/workstation
     ];
 

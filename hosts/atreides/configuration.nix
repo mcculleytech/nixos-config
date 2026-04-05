@@ -7,7 +7,7 @@
       (modulesPath + "/profiles/qemu-guest.nix")
       ../../disko/atreides.nix
       ../common/global
-      ../common/optional/docker.nix
+      ../common/optional
       ../common/optional/roles/server
     ];
 
