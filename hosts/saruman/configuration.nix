@@ -9,7 +9,7 @@
       ../../disko/saruman.nix
     ];
 
-  # module enable
+  # module enable — pipeline test
   docker.enable = true;
   nvidia.enable = true;
   opengl.enable = true;
