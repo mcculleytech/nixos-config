@@ -33,7 +33,6 @@
   nixpkgs = {
     overlays = [
       outputs.overlays.unstable-packages
-      inputs.claude-code.overlays.default
     ];
     config = {
       allowUnfree = true;

@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }: {
+{ pkgs, config, lib, inputs, ... }: {
 
   options = {
     desktop-packages.enable = lib.mkEnableOption "enables desktop packages";
@@ -56,7 +56,7 @@
       valgrind
       unstable.devenv
       # Unstable pkgs
-      claude-code
+      inputs.claude-code.packages.x86_64-linux.default
       unstable.beeper
       unstable.bitwarden-desktop
       unstable.awscli2
