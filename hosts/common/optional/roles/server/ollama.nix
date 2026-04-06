@@ -20,11 +20,16 @@
       };
     };
     
+    # DynamicUser requires /var/lib/private with mode 0700
+    systemd.tmpfiles.rules = [
+      "d /var/lib/private 0700 root root -"
+    ];
+
     environment.persistence = {
       "/persist" = {
-      hideMounts = true;
+        hideMounts = true;
         directories = [
-          "/var/lib/private/ollama"
+          { directory = "/var/lib/private/ollama"; user = "root"; group = "root"; mode = "0700"; }
         ];
       };
     };
