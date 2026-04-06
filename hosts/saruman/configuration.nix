@@ -52,7 +52,7 @@
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
+    # alsa.support32Bit = true; # disabled — pulls i686 nodejs via npm-config-hook causing build stalls
     pulse.enable = true;
   };
 
