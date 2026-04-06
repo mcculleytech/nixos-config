@@ -19,6 +19,8 @@
         "claude-code.cachix.org-1:YeXf2aNu7UTX8Vwrze0za1WEDS+4DuI2kVeWEE4fsRk="
       ];
       trusted-users = ["root" "alex"];
+      stalled-download-timeout = 60;
+      connect-timeout = 10;
     };
     gc = {
       automatic = true;
