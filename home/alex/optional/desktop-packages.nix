@@ -56,7 +56,7 @@
       valgrind
       unstable.devenv
       # Unstable pkgs
-      inputs.claude-code.packages.x86_64-linux.default
+      # inputs.claude-code.packages.x86_64-linux.default
       unstable.beeper
       unstable.bitwarden-desktop
       unstable.awscli2
