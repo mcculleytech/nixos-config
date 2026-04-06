@@ -17,7 +17,7 @@
 			enable = true;
 			host = "0.0.0.0";
 			openFirewall = true;
-			stateDir = "/var/lib/private/open-webui";
+			stateDir = "/var/lib/open-webui";
 		};
 
 		systemd.services.open-webui.serviceConfig = {
@@ -28,14 +28,14 @@
 		};
 
 		systemd.tmpfiles.rules = [
-			"d /var/lib/private/open-webui 0750 open-webui open-webui -"
+			"d /var/lib/open-webui 0750 open-webui open-webui -"
 		];
 
 	environment.persistence = {
 	  "/persist" = {
 	  hideMounts = true;
 	    directories = [
-	      { directory = "/var/lib/private/open-webui"; user = "open-webui"; group = "open-webui"; }
+	      { directory = "/var/lib/open-webui"; user = "open-webui"; group = "open-webui"; }
 	    ];
 	  };
 	};
