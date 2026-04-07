@@ -73,6 +73,13 @@ options = {
         overrideDevices = true;
       };
     };
+    # Wait for syncthing API before syncthing-init tries to configure it
+    systemd.services.syncthing-init = {
+      after = [ "syncthing.service" ];
+      requires = [ "syncthing.service" ];
+      serviceConfig.ExecStartPre = "${pkgs.coreutils}/bin/sleep 2";
+    };
+
     # FW Ports
     networking.firewall.allowedTCPPorts = [ 8384 22000 ];
     networking.firewall.allowedUDPPorts = [ 22000 21027 ];
