@@ -76,6 +76,7 @@
       unstable.protonmail-bridge
       unstable.obsidian
       unstable.sublime4
+      unstable.lmstudio
     ];
   };
 }
