@@ -43,7 +43,7 @@ in
 	  "/persist" = {
 	  hideMounts = true;
 	    directories = [
-	      "/var/lib/private"
+	      { directory = "/var/lib/private"; mode = "0700"; }
 	    ];
 	  };
 	};
