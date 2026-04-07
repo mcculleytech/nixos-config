@@ -78,6 +78,10 @@ in
         		};
 	   	};
 	   };
+    	# Blocky is stateless; clear the upstream StateDirectory to avoid
+    	# impermanence permission issues on reboot.
+    	systemd.services.blocky.serviceConfig.StateDirectory = lib.mkForce "";
+
     	networking.firewall.allowedTCPPorts = [ 53 4000 ];
     	networking.firewall.allowedUDPPorts = [ 53 ];
 	};
