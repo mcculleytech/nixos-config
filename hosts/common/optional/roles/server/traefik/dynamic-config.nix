@@ -203,6 +203,15 @@ in
 	   				};
 	   				service = "smokeping";
 	   			};
+	   			ludus = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`ludus.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "ludus";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -371,6 +380,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.atreides.ip}:8090";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			ludus = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "https://${hosts.ludus.ip}:8006";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
