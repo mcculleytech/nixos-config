@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   # Configure Systemwide Packages
-  environment.systemPackages = with pkgs; 
+  environment.systemPackages = with pkgs;
   [
     vim
     bitwarden-cli
@@ -25,6 +25,7 @@
     e2fsprogs
     cachix
     nixos-anywhere
+    unstable.opencode
   ];
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
