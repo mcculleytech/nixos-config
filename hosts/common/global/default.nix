@@ -11,6 +11,7 @@
     ./system-packages.nix
     ./systemd-initrd.nix
     ./tailscale.nix
+    ./networkmanager.nix
     ./users/alex
   ];
 }
