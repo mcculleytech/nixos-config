@@ -15,10 +15,7 @@
 - The running ToDo list in the README should be the source of work. When done with a task already on there, mark it complete with the date. When discussing improvements make an entry.
 
 ## pre-merge checklist
-- Before merging any branch to master, review and update the following files to reflect completed work:
-  - `README.md` — check off completed TODO items with the date, add new items for follow-up work
-  - `AUTOMATION_ROADMAP.md` — check off completed milestones, update pipeline diagrams if changed
-- This ensures documentation stays in sync with the codebase and nothing is forgotten.
+Use the `/pre-merge` skill. It checks off completed README TODOs and AUTOMATION_ROADMAP milestones with today's date.
 
 ## host inventory
 - All host IPs are defined in `hosts/common/hosts-data.nix` — this is the single source of truth.
@@ -37,10 +34,4 @@ Use the `/deploy-service` skill. It encodes the full deployment workflow with ap
 - Always check a new service's logs after first deploy — a crash loop with "directory does not exist" errors is a sign of this issue.
 
 ## monitoring
-- Prometheus and Grafana run on **atreides**. Config files: `hosts/common/optional/roles/server/prometheus.nix` and `grafana.nix`.
-- `node_exporter` is enabled globally on all hosts via `hosts/common/global/node-exporter.nix` (port 9100).
-- To add monitoring for a new service:
-  1. If the service has a built-in Prometheus metrics endpoint (like Traefik), enable it in the service's config and add a `scrapeConfigs` entry in `prometheus.nix` with the appropriate target and `job_name`.
-  2. If the service needs a dedicated NixOS exporter (e.g., `services.prometheus.exporters.postgres`), enable it in the service's own `.nix` file, open the exporter's firewall port, and add a corresponding `scrapeConfigs` entry in `prometheus.nix`.
-  3. Available NixOS exporters can be found at `https://search.nixos.org/options?channel=25.11&query=services.prometheus.exporters`.
-  4. For Grafana dashboards, browse https://grafana.com/grafana/dashboards/ and import by ID via the Grafana UI. Key dashboard IDs: `1860` (Node Exporter Full), `17346` (Traefik).
+Prometheus and Grafana run on **atreides**. `node_exporter` is enabled globally on all hosts (port 9100). Use the `/add-monitoring` skill to wire up scraping and a Grafana dashboard for a new service.
