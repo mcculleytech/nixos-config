@@ -15,10 +15,7 @@
 - The running ToDo list in the README should be the source of work. When done with a task already on there, mark it complete with the date. When discussing improvements make an entry.
 
 ## pre-merge checklist
-- Before merging any branch to master, review and update the following files to reflect completed work:
-  - `README.md` — check off completed TODO items with the date, add new items for follow-up work
-  - `AUTOMATION_ROADMAP.md` — check off completed milestones, update pipeline diagrams if changed
-- This ensures documentation stays in sync with the codebase and nothing is forgotten.
+Use the `/pre-merge` skill. It checks off completed README TODOs and AUTOMATION_ROADMAP milestones with today's date.
 
 ## host inventory
 - All host IPs are defined in `hosts/common/hosts-data.nix` — this is the single source of truth.
@@ -28,18 +25,7 @@
 - Never hardcode IPs in service configs. Use `config.lab.hosts.<name>.ip` or `hosts.<name>.ip` instead.
 
 ## new deployments
-- All services use the `mkEnableOption` pattern: the service file defines an option (e.g., `myservice.enable`) gated by `lib.mkIf`, and is imported via a role's `default.nix`. Hosts toggle services on with `myservice.enable = true` in their `configuration.nix` — no individual file imports needed.
-- For new service deployments, utilize the file `service.nix` as a template. Place the new service in the appropriate directory:
-  - `hosts/common/optional/` — for modules usable by any host type (not server or workstation specific)
-  - `hosts/common/optional/roles/server/` — for server-specific services
-  - `hosts/common/optional/roles/workstation/` — for workstation-specific services
-  - If unclear, verify with the user on location.
-- Reference the nix documentation for the specific service at `https://search.nixos.org/options?channel=25.11&query=<service>` and ensure all the necessary options are set for the service to run properly and are network accessible over the LAN (and tailscale) as well as via a reverse proxy (traefik). Once you have a configuration planned, present it to the user for approval before writing the file.
-- Once you have the service file written, add it to the `imports` list in the `default.nix` for the directory you placed it in. Then enable the service on the target host's `configuration.nix` with `myservice.enable = true`. If no host is given, prompt the user.
-- Make an entry in the traefik `dynamic-config.nix` file. Creating entries for both `router` and `service` entries.
-- Make a dns entry for the new service in the `blocky.nix` configuration file.
-- Make an entry in the `homepage-dashboard.nix` file for the newly created service under the section that makes most sense. Verify with user before writing and provide reasoning.
-- When adding persistence directories for services, use the attrset form (`{ directory = "..."; user = "..."; group = "..."; }`) with the service's user/group to ensure correct ownership on impermanence bind mounts.
+Use the `/deploy-service` skill. It encodes the full deployment workflow with approval gates.
 
 ## impermanence
 - All hosts use impermanence with a blank root btrfs subvol snapshot. Persistent state lives under `/persist`.
@@ -48,10 +34,4 @@
 - Always check a new service's logs after first deploy — a crash loop with "directory does not exist" errors is a sign of this issue.
 
 ## monitoring
-- Prometheus and Grafana run on **atreides**. Config files: `hosts/common/optional/roles/server/prometheus.nix` and `grafana.nix`.
-- `node_exporter` is enabled globally on all hosts via `hosts/common/global/node-exporter.nix` (port 9100).
-- To add monitoring for a new service:
-  1. If the service has a built-in Prometheus metrics endpoint (like Traefik), enable it in the service's config and add a `scrapeConfigs` entry in `prometheus.nix` with the appropriate target and `job_name`.
-  2. If the service needs a dedicated NixOS exporter (e.g., `services.prometheus.exporters.postgres`), enable it in the service's own `.nix` file, open the exporter's firewall port, and add a corresponding `scrapeConfigs` entry in `prometheus.nix`.
-  3. Available NixOS exporters can be found at `https://search.nixos.org/options?channel=25.11&query=services.prometheus.exporters`.
-  4. For Grafana dashboards, browse https://grafana.com/grafana/dashboards/ and import by ID via the Grafana UI. Key dashboard IDs: `1860` (Node Exporter Full), `17346` (Traefik).
+Prometheus and Grafana run on **atreides**. `node_exporter` is enabled globally on all hosts (port 9100). Use the `/add-monitoring` skill to wire up scraping and a Grafana dashboard for a new service.
