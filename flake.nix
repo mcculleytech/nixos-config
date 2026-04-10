@@ -105,6 +105,7 @@
                   ./home/alex/saruman.nix
                 ];
               };
+              home-manager.backupFileExtension = "bak";
             }
           ];
         };
