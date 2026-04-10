@@ -52,6 +52,89 @@
           home-manager.backupFileExtension = "bak";
         }
       ];
+
+      hostData = import ./hosts/common/hosts-data.nix;
+
+      # Single host definition map — both nixosConfigurations and colmena are
+      # generated from this, so there is only one place to add or change a host.
+      hostDefs = {
+        # Framework 13 AMD Laptop
+        aeneas = {
+          modules = defaultModules ++ [
+            hardware.nixosModules.framework-13-7040-amd
+            home-manager.nixosModules.home-manager
+            ./hosts/aeneas/configuration.nix
+            {
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs outputs; };
+              home-manager.users.alex.imports = [ ./home/alex/aeneas.nix ];
+              home-manager.backupFileExtension = "bak";
+            }
+          ];
+          deployment = {
+            targetHost = "aeneas";
+            targetUser = "root";
+            tags = [ "workstation" ];
+          };
+        };
+
+        # Dedicated GPU Server
+        saruman = {
+          modules = defaultModules ++ [
+            hardware.nixosModules.common-gpu-nvidia-nonprime
+            home-manager.nixosModules.home-manager
+            ./hosts/saruman/configuration.nix
+            {
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = { inherit inputs outputs; };
+              home-manager.users.alex.imports = [ ./home/alex/saruman.nix ];
+              home-manager.backupFileExtension = "bak";
+            }
+          ];
+          deployment = {
+            targetHost = hostData.saruman.ip;
+            targetUser = "root";
+            allowLocalDeployment = true;
+            tags = [ "server" "gpu" ];
+          };
+        };
+
+        # Testing Server
+        vader = {
+          modules = defaultModules ++ homeManagerServerModule ++ [
+            ./hosts/vader/configuration.nix
+          ];
+          deployment = {
+            targetHost = hostData.vader.ip;
+            targetUser = "root";
+            tags = [ "server" "vm" ];
+          };
+        };
+
+        # Tailscale Subnet Router
+        phantom = {
+          modules = defaultModules ++ homeManagerServerModule ++ [
+            ./hosts/phantom/configuration.nix
+          ];
+          deployment = {
+            targetHost = hostData.phantom.ip;
+            targetUser = "root";
+            tags = [ "server" "vm" ];
+          };
+        };
+
+        # Blocky DNS Server
+        atreides = {
+          modules = defaultModules ++ homeManagerServerModule ++ [
+            ./hosts/atreides/configuration.nix
+          ];
+          deployment = {
+            targetHost = hostData.atreides.ip;
+            targetUser = "root";
+            tags = [ "server" "vm" ];
+          };
+        };
+      };
     in
     rec {
       overlays = import ./overlays/unstable-pkgs.nix { inherit inputs; };
@@ -63,86 +146,13 @@
         go-dev = import ./shells/go-dev.nix { inherit pkgs; };
       };
 
-      colmena = import ./colmena.nix { inherit inputs outputs defaultModules homeManagerServerModule; };
+      colmena = import ./colmena.nix { inherit inputs outputs hostDefs; };
 
-      # NixOS Configs
-      nixosConfigurations = {
-        # Framework 13 AMD Laptop
-        "aeneas" = nixpkgs.lib.nixosSystem {
+      nixosConfigurations = builtins.mapAttrs (name: def:
+        nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ [
-            ./hosts/aeneas/configuration.nix
-            hardware.nixosModules.framework-13-7040-amd
-            # ({
-            #   nixpkgs.overlays = [ inputs.cosmic-nightly.overlays.default ];
-            # })
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs outputs; };
-              home-manager.users.alex = {
-                imports = [
-                  ./home/alex/aeneas.nix
-                ];
-              };
-              home-manager.backupFileExtension = "bak";
-            }
-          ];
-        };
-
-        # Dedicated GPU Server
-        "saruman" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ [
-            ./hosts/saruman/configuration.nix
-            home-manager.nixosModules.home-manager
-            hardware.nixosModules.common-gpu-nvidia-nonprime
-            {
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs outputs; };
-              home-manager.users.alex = {
-                imports = [
-                  ./home/alex/saruman.nix
-                ];
-              };
-              home-manager.backupFileExtension = "bak";
-            }
-          ];
-        };
-
-        # Testing Server
-        "vader" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ homeManagerServerModule ++ [
-            ./hosts/vader/configuration.nix
-          ];
-        };
-
-        # Tailscale Subnet Router
-        "phantom" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ homeManagerServerModule ++ [
-            ./hosts/phantom/configuration.nix
-          ];
-        };
-
-        # Blocky DNS Server
-        "atreides" = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit inputs outputs; };
-          modules = defaultModules ++ homeManagerServerModule ++ [
-            ./hosts/atreides/configuration.nix
-          ];
-        };
-
-      };
-
-      # home-manager standalones - configure when needed
-      # homeConfigurations = {
-      #   "alex@achilles" = home-manager.lib.homeManagerConfiguration {
-      #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      #     extraSpecialArgs = { inherit inputs outputs; };
-      #     modules = [ ./home/alex/achilles.nix ];
-      #   };
-      # };
+          modules = def.modules;
+        }
+      ) hostDefs;
     };
 }
