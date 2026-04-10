@@ -1,11 +1,6 @@
-{config, lib, outputs, ... }:
+{config, lib, ... }:
 let
-  
-  inherit (config.networking) hostName;
   hasOptinPersistence = config.environment.persistence ? "/persist";
-  hosts = outputs.nixosConfigurations;
-  pubKey = host: ../../${host}/ssh_host_ed25519_key.pub;
-
 in
 {
   services.openssh = {
