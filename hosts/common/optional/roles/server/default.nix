@@ -24,6 +24,7 @@
     ./grafana.nix
     ./smokeping.nix
     ./ntfy.nix
+    ./kokoro.nix
     ./auto-deploy.nix
   ];
 }

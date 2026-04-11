@@ -85,6 +85,13 @@ in
                   };
                 }
                 {
+                  "Kokoro TTS" = {
+                    icon = "https://raw.githubusercontent.com/remsky/Kokoro-FastAPI/main/docs/favicon.ico";
+                    href = "https://tts.${tr_secrets.traefik.homelab_domain}";
+                    description = "Text-to-Speech API";
+                  };
+                }
+                {
                   "Octoprint" = {
                     icon = "octoprint.png";
                     href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";

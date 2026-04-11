@@ -53,6 +53,7 @@ in
       				"prometheus.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"smokeping.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ludus.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"tts.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ntfy.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       			};
       		};

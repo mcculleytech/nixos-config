@@ -23,6 +23,7 @@
   paperless.enable = true;
   kde.enable = true;
   bluetooth.enable = true;
+  kokoro.enable = true;
   auto-deploy.enable = true;
   tailscale-server.enable = true;
 

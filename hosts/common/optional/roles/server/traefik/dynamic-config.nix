@@ -212,6 +212,15 @@ in
 	   				};
 	   				service = "ludus";
 	   			};
+	   			tts = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`tts.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "tts";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -388,6 +397,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "https://${hosts.ludus.ip}:8006";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			tts = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:8880";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
