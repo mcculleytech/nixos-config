@@ -14,6 +14,7 @@
         USE_GPU = "true";
         PYTHONUNBUFFERED = "1";
       };
+      extraOptions = [ "--device" "nvidia.com/gpu=all" ];
     };
 
     networking.firewall.allowedTCPPorts = [ 8880 ];
