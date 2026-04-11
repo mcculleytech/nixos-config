@@ -86,7 +86,7 @@ in
                 }
                 {
                   "Kokoro TTS" = {
-                    icon = "https://raw.githubusercontent.com/remsky/Kokoro-FastAPI/main/docs/favicon.ico";
+                    icon = "si-chatbot";
                     href = "https://tts.${tr_secrets.traefik.homelab_domain}/web/";
                     description = "Text-to-Speech API";
                   };
