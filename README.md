@@ -32,7 +32,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - bootstrap dev shell (`nix develop`) with deployment and secrets tooling
 - LazyVim neovim config managed via home-manager (`xdg.configFile`) with nix-provided runtime deps
 - `nix flake check` CI on PRs with auto-merge for weekly flake lock updates
-- Claude Code skills (`.claude/commands/`) for repeatable workflows:
+- Claude Code skills (`.claude/skills/`) for repeatable workflows:
 	- `/deploy-service` — end-to-end service deployment with approval gates (config, traefik, DNS, dashboard, secrets)
 	- `/pre-merge` — checklist runner that syncs README and AUTOMATION_ROADMAP with completed work
 	- `/add-monitoring` — wires Prometheus scraping and Grafana dashboards for a service
