@@ -1,4 +1,4 @@
-Run the pre-merge checklist before merging the current branch to master. This ensures documentation stays in sync with completed work.
+Run the pre-merge checklist before merging the current branch to master or before committing to the master branch locally. This ensures documentation stays in sync with completed work.
 
 ---
 

@@ -21,10 +21,10 @@ options = {
 	      };
 	    };
 
-	    sops.templates."traefik-cloudflare.env".content = ''
-	      CF_API_EMAIL=${config.sops.placeholder.cloudflare_email}
-	      CF_API_KEY=${config.sops.placeholder.cloudflare_api_key}
-	    '';
+    sops.templates."traefik-cloudflare.env".content = ''
+      CF_API_EMAIL=${config.sops.placeholder.cloudflare_email}
+      CF_API_KEY=${config.sops.placeholder.cloudflare_api_key}
+    '';
 
 
 		   services.traefik = {

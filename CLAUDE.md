@@ -14,8 +14,8 @@
 - `/hosts/common/optional/roles/workstation` holds workstation-specific services. Its `default.nix` is imported by workstation hosts (and saruman, which is both).
 - The running ToDo list in the README should be the source of work. When done with a task already on there, mark it complete with the date. When discussing improvements make an entry.
 
-## pre-merge checklist
-Use the `/pre-merge` skill. It checks off completed README TODOs and AUTOMATION_ROADMAP milestones with today's date.
+## pre-merge / pre-commit checklist
+Use the `/pre-merge` skill before merging a branch **or** before committing directly to master. It checks off completed README TODOs and AUTOMATION_ROADMAP milestones with today's date.
 
 ## host inventory
 - All host IPs are defined in `hosts/common/hosts-data.nix` — this is the single source of truth.
