@@ -29,7 +29,7 @@
       calibre
       protonvpn-gui
       watchmate
-      luanti-client
+      unstable.luanti-client
       gparted
       contact # meshtastic console UI
       # rpi-imager
