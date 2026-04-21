@@ -135,15 +135,17 @@ for host in vader phantom atreides; do
   fi
 done
 
-REBOOT_MSG=""
-if [ -n "$REBOOT_HOSTS" ]; then
-  REBOOT_MSG=" Rebooting:${REBOOT_HOSTS}"
+# 6b. Check if saruman itself needs a reboot (can't self-reboot)
+BOOTED=$(readlink /run/booted-system/kernel)
+CURRENT=$(readlink /run/current-system/kernel)
+if [ "$BOOTED" != "$CURRENT" ]; then
+  logger -t "$LOG_TAG" "Kernel changed on saruman — manual reboot required"
+  curl -s -H "Title: Saruman needs reboot" -H "Priority: high" -d "$SHORT_REV updated the kernel on saruman. Manual reboot required." "$NTFY_URL" || true
 fi
 
-curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG${REBOOT_MSG}" "$NTFY_URL" || true
-logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)${REBOOT_MSG}"
+logger -t "$LOG_TAG" "Deploy complete: $SHORT_REV (tagged $GOOD_TAG)"
 
-# 7. Wait for rebooted hosts to come back and send heartbeat
+# 7. Wait for rebooted hosts to come back, then send success notification
 if [ -n "$REBOOT_HOSTS" ]; then
   logger -t "$LOG_TAG" "Waiting for rebooted hosts to come back..."
   sleep 120  # wait for reboot (1 min shutdown delay + boot time)
@@ -173,6 +175,9 @@ if [ -n "$REBOOT_HOSTS" ]; then
   if [ -n "$DOWN" ]; then
     curl -s -H "Title: REBOOT FAILED" -H "Priority: urgent" -d "Hosts did not come back after reboot:${DOWN}" "$NTFY_URL" || true
   else
-    curl -s -H "Title: Reboot OK" -d "All hosts back:${BACK}" "$NTFY_URL" || true
+    curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG. Rebooted:${BACK}" "$NTFY_URL" || true
+    logger -t "$LOG_TAG" "All hosts back:${BACK}"
   fi
+else
+  curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG" "$NTFY_URL" || true
 fi
