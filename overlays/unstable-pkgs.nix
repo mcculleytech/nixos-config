@@ -25,24 +25,7 @@
           "electron-25.9.0"
         ];
       };
-      overlays = [
-        (ufinal: uprev:
-          let
-            ollamaVersionOverride = old: {
-              version = "0.20.2";
-              src = uprev.fetchFromGitHub {
-                owner = "ollama";
-                repo = "ollama";
-                tag = "v0.20.2";
-                hash = "sha256-Ic3eLOohLR7MQGkLvDJBNOCiBBKxh6l8X9MgK0b4w+Y=";
-              };
-              vendorHash = "sha256-Lc1Ktdqtv2VhJQssk8K1UOimeEjVNvDWePE9WkamCos=";
-            };
-          in {
-            ollama = uprev.ollama.overrideAttrs ollamaVersionOverride;
-            ollama-cuda = uprev.ollama-cuda.overrideAttrs ollamaVersionOverride;
-          })
-      ];
+      overlays = [];
     };
   };
 
