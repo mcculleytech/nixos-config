@@ -319,6 +319,7 @@ in
 	   						{url = "http://${hosts.saruman.ip}:8081";}
 	   					];
 	   					passHostHeader = "true";
+	   					responseForwarding.flushInterval = "-1";
 	   				};
 	   			};
 	   			syncthing = {
