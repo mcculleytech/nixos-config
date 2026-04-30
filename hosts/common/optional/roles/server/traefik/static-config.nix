@@ -24,6 +24,9 @@ in
         			traefik = {
         				address = ":8080";
         			};
+        			gitea-ssh = {
+        				address = ":2222";
+        			};
         		};
         		metrics.prometheus = {
        			entryPoint = "traefik";
