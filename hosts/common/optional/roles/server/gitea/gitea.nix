@@ -54,6 +54,8 @@ in
         };
         ui = {
           SHOW_USER_EMAIL = false;
+          THEMES = "gitea-auto,gitea-light,gitea-dark,trashpanda";
+          DEFAULT_THEME = "trashpanda";
         };
         service = {
           DISABLE_REGISTRATION = true;
