@@ -19,7 +19,7 @@ in
 	   			gitea-ssh = {
 	   				loadBalancer = {
 	   					servers = [
-	   						{ address = "vader.tail5c738.ts.net:22"; }
+	   						{ address = "${hosts.vader.ip}:22"; }
 	   					];
 	   				};
 	   			};
