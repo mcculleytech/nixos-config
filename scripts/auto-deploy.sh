@@ -38,17 +38,17 @@ rollback() {
   fi
 }
 
-# 1. Pull latest — exit if no new commits
+# 1. Pull latest — exit if nothing new since last successful deploy
 git fetch origin
-LOCAL=$(git rev-parse master)
-REMOTE=$(git rev-parse origin/master)
-if [ "$LOCAL" = "$REMOTE" ]; then
-  logger -t "$LOG_TAG" "No new commits, skipping deploy"
-  exit 0
-fi
-
 git checkout master
 git pull --ff-only
+
+LAST_GOOD=$(git rev-parse "$GOOD_TAG" 2>/dev/null || echo "")
+CURRENT=$(git rev-parse HEAD)
+if [ "$LAST_GOOD" = "$CURRENT" ]; then
+  logger -t "$LOG_TAG" "No new commits since last deploy, skipping"
+  exit 0
+fi
 
 # Bail early if the working tree is dirty — colmena fails with a
 # cryptic "cannot update unlocked flake input" error in pure mode.
