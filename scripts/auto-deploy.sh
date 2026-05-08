@@ -38,22 +38,23 @@ rollback() {
   fi
 }
 
-# 1. Pull latest — exit if no new commits
+# 1. Pull latest — exit if nothing new since last successful deploy
 git fetch origin
-LOCAL=$(git rev-parse master)
-REMOTE=$(git rev-parse origin/master)
-if [ "$LOCAL" = "$REMOTE" ]; then
-  logger -t "$LOG_TAG" "No new commits, skipping deploy"
-  exit 0
-fi
-
 git checkout master
 git pull --ff-only
 
+LAST_GOOD=$(git rev-parse "$GOOD_TAG" 2>/dev/null || echo "")
+CURRENT=$(git rev-parse HEAD)
+if [ "$LAST_GOOD" = "$CURRENT" ]; then
+  logger -t "$LOG_TAG" "No new commits since last deploy, skipping"
+  exit 0
+fi
+
 # Bail early if the working tree is dirty — colmena fails with a
 # cryptic "cannot update unlocked flake input" error in pure mode.
-if [ -n "$(git status --porcelain)" ]; then
-  DIRTY_FILES=$(git status --porcelain | head -10)
+# Only check tracked files; untracked files don't affect the flake eval.
+if [ -n "$(git diff HEAD)" ]; then
+  DIRTY_FILES=$(git diff HEAD --name-only | head -10)
   logger -t "$LOG_TAG" "Dirty working tree detected, aborting deploy"
   curl -s -H "Title: Deploy SKIPPED — dirty tree" -H "Priority: default" \
     -d "Uncommitted changes in $(pwd) are blocking colmena (pure eval mode). Files: ${DIRTY_FILES}" \

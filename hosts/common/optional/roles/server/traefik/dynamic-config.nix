@@ -7,6 +7,24 @@ in
 	config = lib.mkIf config.traefik.enable {
 
 	   services.traefik.dynamicConfigOptions = {
+	   	tcp = {
+	   		routers = {
+	   			gitea-ssh = {
+	   				entryPoints = [ "gitea-ssh" ];
+	   				rule = "HostSNI(`*`)";
+	   				service = "gitea-ssh";
+	   			};
+	   		};
+	   		services = {
+	   			gitea-ssh = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{ address = "${hosts.vader.ip}:22"; }
+	   					];
+	   				};
+	   			};
+	   		};
+	   	};
 	   	tls = {
 	   		stores = {
 	   				default = {

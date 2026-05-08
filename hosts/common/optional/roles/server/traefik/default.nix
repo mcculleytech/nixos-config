@@ -42,7 +42,7 @@ options = {
 
     users.users.traefik.extraGroups = ["docker" "acme"];
 
-    networking.firewall.allowedTCPPorts = [ 80 443 8080 ];
+    networking.firewall.allowedTCPPorts = [ 80 443 8080 2222 ];
 
 	   environment.persistence = {
       "/persist" = {

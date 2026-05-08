@@ -50,7 +50,7 @@ in
           PROTOCOL = "http";
           HTTP_ADDR = "0.0.0.0";
           SSH_DOMAIN = giteaHost;
-          SSH_PORT = 22;
+          SSH_PORT = 2222;
         };
         ui = {
           SHOW_USER_EMAIL = false;
