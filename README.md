@@ -17,6 +17,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy <br> Prometheus + Grafana | Proxmox VM                  |
+| faramir  | Personal MacBook <br> ironclaw agent (local LM Studio inference)                              | Apple Silicon MacBook       |
 
 ## Features
 
@@ -51,7 +52,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] KDE ✅ 2024-07-12
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
-- [ ] Standalone home manager config for wsl2 or Mac
+- [x] Standalone home manager config for wsl2 or Mac ✅ 2026-05-07
 - [x] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern) ✅ 2026-04-04
 
 ### Servers
