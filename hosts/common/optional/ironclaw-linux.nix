@@ -54,7 +54,7 @@ in
       services.postgresql = {
         enable = true;
         package = pkgs.postgresql_17;
-        extraPlugins = with config.services.postgresql.package.pkgs; [ pgvector ];
+        extensions = with config.services.postgresql.package.pkgs; [ pgvector ];
         ensureDatabases = [ db.name ];
         ensureUsers = [{
           name = db.user;
