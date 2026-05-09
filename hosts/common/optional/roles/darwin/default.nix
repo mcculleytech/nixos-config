@@ -1,27 +1,8 @@
 { lib, config, pkgs, outputs, ... }:
 {
-  options.lab.ironclawFromBrew = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = ''
-      When true, install ironclaw via Homebrew (`brew install ironclaw`). Flip to
-      false once `pkgs.ironclaw` builds successfully on this host so the system
-      uses the Nix derivation instead. The brew formula is upstream-maintained;
-      the Nix derivation lives in `pkgs/ironclaw/`.
-    '';
-  };
-
-  options.lab.signalChannel = {
-    enable = lib.mkEnableOption "ironclaw Signal channel via signal-cli HTTP daemon";
-    httpPort = lib.mkOption {
-      type = lib.types.port;
-      default = 8088;
-      description = ''
-        Local port the signal-cli HTTP daemon listens on. Default 8088 because
-        bloodhound owns 8080 on this box.
-      '';
-    };
-  };
+  imports = [
+    ../../ironclaw.nix
+  ];
 
   options.lab.lmStudio = {
     autoStart = lib.mkEnableOption "auto-start LM Studio local server at login (and optionally pre-load a model)";
@@ -38,9 +19,10 @@
     };
   };
 
-  config = let
-    signalCfg = config.lab.signalChannel;
-  in {
+  config = {
+    lab.ironclaw.enable = true;
+    lab.ironclaw.fromBrew = true;
+
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "@admin" "alex" ];
@@ -76,20 +58,20 @@
       ripgrep
       fd
       bat
-    ] ++ lib.optional (!config.lab.ironclawFromBrew) pkgs.ironclaw
-      ++ lib.optional signalCfg.enable pkgs.signal-cli;
+    ] ++ lib.optional (!config.lab.ironclaw.fromBrew) pkgs.ironclaw
+      ++ lib.optional config.lab.signalChannel.enable pkgs.signal-cli;
 
-    environment.variables = lib.optionalAttrs signalCfg.enable {
-      SIGNAL_HTTP_URL = "http://127.0.0.1:${toString signalCfg.httpPort}";
+    environment.variables = lib.optionalAttrs config.lab.signalChannel.enable {
+      SIGNAL_HTTP_URL = "http://127.0.0.1:${toString config.lab.signalChannel.httpPort}";
     };
 
-    launchd.user.agents = lib.optionalAttrs signalCfg.enable {
+    launchd.user.agents = lib.optionalAttrs config.lab.signalChannel.enable {
       signal-cli-http = {
         # signal-cli daemon will fail-fast until you've linked an account via
         # `signal-cli link -n faramir`. KeepAlive lets launchd retry on the
-        # default ThrottleInterval (10s) so it picks up the linked account
-        # automatically once registration completes.
-        command = "${pkgs.signal-cli}/bin/signal-cli daemon --http=127.0.0.1:${toString signalCfg.httpPort}";
+        # default ThrottleInterval (10s) so it picks up the account once
+        # registration completes.
+        command = "${pkgs.signal-cli}/bin/signal-cli daemon --http=127.0.0.1:${toString config.lab.signalChannel.httpPort}";
         serviceConfig = {
           KeepAlive = true;
           RunAtLoad = true;
@@ -127,7 +109,7 @@
         cleanup = "zap";
       };
       taps = [ ];
-      brews = lib.optional config.lab.ironclawFromBrew "ironclaw";
+      brews = lib.optional config.lab.ironclaw.fromBrew "ironclaw";
       casks = [ ];
     };
 

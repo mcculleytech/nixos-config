@@ -12,7 +12,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 | **Name** | Purpose                  											  							| Hardware                    |
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
-| aeneas   | Personal Laptop          											  							| AMD Framework 13in          |
+| aeneas   | Personal Laptop <br> ironclaw agent (Nix-built, PostgreSQL + pgvector)  						| AMD Framework 13in          |
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
@@ -138,6 +138,11 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Maldev shells (`shells/`)
 	- [x] `maldev-c.nix` — C/C++ toolchain (gcc, clang, mingw-w64 cross-compiler, make, cmake, nasm) ✅ 2026-04-03
 	- [x] `maldev-go.nix` — Go toolchain (Go, gopls, delve, garble) ✅ 2026-04-03
+- [x] ironclaw cross-platform NixOS/nix-darwin module (`hosts/common/optional/ironclaw.nix` + `ironclaw-linux.nix`) ✅ 2026-05-08
+	- [x] PostgreSQL 17 + pgvector provisioning on Linux ✅ 2026-05-08
+	- [x] ironclaw enabled on aeneas (Linux, Nix-built) ✅ 2026-05-08
+	- [ ] Run `ironclaw onboard` interactively on aeneas, then set `lab.ironclaw.runDaemon = true`
+	- [ ] Validate aarch64-darwin build; switch `lab.ironclaw.fromBrew = false` on faramir
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20

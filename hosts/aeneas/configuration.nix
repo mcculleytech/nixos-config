@@ -10,6 +10,8 @@
     ];
 
   # module enable
+  lab.ironclaw.enable = true;
+
   docker.enable = true;
   steam.enable = true;
   waydroid.enable = true;
