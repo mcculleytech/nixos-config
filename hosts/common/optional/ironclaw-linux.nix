@@ -68,8 +68,8 @@ in
       # every boot but is a no-op once both are already in place.
       systemd.services.ironclaw-db-setup = {
         description = "Enable pgvector extension for ironclaw database";
-        after = [ "postgresql.service" ];
-        requires = [ "postgresql.service" ];
+        after = [ "postgresql.service" "postgresql-setup.service" ];
+        requires = [ "postgresql.service" "postgresql-setup.service" ];
         before = lib.optional cfg.runDaemon "ironclaw.service";
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
