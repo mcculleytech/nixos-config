@@ -58,13 +58,14 @@ in
         ensureDatabases = [ db.name ];
         ensureUsers = [{
           name = db.user;
-          ensureDBOwnership = true;
+          # ensureDBOwnership requires the database name to match the user name.
+          # db.name ("ironclaw") ≠ db.user ("alex"), so ownership is granted
+          # via ALTER DATABASE in ironclaw-db-setup below instead.
         }];
       };
 
-      # Oneshot service that enables the pgvector extension after postgres
-      # initialises the database. Runs before ironclaw on every boot but is
-      # a no-op once the extension is already installed.
+      # Oneshot service: set DB owner, enable pgvector extension. Runs on
+      # every boot but is a no-op once both are already in place.
       systemd.services.ironclaw-db-setup = {
         description = "Enable pgvector extension for ironclaw database";
         after = [ "postgresql.service" ];
@@ -76,6 +77,8 @@ in
           RemainAfterExit = true;
           User = "postgres";
           ExecStart = pkgs.writeShellScript "ironclaw-db-setup" ''
+            ${config.services.postgresql.package}/bin/psql postgres \
+              -c "ALTER DATABASE ${db.name} OWNER TO ${db.user};"
             ${config.services.postgresql.package}/bin/psql -d ${db.name} \
               -c "CREATE EXTENSION IF NOT EXISTS vector;"
           '';
