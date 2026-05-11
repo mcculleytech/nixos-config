@@ -18,10 +18,11 @@ in
 
     httpPort = lib.mkOption {
       type = lib.types.port;
-      default = 8080;
+      default = 8088;
       description = ''
         Local port the signal-cli HTTP daemon listens on. Loopback only;
         never opened in the firewall. Hermes connects via 127.0.0.1.
+        Default 8088 (not 8080) — open-webui already binds 8080 on saruman.
       '';
     };
 
