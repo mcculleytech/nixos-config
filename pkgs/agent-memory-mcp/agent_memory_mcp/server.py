@@ -197,14 +197,17 @@ async def memory_search(
         params.append(list(tags))
     params.extend([vec, limit])  # for ORDER BY ... LIMIT
     where_sql = ("WHERE " + " AND ".join(where)) if where else ""
+    # `::vector` casts are required: with the `<=>` operator psycopg can't
+    # infer the parameter type and defaults to double precision[], which
+    # doesn't match `vector` — the operator resolution fails at parse time.
     sql = f"""
         SELECT m.id, m.content, m.source, m.tags, m.metadata, m.created_at,
                p.name AS project,
-               1 - (m.embedding <=> %s) AS similarity
+               1 - (m.embedding <=> %s::vector) AS similarity
         FROM memories m
         LEFT JOIN projects p ON p.id = m.project_id
         {where_sql}
-        ORDER BY m.embedding <=> %s
+        ORDER BY m.embedding <=> %s::vector
         LIMIT %s
     """
     async with conn.cursor(row_factory=dict_row) as cur:
