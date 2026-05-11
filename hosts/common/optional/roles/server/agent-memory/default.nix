@@ -78,6 +78,10 @@ in
         "$psql" postgres -c "ALTER DATABASE ${dbName} OWNER TO ${dbUser};"
         "$psql" -d ${dbName} -c "CREATE EXTENSION IF NOT EXISTS vector;"
         "$psql" -d ${dbName} -f ${./schema.sql}
+        # Tables created by `postgres` in schema.sql; transfer ownership so the
+        # application role (peer-auth) can read/write/alter them. Idempotent.
+        "$psql" -d ${dbName} -c "ALTER TABLE projects OWNER TO ${dbUser};"
+        "$psql" -d ${dbName} -c "ALTER TABLE memories OWNER TO ${dbUser};"
       '';
     };
 
