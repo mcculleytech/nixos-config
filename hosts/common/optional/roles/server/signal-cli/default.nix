@@ -1,6 +1,14 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.signal-cli;
+  # Wrapper that locks in the same data directory the daemon uses.
+  # Without this, ad-hoc `sudo -u hermes signal-cli ...` invocations fall back
+  # to the user-default `~/.local/share/signal-cli/`, which diverges from the
+  # daemon's path and means newly-registered accounts don't show up over the
+  # HTTP RPC. The wrapper makes the operator command path-agnostic.
+  signal-cli-hermes = pkgs.writeShellScriptBin "signal-cli-hermes" ''
+    exec ${pkgs.signal-cli}/bin/signal-cli --config ${cfg.dataDir} "$@"
+  '';
 in
 {
   options.signal-cli = {
@@ -38,7 +46,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.signal-cli ];
+    environment.systemPackages = [ pkgs.signal-cli signal-cli-hermes ];
 
     # Persist the entire signal-cli state dir across reboots — losing it
     # would mean re-linking the device.
@@ -57,14 +65,14 @@ in
       wantedBy = [ "multi-user.target" ];
       before = [ "hermes-agent.service" ];
 
-      environment = {
-        # signal-cli respects XDG_DATA_HOME for its state dir. Point it at
-        # our persisted location.
-        XDG_DATA_HOME = builtins.toString (builtins.dirOf cfg.dataDir);
-      };
+      # Data dir is set explicitly via `--config` rather than XDG_DATA_HOME.
+      # This means operators using `signal-cli` directly (without our wrapper)
+      # won't accidentally write account state to ~/.local/share/signal-cli/
+      # and surprise the daemon. Use the `signal-cli-hermes` wrapper on PATH
+      # for any interactive admin commands.
 
       serviceConfig = {
-        ExecStart = "${pkgs.signal-cli}/bin/signal-cli daemon --http=127.0.0.1:${toString cfg.httpPort}";
+        ExecStart = "${pkgs.signal-cli}/bin/signal-cli --config ${cfg.dataDir} daemon --http=127.0.0.1:${toString cfg.httpPort}";
         User = cfg.user;
         Group = cfg.user;
         Restart = "always";
