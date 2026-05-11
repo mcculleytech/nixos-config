@@ -17,7 +17,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy <br> Prometheus + Grafana | Proxmox VM                  |
-| faramir  | Personal MacBook <br> ironclaw agent (local LM Studio inference)                              | Apple Silicon MacBook       |
+| faramir  | Personal MacBook <br> Local LM Studio inference                                                | Apple Silicon MacBook       |
 
 ## Features
 
@@ -141,8 +141,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] ironclaw cross-platform NixOS/nix-darwin module (`hosts/common/optional/ironclaw.nix` + `ironclaw-linux.nix`) ✅ 2026-05-08
 	- [x] PostgreSQL 17 + pgvector provisioning on Linux ✅ 2026-05-08
 	- [x] ironclaw enabled on aeneas (Linux, Nix-built) ✅ 2026-05-08
-	- [ ] Run `ironclaw onboard` interactively on aeneas, then set `lab.ironclaw.runDaemon = true`
-	- [ ] Validate aarch64-darwin build; switch `lab.ironclaw.fromBrew = false` on faramir
+	- [x] Pivot away from ironclaw on all hosts; `lab.ironclaw.enable` left as default `false`, package derivation retained for future use ✅ 2026-05-11
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20

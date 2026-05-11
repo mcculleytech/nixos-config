@@ -20,9 +20,6 @@
   };
 
   config = {
-    lab.ironclaw.enable = true;
-    lab.ironclaw.fromBrew = true;
-
     nix.settings = {
       experimental-features = [ "nix-command" "flakes" ];
       trusted-users = [ "root" "@admin" "alex" ];
@@ -58,7 +55,7 @@
       ripgrep
       fd
       bat
-    ] ++ lib.optional (!config.lab.ironclaw.fromBrew) pkgs.ironclaw
+    ] ++ lib.optional (config.lab.ironclaw.enable && !config.lab.ironclaw.fromBrew) pkgs.ironclaw
       ++ lib.optional config.lab.signalChannel.enable pkgs.signal-cli;
 
     environment.variables = lib.optionalAttrs config.lab.signalChannel.enable {
@@ -109,7 +106,7 @@
         cleanup = "zap";
       };
       taps = [ ];
-      brews = lib.optional config.lab.ironclaw.fromBrew "ironclaw";
+      brews = lib.optional (config.lab.ironclaw.enable && config.lab.ironclaw.fromBrew) "ironclaw";
       casks = [ ];
     };
 
