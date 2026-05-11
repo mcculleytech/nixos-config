@@ -97,10 +97,14 @@ in
 
     # Guard: the hermes-agent service should not start until signal-cli has
     # been linked. The upstream unit will retry on its own, but adding the
-    # explicit ordering keeps the journal cleaner.
+    # explicit ordering keeps the journal cleaner. Also widen the stop
+    # timeout — upstream emits a runtime warning if TimeoutStopSec < 210s
+    # because the agent's in-flight drain can take up to 180s; the NixOS
+    # module ships 90s by default which trips that warning every boot.
     systemd.services.hermes-agent = {
       after = [ "signal-cli.service" ];
       wants = [ "signal-cli.service" ];
+      serviceConfig.TimeoutStopSec = 240;
     };
   };
 }
