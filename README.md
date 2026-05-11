@@ -145,7 +145,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Personal Agent Infrastructure
 	- [x] Phase 1: Shared agent memory on saruman (PostgreSQL + pgvector + MCP gateway, Tailscale-bound, bearer-token auth) ✅ 2026-05-11
 	- [ ] Phase 2: Obsidian Sync via `obsidian-headless` on saruman; vault MCP server(s) for read/write access
-	- [ ] Phase 3: Hermes agent on saruman driven by Anthropic API (later OpenRouter), Signal I/O via a dedicated number on signal-cli
+	- [ ] Phase 3: Hermes agent on saruman via upstream `NousResearch/hermes-agent`, Anthropic native now / OpenRouter for Nous Hermes later, Signal I/O via dedicated number on signal-cli
 	- [ ] Phase 4: Scheduled embedding/summarization jobs, task-capture workflows, web dashboard
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
