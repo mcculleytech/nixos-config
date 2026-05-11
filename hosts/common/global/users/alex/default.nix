@@ -21,6 +21,7 @@
         "no-touch-required sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIP7VVX7OyA4eYm2nzJMmRl4EI8seJ3pTyUIuenTGivrcAAAAD3NzaDpzeXN0ZW0tYXV0aA== YubiKey840-system-auth"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEGkHcMirY9luPZudrCkXEL9EDnnrRGKPv8uEqChtdl alex@terminus"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPXQH5gI49qNuwiTigLDbZJ8l0NNl4OksmIXV/TRyGi6 alex@saruman"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAD/cB01DFcbp6ZwCPdYw8Ayc0Vd1TOCiuVlWdpMsLBW alex@phone"
       ];
       extraGroups = [ "wheel" "audio" "video" "plugdev" "dialout" "docker" "networkmanager" "adm" ];
     };
