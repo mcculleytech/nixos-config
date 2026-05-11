@@ -131,6 +131,18 @@ A persistent, semantic memory store on **saruman** that every agent (Claude acro
 - [ ] **Wired into Claude on both subscriptions** — work and personal Claude clients hit the same MCP endpoint; memories created by either are immediately visible to the other. Personal (faramir) verified; work subscription pending.
 - [ ] **Postgres major-version-bump safeguard** — surfaced during Phase 1 rollout: pinning `services.postgresql.package` to a different major than the host's existing data dir causes a silent `initdb` of a fresh empty cluster (data orphaned at the old version path). Document the `pg_upgrade` procedure or add a deploy preflight check.
 
+### B0.5: Hermes Signal Agent
+
+Reactive endpoint for the personal-agent stack: a Signal-driven agent that drives Claude (Anthropic native, swappable to OpenRouter for Nous Hermes models) and uses the shared `agent-memory` + `vault` MCP servers as tools. Adopts upstream `NousResearch/hermes-agent` (MIT, actively maintained; ships its own `flake.nix` + `nixosModules.default` and a uv2nix-sealed venv) rather than building from scratch.
+
+- [ ] **Upstream flake input** — `inputs.hermes-agent.url = "github:NousResearch/hermes-agent"`. Do not follow our nixpkgs; upstream's uv2nix lockfile is tied to nixos-unstable.
+- [ ] **`signal-cli` NixOS module** — local-only HTTP daemon at `127.0.0.1:8080`, runs as `hermes`, state persisted at `/var/lib/hermes/signal-cli`. Cannibalizes the retired ironclaw signal-cli unit.
+- [ ] **`hermes-agent` wiring module** — saruman-only (sets `services.hermes-agent.*` from the flake input). Provider `anthropic`, MCP servers `agent-memory` + `vault` wired to `:4280`/`:4281` with `future-hermes` bearer tokens via env-var interpolation; env file rendered from sops via `sops.templates."hermes-agent.env"`.
+- [ ] **sops scalars added** — `anthropic_api_key`, `hermes_bot_account`, `hermes_allowlist`, `future_hermes_agent_memory`, `future_hermes_vault`.
+- [ ] **Bootstrap** — `sudo -u hermes signal-cli link -n saruman-hermes` once; QR-scan from the bot's Signal account on the phone.
+- [ ] **Verified end-to-end** — allowlisted contact sends "ping" via Signal; reply within seconds. Tool use against memory + vault confirmed via natural language ("search my agent memory for X", "list my homelab folder").
+- [ ] **Spending alert** — Anthropic API usage alert set at console.anthropic.com (separate from any Claude subscription).
+
 ### B1: AI-Assisted Config Generation
 
 Use an LLM to generate NixOS module configs from natural language descriptions, reducing boilerplate and speeding up new service onboarding.

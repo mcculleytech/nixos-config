@@ -5,6 +5,9 @@
       ../common/global
       ../common/optional
       ../common/optional/roles/server
+      ../common/optional/roles/server/hermes-agent  # saruman-only — depends on
+                                                    # upstream services.hermes-agent
+                                                    # option from the flake input
       ../common/optional/roles/workstation
       ../../disko/saruman.nix
     ];
@@ -29,6 +32,7 @@
   agent-memory.enable = true;
   obsidian-headless.enable = true;
   vault-mcp.enable = true;
+  hermes-agent.enable = true;  # transitively enables signal-cli
 
 
   boot.loader.systemd-boot.enable = true;
