@@ -29,6 +29,11 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    # Upstream agent runtime: ships its own flake + nixosModules.default and
+    # a uv2nix-built sealed venv. Do NOT set inputs.nixpkgs.follows here —
+    # the venv's lockfile is tied to nixos-unstable's Python toolchain;
+    # forcing it onto our nixpkgs (25.11) breaks the build.
+    hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
   outputs = { self, nixpkgs, home-manager, hardware, ... } @ inputs:
@@ -93,6 +98,7 @@
           modules = defaultModules ++ [
             hardware.nixosModules.common-gpu-nvidia-nonprime
             home-manager.nixosModules.home-manager
+            inputs.hermes-agent.nixosModules.default
             ./hosts/saruman/configuration.nix
             {
               home-manager.useUserPackages = true;
