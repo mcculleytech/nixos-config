@@ -42,12 +42,14 @@ in
     };
     users.groups.${dbUser} = {};
 
-    # ─── PostgreSQL 16 + pgvector ──────────────────────────────────────────
-    # PG16 (not 17) because saruman also runs immich, whose pgvecto.rs
-    # extension doesn't yet support PG17. Both extensions coexist fine on PG16.
+    # ─── PostgreSQL + pgvector ─────────────────────────────────────────────
+    # Do NOT pin services.postgresql.package here. Other services on the host
+    # (immich, paperless) already pin postgres via lib.mkDefault to whatever
+    # version their data was initialized with. Overriding that version triggers
+    # an initdb on a new version-suffixed data dir (/var/lib/postgresql/<N>),
+    # leaving the original data orphaned. Match whatever the host has.
     services.postgresql = {
       enable = true;
-      package = pkgs.postgresql_16;
       extensions = with config.services.postgresql.package.pkgs; [ pgvector ];
       ensureDatabases = [ dbName ];
       ensureUsers = [{
