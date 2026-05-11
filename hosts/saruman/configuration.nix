@@ -26,6 +26,7 @@
   kokoro.enable = true;
   auto-deploy.enable = true;
   tailscale-server.enable = true;
+  agent-memory.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;

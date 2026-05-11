@@ -26,5 +26,6 @@
     ./ntfy.nix
     ./kokoro.nix
     ./auto-deploy.nix
+    ./agent-memory
   ];
 }
