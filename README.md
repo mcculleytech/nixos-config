@@ -143,7 +143,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] ironclaw enabled on aeneas (Linux, Nix-built) ✅ 2026-05-08
 	- [x] Pivot away from ironclaw on all hosts; `lab.ironclaw.enable` left as default `false`, package derivation retained for future use ✅ 2026-05-11
 - [ ] Personal Agent Infrastructure
-	- [ ] Phase 1: Shared agent memory on saruman (PostgreSQL 17 + pgvector + MCP gateway, Tailscale-bound, bearer-token auth)
+	- [x] Phase 1: Shared agent memory on saruman (PostgreSQL + pgvector + MCP gateway, Tailscale-bound, bearer-token auth) ✅ 2026-05-11
 	- [ ] Phase 2: Obsidian Sync via `obsidian-headless` on saruman; vault MCP server(s) for read/write access
 	- [ ] Phase 3: Hermes agent on saruman driven by Anthropic API (later OpenRouter), Signal I/O via a dedicated number on signal-cli
 	- [ ] Phase 4: Scheduled embedding/summarization jobs, task-capture workflows, web dashboard
