@@ -82,15 +82,23 @@ DB_POOL: psycopg.AsyncConnection | None = None  # one connection, simple
 
 @asynccontextmanager
 async def lifespan(_app: Starlette):
+    """Compose our DB setup with FastMCP's session manager lifecycle.
+
+    FastMCP requires `session_manager.run()` to be active for the lifetime of
+    the streamable-HTTP app; without it, request handlers raise
+    "Task group is not initialized". When mounting FastMCP under a custom
+    Starlette app, we must drive that ourselves.
+    """
     global DB_POOL
     assert CFG is not None
-    DB_POOL = await psycopg.AsyncConnection.connect(CFG.db_dsn, autocommit=True)
-    await register_vector_async(DB_POOL)
-    log.info("connected to %s", CFG.db_dsn)
-    try:
-        yield
-    finally:
-        await DB_POOL.close()
+    async with mcp.session_manager.run():
+        DB_POOL = await psycopg.AsyncConnection.connect(CFG.db_dsn, autocommit=True)
+        await register_vector_async(DB_POOL)
+        log.info("connected to %s", CFG.db_dsn)
+        try:
+            yield
+        finally:
+            await DB_POOL.close()
 
 
 async def db() -> psycopg.AsyncConnection:
