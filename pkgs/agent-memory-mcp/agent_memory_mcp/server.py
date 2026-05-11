@@ -338,6 +338,26 @@ async def project_list() -> list[dict[str, Any]]:
 
 
 @mcp.tool()
+async def project_delete(name: str) -> dict[str, Any]:
+    """Delete a project by name. Memories that referenced it have their
+    project_id set to NULL (per the FK ON DELETE SET NULL). Returns
+    `{deleted, orphaned_memories}` where orphaned_memories is how many
+    memories were detached.
+    """
+    conn = await db()
+    async with conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            "SELECT count(*) AS n FROM memories WHERE project_id = (SELECT id FROM projects WHERE name = %s)",
+            (name,),
+        )
+        row = await cur.fetchone()
+        orphaned = int(row["n"]) if row else 0
+        await cur.execute("DELETE FROM projects WHERE name = %s", (name,))
+        deleted = cur.rowcount > 0
+    return {"deleted": deleted, "orphaned_memories": orphaned}
+
+
+@mcp.tool()
 async def project_create(name: str, description: str | None = None) -> dict[str, Any]:
     """Create a project. If one already exists with this name, returns the existing row."""
     conn = await db()
