@@ -19,13 +19,18 @@ in
 
     agentMemoryUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://${config.lab.hosts.saruman.ip}:4280/mcp";
+      # NOTE: saruman's tailnet IP — agent-memory-mcp/vault-mcp bind only to
+      # the tailnet interface (resolved at service start via `tailscale ip -4`),
+      # not the LAN IP. From saruman itself, the tailnet IP routes back through
+      # tailscale0. Hardcoded here because we don't track tailnet IPs in
+      # hosts-data.nix yet; if you move Hermes off saruman, override this.
+      default = "http://100.104.242.112:4280/mcp";
       description = "Streamable-HTTP URL for the agent-memory MCP server.";
     };
 
     vaultUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://${config.lab.hosts.saruman.ip}:4281/mcp";
+      default = "http://100.104.242.112:4281/mcp";
       description = "Streamable-HTTP URL for the vault MCP server.";
     };
   };
