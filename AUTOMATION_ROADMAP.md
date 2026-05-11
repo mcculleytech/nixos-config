@@ -121,6 +121,15 @@ New VM: Terraform apply → nixos-anywhere bootstrap → sops enroll → colmena
 
 Layer AI into the operations workflow. The underlying infrastructure (Colmena, Prometheus, NixOS) stays the same — AI acts as an intelligent operator on top of it, handling triage, analysis, and generation of changes that still go through normal review.
 
+### B0: Shared Agent Memory Foundation
+
+A persistent, semantic memory store on **saruman** that every agent (Claude across subscriptions, Hermes-over-Signal, scheduled jobs) reads and writes through. Built as proper infrastructure: pgvector for retrieval, Ollama-hosted `nomic-embed-text` for embedding (no API keys), and an MCP gateway as the single auth-gated query path. This is Phase 1 of the Personal Agent Infrastructure plan; Phases 2–4 (vault sync, Hermes-over-Signal, scheduled jobs) sit on top of this foundation.
+
+- [ ] **PostgreSQL 17 + pgvector on saruman** — `services.postgresql` with the `pgvector` extension; database `agent_memory` owned by role `agent_memory_mcp` (peer auth via Unix socket); schema (`projects`, `memories`) applied idempotently by a oneshot setup unit. Cannibalizes the retired ironclaw module.
+- [ ] **`agent-memory-mcp` MCP gateway** — Python (`buildPythonApplication`) service binding to saruman's Tailscale IP (resolved via `tailscale ip -4` at start), port 4280, firewall opens it on `tailscale0` only. Tools: `memory_{search,insert,update,delete}`, `project_{list,create}`, `health`. Embedding via `POST 127.0.0.1:11434/api/embeddings` (Ollama, already running on saruman).
+- [ ] **Defense in depth** — (1) tailnet-only binding, (2) bearer token middleware reading from sops-managed JSON map of per-client tokens (revoke individual clients without rotating everyone), (3) Postgres role scoped to the `agent_memory` DB tables.
+- [ ] **Wired into Claude on both subscriptions** — work and personal Claude clients hit the same MCP endpoint; memories created by either are immediately visible to the other (the headline goal).
+
 ### B1: AI-Assisted Config Generation
 
 Use an LLM to generate NixOS module configs from natural language descriptions, reducing boilerplate and speeding up new service onboarding.

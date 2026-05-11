@@ -142,6 +142,11 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] PostgreSQL 17 + pgvector provisioning on Linux ✅ 2026-05-08
 	- [x] ironclaw enabled on aeneas (Linux, Nix-built) ✅ 2026-05-08
 	- [x] Pivot away from ironclaw on all hosts; `lab.ironclaw.enable` left as default `false`, package derivation retained for future use ✅ 2026-05-11
+- [ ] Personal Agent Infrastructure
+	- [ ] Phase 1: Shared agent memory on saruman (PostgreSQL 17 + pgvector + MCP gateway, Tailscale-bound, bearer-token auth)
+	- [ ] Phase 2: Obsidian Sync via `obsidian-headless` on saruman; vault MCP server(s) for read/write access
+	- [ ] Phase 3: Hermes agent on saruman driven by Anthropic API (later OpenRouter), Signal I/O via a dedicated number on signal-cli
+	- [ ] Phase 4: Scheduled embedding/summarization jobs, task-capture workflows, web dashboard
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20
