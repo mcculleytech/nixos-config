@@ -27,5 +27,7 @@
     ./kokoro.nix
     ./auto-deploy.nix
     ./agent-memory
+    ./obsidian-headless
+    ./vault-mcp
   ];
 }

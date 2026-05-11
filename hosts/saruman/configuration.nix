@@ -27,6 +27,8 @@
   auto-deploy.enable = true;
   tailscale-server.enable = true;
   agent-memory.enable = true;
+  obsidian-headless.enable = true;
+  vault-mcp.enable = true;
 
 
   boot.loader.systemd-boot.enable = true;
