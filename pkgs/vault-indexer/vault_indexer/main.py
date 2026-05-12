@@ -90,6 +90,20 @@ def chunk_markdown(text: str) -> list[tuple[str, str]]:
         buf = ""
         part = 1
         for p in paragraphs:
+            # A single paragraph can already exceed the budget (e.g., a big
+            # YAML block or a wall of code with no blank lines). Hard-split
+            # such giants on a character boundary; that's worse for retrieval
+            # locally but prevents the embedding service from rejecting the
+            # whole job. The split is deterministic so re-runs hit cache.
+            if len(p) > MAX_CHARS_PER_CHUNK:
+                if buf.strip():
+                    chunks.append((f"{slug}#part{part}", buf.strip()))
+                    part += 1
+                    buf = ""
+                for hard in _hard_split(p, MAX_CHARS_PER_CHUNK):
+                    chunks.append((f"{slug}#part{part}", hard))
+                    part += 1
+                continue
             if buf and len(buf) + len(p) + 2 > MAX_CHARS_PER_CHUNK:
                 chunks.append((f"{slug}#part{part}", buf.strip()))
                 buf = p
@@ -99,6 +113,31 @@ def chunk_markdown(text: str) -> list[tuple[str, str]]:
         if buf.strip():
             chunks.append((f"{slug}#part{part}" if part > 1 else slug, buf.strip()))
     return chunks
+
+
+def _hard_split(text: str, max_chars: int) -> list[str]:
+    """Split a string into chunks no larger than `max_chars`, preferring to
+    break on whitespace/newline boundaries near the cap so words stay intact
+    where possible. Falls back to a hard character cut if no whitespace is
+    found in the window.
+    """
+    pieces: list[str] = []
+    i = 0
+    n = len(text)
+    while i < n:
+        end = min(i + max_chars, n)
+        if end < n:
+            # Try to back off to the last whitespace within the last 10% of
+            # the window so we don't cut a token in half. If none, hard-cut.
+            window_start = max(i + int(max_chars * 0.9), i + 1)
+            cut = text.rfind("\n", window_start, end)
+            if cut == -1:
+                cut = text.rfind(" ", window_start, end)
+            if cut != -1:
+                end = cut
+        pieces.append(text[i:end].strip())
+        i = end
+    return [p for p in pieces if p]
 
 
 def iter_notes(vault_root: Path):
