@@ -129,6 +129,28 @@ in
       after = [ "signal-cli.service" ];
       wants = [ "signal-cli.service" ];
       serviceConfig.TimeoutStopSec = 240;
+      # ExecStartPre: hermes-agent calls signal-cli's HTTP RPC at startup
+      # and exits 1 if the connection fails. systemd's After= only orders
+      # *spawn*, not readiness. signal-cli's JVM takes 3-4 seconds before
+      # its HTTP endpoint accepts connections, and hermes loses that race
+      # on cold deploys. Poll until the daemon responds (or 30s timeout).
+      serviceConfig.ExecStartPre = [
+        (pkgs.writeShellScript "wait-for-signal-cli" ''
+          set -eu
+          url="http://127.0.0.1:${toString signalCfg.httpPort}/api/v1/rpc"
+          for i in $(seq 1 30); do
+            if ${pkgs.curl}/bin/curl -fsS -m 2 -X POST "$url" \
+                 -H "Content-Type: application/json" \
+                 -d '{"jsonrpc":"2.0","id":1,"method":"listAccounts","params":{}}' \
+                 > /dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "signal-cli HTTP RPC did not come up in 30s at $url" >&2
+          exit 1
+        '')
+      ];
     };
   };
 }
