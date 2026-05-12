@@ -16,11 +16,20 @@ in
 
     bindIp = lib.mkOption {
       type = lib.types.str;
-      default = "auto";
+      default = "0.0.0.0";
       description = ''
-        IPv4 to bind to. "auto" resolves saruman's tailnet IP at service start.
-        The dashboard is unauthenticated at the application layer — auth is
-        provided by the upstream reverse proxy (Traefik basicAuth + IP allowlist).
+        IPv4 to bind to. Must be 0.0.0.0 for reverse-proxy use because the
+        dashboard's upstream DNS-rebinding defence (web_server.host_header_middleware)
+        rejects any request whose Host header doesn't match the bound interface.
+        Binding 0.0.0.0 sets that check to "accept any host", which is what we
+        need when Traefik forwards `Host: hermes.<domain>`.
+
+        Network-level scoping comes from our firewall rule below
+        (allowedTCPPorts on tailscale0 only), so 0.0.0.0 here doesn't actually
+        expose the port on the LAN interface. The dashboard's --insecure flag
+        is also required for any non-loopback bind.
+
+        Set explicitly only when testing on a non-tailnet box.
       '';
     };
 
@@ -73,13 +82,8 @@ in
       # both basicAuth AND an IP allowlist before forwarding here).
       script = ''
         set -eu
-        if [ "${cfg.bindIp}" = "auto" ]; then
-          bind=$(tailscale ip -4 | head -n1)
-        else
-          bind="${cfg.bindIp}"
-        fi
         exec ${hermesAgent}/bin/hermes dashboard \
-          --host "$bind" \
+          --host "${cfg.bindIp}" \
           --port ${toString cfg.port} \
           --insecure \
           --skip-build \
