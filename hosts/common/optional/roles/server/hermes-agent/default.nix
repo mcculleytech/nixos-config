@@ -9,11 +9,13 @@ in
 
     model = lib.mkOption {
       type = lib.types.str;
-      default = "anthropic/claude-opus-4.6";
+      default = "anthropic/claude-sonnet-4.6";
       description = ''
         Model identifier for the agent's LLM. Default uses native Anthropic
-        provider; switch to e.g. "openrouter/nousresearch/hermes-3-llama-3.1-405b"
-        and add an OPENROUTER_API_KEY env var in the sops template to migrate.
+        provider with Sonnet 4.6 (fast, cheaper, plenty for Signal-driven
+        tool use). Switch to "anthropic/claude-opus-4.7" for the latest
+        Opus, or "openrouter/nousresearch/hermes-3-llama-3.1-405b" plus an
+        OPENROUTER_API_KEY env var in the sops template to migrate.
       '';
     };
 
