@@ -33,6 +33,18 @@ in
       default = "http://100.104.242.112:4281/mcp";
       description = "Streamable-HTTP URL for the vault MCP server.";
     };
+
+    signalMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://100.104.242.112:4282/mcp";
+      description = "Streamable-HTTP URL for the outbound Signal MCP (gated send).";
+    };
+
+    radicaleMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://100.104.242.112:4283/mcp";
+      description = "Streamable-HTTP URL for the Radicale CalDAV/CardDAV MCP.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -46,6 +58,8 @@ in
       hermes_allowlist = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_agent_memory = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_vault = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      future_hermes_signal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      future_hermes_radicale = { owner = "hermes"; group = "hermes"; mode = "0400"; };
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
@@ -61,6 +75,8 @@ in
         SIGNAL_ALLOWED_USERS=${config.sops.placeholder.hermes_allowlist}
         HERMES_AGENT_MEMORY_TOKEN=${config.sops.placeholder.future_hermes_agent_memory}
         HERMES_VAULT_TOKEN=${config.sops.placeholder.future_hermes_vault}
+        HERMES_SIGNAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_signal}
+        HERMES_RADICALE_MCP_TOKEN=${config.sops.placeholder.future_hermes_radicale}
       '';
     };
 
@@ -92,6 +108,14 @@ in
           url = cfg.vaultUrl;
           headers.Authorization = "Bearer \${HERMES_VAULT_TOKEN}";
         };
+        signal = {
+          url = cfg.signalMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_SIGNAL_MCP_TOKEN}";
+        };
+        radicale = {
+          url = cfg.radicaleMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_RADICALE_MCP_TOKEN}";
+        };
       };
     };
 
@@ -105,6 +129,28 @@ in
       after = [ "signal-cli.service" ];
       wants = [ "signal-cli.service" ];
       serviceConfig.TimeoutStopSec = 240;
+      # ExecStartPre: hermes-agent calls signal-cli's HTTP RPC at startup
+      # and exits 1 if the connection fails. systemd's After= only orders
+      # *spawn*, not readiness. signal-cli's JVM takes 3-4 seconds before
+      # its HTTP endpoint accepts connections, and hermes loses that race
+      # on cold deploys. Poll until the daemon responds (or 30s timeout).
+      serviceConfig.ExecStartPre = [
+        (pkgs.writeShellScript "wait-for-signal-cli" ''
+          set -eu
+          url="http://127.0.0.1:${toString signalCfg.httpPort}/api/v1/rpc"
+          for i in $(seq 1 30); do
+            if ${pkgs.curl}/bin/curl -fsS -m 2 -X POST "$url" \
+                 -H "Content-Type: application/json" \
+                 -d '{"jsonrpc":"2.0","id":1,"method":"listAccounts","params":{}}' \
+                 > /dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "signal-cli HTTP RPC did not come up in 30s at $url" >&2
+          exit 1
+        '')
+      ];
     };
   };
 }
