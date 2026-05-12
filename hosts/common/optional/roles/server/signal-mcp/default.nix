@@ -57,6 +57,7 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "signal-mcp.service" ];
     };
 
     # Persisted SQLite pending DB.
@@ -113,6 +114,7 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "signal-mcp.service" ];
       content = ''
         SIGNAL_MCP_SIGNAL_ACCOUNT=${config.sops.placeholder.hermes_bot_account}
       '';

@@ -49,6 +49,7 @@ in
       owner = cfg.user;
       group = "users";
       mode = "0400";
+      restartUnits = [ "vault-mcp.service" ];
     };
 
     systemd.services.vault-mcp = {

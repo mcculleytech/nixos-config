@@ -55,7 +55,11 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "miniflux-mcp.service" ];
     };
+    # miniflux_api_token feeds the env template below — restartUnits is on
+    # the template so a token rotation re-renders the env file and bounces
+    # the service.
     sops.secrets.miniflux_api_token = {
       owner = cfg.user;
       group = cfg.user;
@@ -68,6 +72,7 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "miniflux-mcp.service" ];
       content = ''
         MINIFLUX_MCP_MINIFLUX_TOKEN=${config.sops.placeholder.miniflux_api_token}
       '';

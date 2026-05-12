@@ -92,6 +92,9 @@ in
       owner = dbUser;
       group = dbUser;
       mode = "0400";
+      # Restart the MCP when the token map changes so the new client takes
+      # effect without a manual systemctl restart after every deploy.
+      restartUnits = [ "agent-memory-mcp.service" ];
     };
 
     # ─── state dir persistence ─────────────────────────────────────────────

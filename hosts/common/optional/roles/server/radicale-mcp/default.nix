@@ -66,7 +66,10 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "radicale-mcp.service" ];
     };
+    # The user/password feed the env template below — restartUnits is
+    # declared on the template, which gets re-rendered when either changes.
     sops.secrets.radicale_mcp_user = {
       owner = cfg.user;
       group = cfg.user;
@@ -83,6 +86,7 @@ in
       owner = cfg.user;
       group = cfg.user;
       mode = "0400";
+      restartUnits = [ "radicale-mcp.service" ];
       content = ''
         RADICALE_MCP_RADICALE_USER=${config.sops.placeholder.radicale_mcp_user}
         RADICALE_MCP_RADICALE_PASSWORD=${config.sops.placeholder.radicale_mcp_password}

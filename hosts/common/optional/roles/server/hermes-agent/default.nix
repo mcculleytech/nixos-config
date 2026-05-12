@@ -81,6 +81,12 @@ in
       owner = "hermes";
       group = "hermes";
       mode = "0400";
+      # Hermes reads every secret via this template fan-out. When any of
+      # the underlying sops placeholders change, the template re-renders
+      # and we want the agent to pick up the new values. The per-secret
+      # entries above feed only this template, so restartUnits on the
+      # template covers them all without per-secret duplication.
+      restartUnits = [ "hermes-agent.service" ];
       content = ''
         ANTHROPIC_API_KEY=${config.sops.placeholder.anthropic_api_key}
         SIGNAL_ACCOUNT=${config.sops.placeholder.hermes_bot_account}
