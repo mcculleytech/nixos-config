@@ -101,6 +101,10 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/agent-memory-mcp 0750 ${dbUser} ${dbUser} -"
+      # Backup landing zone — postgres-only so pg_dump output isn't world-readable.
+      "d /persist/backups 0755 root root -"
+      "d /persist/backups/postgres 0700 postgres postgres -"
+      "d /persist/backups/postgres/agent_memory 0700 postgres postgres -"
     ];
 
     # ─── MCP gateway systemd unit ──────────────────────────────────────────
@@ -145,5 +149,49 @@ in
 
     # Open the gateway port on the tailnet interface only — never on LAN/WAN.
     networking.firewall.interfaces.${cfg.tailnetInterface}.allowedTCPPorts = [ cfg.port ];
+
+    # ─── Daily pg_dump of agent_memory ─────────────────────────────────────
+    # Custom format (-Fc): smaller than plain SQL, restorable in parallel via
+    # pg_restore --jobs, and pg_dump compresses inline. 30-day retention is
+    # enforced inline; off-host replication (NAS / faramir) is deliberately
+    # not wired here — single-host snapshots cover DB corruption and
+    # accidental deletes, not full saruman loss. Separate decision.
+    systemd.services.agent-memory-backup = {
+      description = "Daily pg_dump of agent_memory database";
+      after = [ "postgresql.service" "agent-memory-db-setup.service" ];
+      requires = [ "postgresql.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "postgres";
+        Group = "postgres";
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        NoNewPrivileges = true;
+        ReadWritePaths = [ "/persist/backups/postgres/agent_memory" ];
+      };
+      script = ''
+        set -eu
+        ts=$(${pkgs.coreutils}/bin/date -u +%Y-%m-%d)
+        out=/persist/backups/postgres/agent_memory/agent_memory-$ts.dump
+        ${config.services.postgresql.package}/bin/pg_dump \
+          --format=custom \
+          --file="$out.tmp" \
+          ${dbName}
+        ${pkgs.coreutils}/bin/mv "$out.tmp" "$out"
+        ${pkgs.findutils}/bin/find /persist/backups/postgres/agent_memory \
+          -name 'agent_memory-*.dump' -mtime +30 -delete
+      '';
+    };
+
+    systemd.timers.agent-memory-backup = {
+      description = "Daily timer for agent-memory pg_dump";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "*-*-* 03:00:00";
+        Persistent = true;
+        RandomizedDelaySec = "5m";
+      };
+    };
   };
 }
