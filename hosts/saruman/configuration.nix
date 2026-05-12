@@ -33,6 +33,7 @@
   auto-deploy.enable = true;
   tailscale-server.enable = true;
   agent-memory.enable = true;
+  lab.nas-backups.enable = true;  # NFS-mounted /mnt/nas-backups for off-host backups
   obsidian-headless.enable = true;
   vault-mcp.enable = true;
   hermes-agent.enable = true;  # transitively enables signal-cli
