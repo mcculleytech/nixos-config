@@ -108,13 +108,14 @@ in
         model = {
           provider = "anthropic";
           default = cfg.model;
-          # Tighten "effective context" so Hermes auto-compresses long
-          # conversations early. Compression fires when prompt_tokens >=
-          # threshold × context_length. With Haiku's real 200K window we
-          # don't need that much; ~16K is enough for ~15 short Signal
-          # messages plus tools list and system prompt, after which middle
-          # turns get summarized into a single cache-friendly prefix.
-          context_length = 16000;
+          # context_length declares the model's effective context window
+          # (used by Hermes for request validation and compression math).
+          # Hermes refuses to start below 64K, so we use 64K even though
+          # Haiku's real window is 200K — 64K is still plenty of headroom.
+          # Compression fires when prompt_tokens >= threshold × context_length;
+          # the threshold below is tuned so that ~15 short Signal messages
+          # worth of context triggers a compress.
+          context_length = 64000;
           # api_key picked up from ANTHROPIC_API_KEY env var
         };
 
@@ -129,12 +130,14 @@ in
         };
 
         # Compression keeps the cached prefix stable when conversations
-        # grow. Trigger at 50% of context_length (8K tokens, ~15 messages),
-        # keep ~20% of that as recent tail in detail; older turns become
-        # a Gemini-summarized block. Match the cost target Alex set.
+        # grow. With context_length = 64000, threshold = 0.12 fires at
+        # ~7680 input tokens (~15 short Signal messages), which matches
+        # the "tight Signal window" intent. target_ratio = 0.20 preserves
+        # the last ~1500 tokens (~3 messages) in detail; older turns get
+        # Gemini-summarized into a single cache-friendly block.
         compression = {
           enabled = true;
-          threshold = 0.50;
+          threshold = 0.12;
           target_ratio = 0.20;
         };
       };
