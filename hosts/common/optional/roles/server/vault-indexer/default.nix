@@ -1,6 +1,11 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.vault-indexer;
+  # Derive the /health URL from the MCP URL. Health is unauthenticated
+  # (the agent-memory-mcp middleware exempts it) so a plain curl with no
+  # bearer can probe readiness without bringing the indexer's token into
+  # the wait script.
+  healthUrl = (lib.removeSuffix "/mcp" cfg.agentMemoryUrl) + "/health";
 in
 {
   options.vault-indexer = {
@@ -65,6 +70,26 @@ in
 
       serviceConfig = {
         Type = "oneshot";
+        # Wait for agent-memory-mcp to be HTTP-ready before firing the
+        # indexer. systemd's `After=` only orders unit START, not
+        # readiness. With version stamping in place every deploy restarts
+        # agent-memory-mcp; if the vault-indexer timer fires during that
+        # ~2-3s startup window (very likely with Persistent=true catching
+        # up missed runs), it races the restart and dies with ConnectError.
+        # Poll /health (no bearer required) until the MCP responds 200 OK.
+        ExecStartPre = [
+          (pkgs.writeShellScript "wait-for-agent-memory-mcp" ''
+            set -eu
+            for i in $(seq 1 30); do
+              if ${pkgs.curl}/bin/curl -fsS -m 2 "${healthUrl}" > /dev/null 2>&1; then
+                exit 0
+              fi
+              sleep 1
+            done
+            echo "agent-memory-mcp /health did not come up in 30s at ${healthUrl}" >&2
+            exit 1
+          '')
+        ];
         ExecStart = "${pkgs.vault-indexer}/bin/vault-indexer";
         User = cfg.user;
         Group = "users";
