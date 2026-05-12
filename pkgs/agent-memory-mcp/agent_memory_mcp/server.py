@@ -229,6 +229,47 @@ async def memory_search(
 
 
 @mcp.tool()
+async def memory_list_by_source(
+    source_prefix: str,
+    limit: int = 10000,
+) -> list[dict[str, Any]]:
+    """List memories whose `source` starts with `source_prefix`. Used by
+    indexer-style clients (e.g., vault-indexer) to enumerate existing
+    rows for a content namespace and reconcile them with the source-of-
+    truth on disk.
+
+    Returns id + source + metadata + tags (no embedding, no content).
+    """
+    conn = await db()
+    async with conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            """
+            SELECT m.id, m.source, m.tags, m.metadata, m.created_at, m.updated_at,
+                   p.name AS project
+            FROM memories m
+            LEFT JOIN projects p ON p.id = m.project_id
+            WHERE m.source LIKE %s
+            ORDER BY m.source
+            LIMIT %s
+            """,
+            (source_prefix + "%", limit),
+        )
+        rows = await cur.fetchall()
+    return [
+        {
+            "id": str(r["id"]),
+            "source": r["source"],
+            "project": r["project"],
+            "tags": r["tags"],
+            "metadata": r["metadata"],
+            "created_at": r["created_at"].isoformat(),
+            "updated_at": r["updated_at"].isoformat(),
+        }
+        for r in rows
+    ]
+
+
+@mcp.tool()
 async def memory_insert(
     content: str,
     project: str | None = None,
