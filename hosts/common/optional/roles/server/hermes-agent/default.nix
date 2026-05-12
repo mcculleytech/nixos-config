@@ -9,13 +9,16 @@ in
 
     model = lib.mkOption {
       type = lib.types.str;
-      default = "anthropic/claude-sonnet-4.6";
+      default = "anthropic/claude-haiku-4.5";
       description = ''
         Model identifier for the agent's LLM. Default uses native Anthropic
-        provider with Sonnet 4.6 (fast, cheaper, plenty for Signal-driven
-        tool use). Switch to "anthropic/claude-opus-4.7" for the latest
-        Opus, or "openrouter/nousresearch/hermes-3-llama-3.1-405b" plus an
-        OPENROUTER_API_KEY env var in the sops template to migrate.
+        provider with Haiku 4.5 — optimized for the bot's reactive-chat +
+        tool-routing workload (~3x cheaper than Sonnet, plenty of capability
+        for picking tools and writing short replies). For heavier reasoning
+        switch to "anthropic/claude-sonnet-4.6" or "anthropic/claude-opus-4.7".
+        Migrate to OpenRouter-routed Nous Hermes via
+        "openrouter/nousresearch/hermes-3-llama-3.1-405b" plus an
+        OPENROUTER_API_KEY env var in the sops template.
       '';
     };
 
@@ -105,7 +108,34 @@ in
         model = {
           provider = "anthropic";
           default = cfg.model;
+          # Tighten "effective context" so Hermes auto-compresses long
+          # conversations early. Compression fires when prompt_tokens >=
+          # threshold × context_length. With Haiku's real 200K window we
+          # don't need that much; ~16K is enough for ~15 short Signal
+          # messages plus tools list and system prompt, after which middle
+          # turns get summarized into a single cache-friendly prefix.
+          context_length = 16000;
           # api_key picked up from ANTHROPIC_API_KEY env var
+        };
+
+        # Anthropic prompt caching is on by default for the "anthropic"
+        # provider; this just sets the cache TTL. 5m is the right choice
+        # for a reactive Signal bot — conversations finish well inside the
+        # window, and the stable prefix (system + tools + early history)
+        # gets cache-hit pricing (~90% input-token discount) for every
+        # tool-use round-trip after the first.
+        prompt_caching = {
+          cache_ttl = "5m";
+        };
+
+        # Compression keeps the cached prefix stable when conversations
+        # grow. Trigger at 50% of context_length (8K tokens, ~15 messages),
+        # keep ~20% of that as recent tail in detail; older turns become
+        # a Gemini-summarized block. Match the cost target Alex set.
+        compression = {
+          enabled = true;
+          threshold = 0.50;
+          target_ratio = 0.20;
         };
       };
 
@@ -113,22 +143,38 @@ in
         agent-memory = {
           url = cfg.agentMemoryUrl;
           headers.Authorization = "Bearer \${HERMES_AGENT_MEMORY_TOKEN}";
+          # Trim destructive ops out of the tool surface — operator can
+          # still hit these via the dashboards / direct DB / sops. Saves
+          # ~1-2 KB of tool descriptions per API call.
+          tools.exclude = [ "memory_delete" "project_delete" ];
         };
         vault = {
           url = cfg.vaultUrl;
           headers.Authorization = "Bearer \${HERMES_VAULT_TOKEN}";
+          # Keep vault_write available (LLM needs it for note creation /
+          # journaling) but block the overwrite=true footgun pattern would
+          # require a per-argument filter, which the upstream tool filter
+          # doesn't support; we rely on the path-safety guard in vault-mcp.
         };
         signal = {
           url = cfg.signalMcpUrl;
           headers.Authorization = "Bearer \${HERMES_SIGNAL_MCP_TOKEN}";
+          # signal_pending_deny is operator-side cleanup; the LLM should
+          # never reject on its own behalf. Hide it.
+          tools.exclude = [ "signal_pending_deny" ];
         };
         radicale = {
           url = cfg.radicaleMcpUrl;
           headers.Authorization = "Bearer \${HERMES_RADICALE_MCP_TOKEN}";
+          # Calendar/contact deletion is destructive and rare; operator
+          # uses the GUI client. Hide from the tool surface.
+          tools.exclude = [ "event_delete" "task_delete" "contact_delete" ];
         };
         miniflux = {
           url = cfg.minifluxMcpUrl;
           headers.Authorization = "Bearer \${HERMES_MINIFLUX_MCP_TOKEN}";
+          # feed_refresh is a manual op the LLM has no reason to invoke.
+          tools.exclude = [ "feed_refresh" ];
         };
       };
     };
