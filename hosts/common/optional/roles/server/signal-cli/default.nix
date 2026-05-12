@@ -56,6 +56,10 @@ in
 
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0700 ${cfg.user} ${cfg.user} -"
+      # Backup landing zone — root-only; signal-cli state is sensitive
+      # (linked-device protobuf, axolotl session keys, identity).
+      "d /persist/backups 0755 root root -"
+      "d /persist/backups/signal-cli 0700 root root -"
     ];
 
     systemd.services.signal-cli = {
@@ -88,5 +92,50 @@ in
     };
 
     # No firewall opening: loopback-only by design.
+
+    # ─── Weekly tarball of signal-cli state ────────────────────────────────
+    # Linked-device protobuf, axolotl session keys, identity, contacts —
+    # losing this dir means re-linking the bot from the phone. Daily would
+    # be overkill (state churns slowly); weekly is the sweet spot.
+    #
+    # Hot read (no service stop): signal-cli writes are atomic file replaces,
+    # so a tar pass captures "either old or new" per file — no torn writes.
+    # Stopping the daemon during backup would be more bulletproof but costs
+    # a weekly outage window; not worth it for slow-churn state.
+    systemd.services.signal-cli-backup = {
+      description = "Weekly tarball of signal-cli state directory";
+      after = [ "signal-cli.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+        Group = "root";
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        NoNewPrivileges = true;
+        ReadWritePaths = [ "/persist/backups/signal-cli" ];
+      };
+      script = ''
+        set -eu
+        ts=$(${pkgs.coreutils}/bin/date -u +%Y-%m-%d)
+        out=/persist/backups/signal-cli/signal-cli-$ts.tar.gz
+        ${pkgs.gnutar}/bin/tar -czf "$out.tmp" \
+          -C "$(${pkgs.coreutils}/bin/dirname ${cfg.dataDir})" \
+          "$(${pkgs.coreutils}/bin/basename ${cfg.dataDir})"
+        ${pkgs.coreutils}/bin/mv "$out.tmp" "$out"
+        ${pkgs.findutils}/bin/find /persist/backups/signal-cli \
+          -name 'signal-cli-*.tar.gz' -mtime +56 -delete
+      '';
+    };
+
+    systemd.timers.signal-cli-backup = {
+      description = "Weekly timer for signal-cli state tarball";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "Sun 04:00";
+        Persistent = true;
+        RandomizedDelaySec = "10m";
+      };
+    };
   };
 }
