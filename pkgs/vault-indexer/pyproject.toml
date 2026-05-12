@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vault-indexer"
+version = "0.1.0"
+description = "Periodic chunker + embedder that mirrors an Obsidian vault into agent_memory pgvector"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.15",
+  "httpx>=0.28",
+]
+
+[project.scripts]
+vault-indexer = "vault_indexer.main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vault_indexer*"]

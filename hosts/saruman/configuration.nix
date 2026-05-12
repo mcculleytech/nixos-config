@@ -40,6 +40,7 @@
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
   hermes-dashboard.enable = true;  # web UI behind traefik (auth + tailnet allowlist)
+  vault-indexer.enable = true;  # hourly: chunk vault → embed → agent_memory
 
 
   boot.loader.systemd-boot.enable = true;
