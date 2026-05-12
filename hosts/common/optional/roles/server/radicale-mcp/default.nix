@@ -39,6 +39,17 @@ in
         instance on the LAN (also reachable via tailnet from saruman).
       '';
     };
+
+    defaultTimezone = lib.mkOption {
+      type = lib.types.str;
+      default = config.time.timeZone or "UTC";
+      description = ''
+        IANA timezone name used when MCP callers send naive ISO datetimes
+        (no offset, no Z suffix). Defaults to the host's configured zone
+        so events created via the LLM render correctly in calendar apps.
+        Agents may override per-event via the `tz` parameter on event_create.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -98,6 +109,7 @@ in
         RADICALE_MCP_PORT = toString cfg.port;
         RADICALE_MCP_TOKENS_FILE = config.sops.secrets.radicale_mcp_tokens.path;
         RADICALE_MCP_RADICALE_URL = cfg.radicaleUrl;
+        RADICALE_MCP_DEFAULT_TZ = cfg.defaultTimezone;
       };
 
       serviceConfig = {

@@ -20,6 +20,7 @@ from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import uvicorn
 import vobject
@@ -43,6 +44,16 @@ class Config:
         self.radicale_url = os.environ["RADICALE_MCP_RADICALE_URL"]
         self.radicale_user = os.environ["RADICALE_MCP_RADICALE_USER"]
         self.radicale_password = os.environ["RADICALE_MCP_RADICALE_PASSWORD"]
+        # Default IANA timezone for parsing naive datetime inputs from agents.
+        # Calendar apps display events in *their* local time; storing naive
+        # times as UTC means a "3pm" event in Central appears at 10am Central.
+        # Defaulting to the host's local zone gives intuitive behavior; agents
+        # can override per-event via the `tz` parameter on event_create/update.
+        self.default_tz_name = os.environ.get("RADICALE_MCP_DEFAULT_TZ", "UTC")
+        try:
+            self.default_tz = ZoneInfo(self.default_tz_name)
+        except ZoneInfoNotFoundError as e:
+            raise SystemExit(f"unknown RADICALE_MCP_DEFAULT_TZ '{self.default_tz_name}': {e!s}")
 
     def resolve_bind_ip(self) -> str:
         if self.bind_ip != "auto":
@@ -133,16 +144,30 @@ def _find_addressbook(name: str | None):
     raise RuntimeError(f"addressbook '{name}' not found; available: {[a.name for a in abs_]}")
 
 
-def _parse_dt(s: str) -> datetime:
-    """Parse an ISO-8601 datetime. Naive strings get UTC.
-    Examples: '2026-05-12T15:00:00Z', '2026-05-12T15:00:00-05:00'.
+def _parse_dt(s: str, tz_name: str | None = None) -> datetime:
+    """Parse an ISO-8601 datetime. Naive strings get attached to `tz_name`
+    (or the configured RADICALE_MCP_DEFAULT_TZ if `tz_name` is None).
+
+    Examples:
+      '2026-05-12T15:00:00Z'         → explicit UTC
+      '2026-05-12T15:00:00-05:00'    → explicit -5h offset (fixed)
+      '2026-05-12T15:00:00'          → naive: attach configured default zone
+                                       (e.g. America/Chicago)
     """
     try:
         dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
     except ValueError as e:
         raise ValueError(f"bad ISO datetime '{s}': {e!s}") from e
     if dt.tzinfo is None:
-        dt = dt.replace(tzinfo=timezone.utc)
+        if tz_name is not None:
+            try:
+                tz = ZoneInfo(tz_name)
+            except ZoneInfoNotFoundError as e:
+                raise ValueError(f"unknown timezone '{tz_name}': {e!s}") from e
+        else:
+            assert CFG is not None
+            tz = CFG.default_tz
+        dt = dt.replace(tzinfo=tz)
     return dt
 
 
@@ -233,15 +258,24 @@ async def event_create(
     calendar: str | None = None,
     description: str | None = None,
     location: str | None = None,
+    tz: str | None = None,
 ) -> dict[str, Any]:
-    """Create a calendar event (VEVENT). `start`/`end` are ISO-8601
-    datetimes (e.g. '2026-05-12T15:00:00Z' or with a -05:00 offset).
+    """Create a calendar event (VEVENT).
 
-    `calendar` is the calendar display name; if omitted, uses the first
-    calendar on the account.
+    `start` / `end` are ISO-8601 datetimes. If they don't include a
+    timezone offset or 'Z' suffix, they're interpreted in the IANA zone
+    `tz` (e.g. 'America/Chicago'); if `tz` is also omitted, the server's
+    configured default zone is used (defaults to the saruman host zone).
+
+    Examples:
+      start='2026-05-12T15:00:00', tz='America/Chicago'  → 3pm Central
+      start='2026-05-12T15:00:00-05:00'                  → 3pm UTC-5
+      start='2026-05-12T20:00:00Z'                       → 8pm UTC
+
+    `calendar` is the display name; if omitted, uses the first calendar.
     """
     cal = _find_calendar(calendar)
-    dts, dte = _parse_dt(start), _parse_dt(end)
+    dts, dte = _parse_dt(start, tz), _parse_dt(end, tz)
     uid = str(uuid4())
     cal.save_event(
         dtstart=dts,
@@ -260,14 +294,18 @@ async def event_list(
     start: str | None = None,
     end: str | None = None,
     limit: int = 50,
+    tz: str | None = None,
 ) -> list[dict[str, Any]]:
-    """List events in a calendar within an optional [start, end] window."""
+    """List events in a calendar within an optional [start, end] window.
+    Window endpoints follow the same tz rules as event_create — naive
+    strings get the configured default zone.
+    """
     cal = _find_calendar(calendar)
     kwargs: dict[str, Any] = {}
     if start:
-        kwargs["start"] = _parse_dt(start)
+        kwargs["start"] = _parse_dt(start, tz)
     if end:
-        kwargs["end"] = _parse_dt(end)
+        kwargs["end"] = _parse_dt(end, tz)
     if kwargs:
         events = cal.search(event=True, **kwargs)
     else:
@@ -284,8 +322,11 @@ async def event_update(
     end: str | None = None,
     description: str | None = None,
     location: str | None = None,
+    tz: str | None = None,
 ) -> dict[str, Any]:
-    """Update fields on an existing event by UID."""
+    """Update fields on an existing event by UID. `start`/`end` follow the
+    same tz rules as event_create.
+    """
     cal = _find_calendar(calendar)
     event = cal.event_by_uid(uid)
     vc = event.vobject_instance
@@ -293,9 +334,9 @@ async def event_update(
     if summary is not None:
         ve.summary.value = summary
     if start is not None:
-        ve.dtstart.value = _parse_dt(start)
+        ve.dtstart.value = _parse_dt(start, tz)
     if end is not None:
-        ve.dtend.value = _parse_dt(end)
+        ve.dtend.value = _parse_dt(end, tz)
     if description is not None:
         if hasattr(ve, "description"):
             ve.description.value = description
@@ -328,13 +369,16 @@ async def task_create(
     due: str | None = None,
     description: str | None = None,
     priority: int | None = None,
+    tz: str | None = None,
 ) -> dict[str, Any]:
-    """Create a task (VTODO) in the given calendar."""
+    """Create a task (VTODO) in the given calendar. `due` follows the same
+    timezone rules as event_create.
+    """
     cal = _find_calendar(calendar)
     uid = str(uuid4())
     kwargs: dict[str, Any] = {"summary": summary, "uid": uid}
     if due is not None:
-        kwargs["due"] = _parse_dt(due)
+        kwargs["due"] = _parse_dt(due, tz)
     if description is not None:
         kwargs["description"] = description
     if priority is not None:
