@@ -25,7 +25,7 @@ in
 
     agentMemoryUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://100.104.242.112:4280/mcp";
+      default = "http://${config.lab.hosts.saruman.tailnetIp}:4280/mcp";
       description = "Streamable-HTTP URL for the agent-memory MCP server.";
     };
 

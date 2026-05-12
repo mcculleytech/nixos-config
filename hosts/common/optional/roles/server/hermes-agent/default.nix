@@ -2,6 +2,11 @@
 let
   cfg = config.hermes-agent;
   signalCfg = config.signal-cli;
+  # Tailnet IP of the host running both Hermes and the MCP servers. The MCPs
+  # bind tailnet-only (resolved at service start via `tailscale ip -4`), so
+  # even from saruman itself the path is tailnet0, not loopback. Pulled from
+  # hosts-data.nix so we have one place to update if the IP ever changes.
+  mcpHost = config.lab.hosts.saruman.tailnetIp;
 in
 {
   options.hermes-agent = {
@@ -24,36 +29,31 @@ in
 
     agentMemoryUrl = lib.mkOption {
       type = lib.types.str;
-      # NOTE: saruman's tailnet IP — agent-memory-mcp/vault-mcp bind only to
-      # the tailnet interface (resolved at service start via `tailscale ip -4`),
-      # not the LAN IP. From saruman itself, the tailnet IP routes back through
-      # tailscale0. Hardcoded here because we don't track tailnet IPs in
-      # hosts-data.nix yet; if you move Hermes off saruman, override this.
-      default = "http://100.104.242.112:4280/mcp";
+      default = "http://${mcpHost}:4280/mcp";
       description = "Streamable-HTTP URL for the agent-memory MCP server.";
     };
 
     vaultUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://100.104.242.112:4281/mcp";
+      default = "http://${mcpHost}:4281/mcp";
       description = "Streamable-HTTP URL for the vault MCP server.";
     };
 
     signalMcpUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://100.104.242.112:4282/mcp";
+      default = "http://${mcpHost}:4282/mcp";
       description = "Streamable-HTTP URL for the outbound Signal MCP (gated send).";
     };
 
     radicaleMcpUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://100.104.242.112:4283/mcp";
+      default = "http://${mcpHost}:4283/mcp";
       description = "Streamable-HTTP URL for the Radicale CalDAV/CardDAV MCP.";
     };
 
     minifluxMcpUrl = lib.mkOption {
       type = lib.types.str;
-      default = "http://100.104.242.112:4284/mcp";
+      default = "http://${mcpHost}:4284/mcp";
       description = "Streamable-HTTP URL for the Miniflux RSS MCP.";
     };
   };

@@ -450,7 +450,7 @@ in
 	   					# Saruman's tailnet IP — dashboard binds to tailnet only,
 	   					# atreides reaches via tailscale0 from its own tailnet IP.
 	   					servers = [
-	   						{url = "http://100.104.242.112:9119";}
+	   						{url = "http://${hosts.saruman.tailnetIp}:9119";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

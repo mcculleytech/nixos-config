@@ -4,7 +4,7 @@
   # NixOS managed hosts
   atreides = { ip = "10.1.8.129"; role = "server"; };
   phantom  = { ip = "10.1.8.121"; role = "server"; };
-  saruman  = { ip = "10.1.8.6";   role = "server"; };
+  saruman  = { ip = "10.1.8.6";   role = "server"; tailnetIp = "100.104.242.112"; };
   vader    = { ip = "10.2.1.245"; role = "server"; };
 
   # Infrastructure (not NixOS-managed)
