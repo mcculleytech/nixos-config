@@ -4,7 +4,8 @@ keys:
   - &vader_server age1mk4xprmdy8qljakkxt9p6pdwu8349ng72w9knkprnwy0mdfaeucqzs9dls
   - &phantom_server age1thr6ugzx83lz5r5gwazt05wgudx32xkgm76vdu8d98neg6sxu3xqh2nzkw
   - &atreides_server age15kz7au85c7dyneyz7qlyhxk2cr0m29us9uhprn9fspnc9pe5ga7sp5vq2v
-  - &saruman_server age1tj4m3qx3ws950d2hqzqs67sdyyascvzypv5222ng0vg35mwr45nswyntd8 
+  - &saruman_server age1tj4m3qx3ws950d2hqzqs67sdyyascvzypv5222ng0vg35mwr45nswyntd8
+  - &faramir_alex age15a2ekkdkmasggzcaqhsawtparkzczv2md55mr5e5sqy4guc3kykqwpp9fy
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -15,6 +16,7 @@ creation_rules:
         - *phantom_server
         - *atreides_server
         - *saruman_server
+        - *faramir_alex
   - path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
@@ -44,3 +46,9 @@ creation_rules:
         - *aeneas_alex
         - *saruman_server
         - *aeneas_workstation
+  - path_regex: hosts/faramir/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+        - *aeneas_alex
+        - *saruman_server
+        - *faramir_alex
