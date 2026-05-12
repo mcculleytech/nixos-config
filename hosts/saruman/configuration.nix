@@ -8,6 +8,9 @@
       ../common/optional/roles/server/hermes-agent  # saruman-only — depends on
                                                     # upstream services.hermes-agent
                                                     # option from the flake input
+      ../common/optional/roles/server/hermes-dashboard  # saruman-only — pulls
+                                                        # the upstream hermes-agent
+                                                        # package out of the input
       ../common/optional/roles/workstation
       ../../disko/saruman.nix
     ];
@@ -36,6 +39,7 @@
   signal-mcp.enable = true;    # outbound Signal MCP with approval gate
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
+  hermes-dashboard.enable = true;  # web UI behind traefik (auth + tailnet allowlist)
 
 
   boot.loader.systemd-boot.enable = true;

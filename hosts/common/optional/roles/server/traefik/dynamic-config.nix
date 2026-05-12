@@ -248,6 +248,20 @@ in
 	   				};
 	   				middlewares = [ "auth" "default-headers" "https-redirectscheme" ];
 	   			};
+	   			hermes-dashboard = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`hermes.${tr_secrets.traefik.homelab_domain}`)";
+	   				service = "hermes-dashboard";
+	   				tls = {
+	   					certResolver = "cloudflare";
+	   				};
+	   				# Three layers of access control before this reaches the
+	   				# unauthenticated dashboard backend:
+	   				#   hermes-tailnet-only — source IP must be in 100.64.0.0/10
+	   				#   auth                — htpasswd basic auth (shared with other secured services)
+	   				#   default-headers     — security headers (frame-deny, XSS, CSP, etc.)
+	   				middlewares = [ "hermes-tailnet-only" "auth" "default-headers" "https-redirectscheme" ];
+	   			};
 	   		};
 	   		services = {
 	   			# begin Services
@@ -428,6 +442,16 @@ in
 	   					passHostHeader = "true";
 	   				};
 	   			};
+	   			hermes-dashboard = {
+	   				loadBalancer = {
+	   					# Saruman's tailnet IP — dashboard binds to tailnet only,
+	   					# atreides reaches via tailscale0 from its own tailnet IP.
+	   					servers = [
+	   						{url = "http://100.104.242.112:9119";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
 	   		};
 	   		 middlewares = {
 	   			default-headers = {
@@ -475,6 +499,17 @@ in
 	   						"10.0.0.0/8"
 	   						"192.168.0.0/16"
 	   						"172.16.0.0/12"
+	   					];
+	   				};
+	   			};
+	   			# Tailnet-only: only source IPs in Tailscale's CGNAT range can
+	   			# reach the gated router. Combined with basicAuth this gives
+	   			# two-layer access control before the unauthenticated Hermes
+	   			# dashboard backend ever sees the request.
+	   			hermes-tailnet-only = {
+	   				ipWhiteList = {
+	   					sourceRange = [
+	   						"100.64.0.0/10"
 	   					];
 	   				};
 	   			};
