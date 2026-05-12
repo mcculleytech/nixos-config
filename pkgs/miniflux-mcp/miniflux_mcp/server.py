@@ -13,7 +13,13 @@ import os
 import subprocess
 import sys
 from contextlib import asynccontextmanager
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from typing import Any
+
+try:
+    __version__ = _pkg_version("miniflux-mcp")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 import httpx
 import uvicorn
@@ -200,6 +206,12 @@ async def feed_refresh(feed_id: int) -> dict[str, Any]:
     return {"feed_id": feed_id, "refreshed": True}
 
 
+# ── /version (bearer-required) ──────────────────────────────────────────────
+
+async def version_route(_request: Request) -> JSONResponse:
+    return JSONResponse({"name": "miniflux-mcp", "version": __version__})
+
+
 # ── /health (no auth) ───────────────────────────────────────────────────────
 
 async def health(_request: Request) -> JSONResponse:
@@ -237,6 +249,7 @@ def build_app() -> Starlette:
         debug=False,
         routes=[
             Route("/health", health, methods=["GET"]),
+            Route("/version", version_route, methods=["GET"]),
             Mount("/", app=mcp_app),
         ],
         middleware=[Middleware(BearerAuthMiddleware)],
@@ -245,6 +258,9 @@ def build_app() -> Starlette:
 
 
 def main() -> None:
+    if "--version" in sys.argv[1:]:
+        print(f"miniflux-mcp {__version__}")
+        return
     logging.basicConfig(
         level=os.environ.get("MINIFLUX_MCP_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -254,8 +270,8 @@ def main() -> None:
     TOKENS_BY_HEX = load_tokens(CFG.tokens_file)
     bind_ip = CFG.resolve_bind_ip()
     log.info(
-        "starting miniflux-mcp on %s:%d (miniflux=%s) with %d client tokens",
-        bind_ip, CFG.port, CFG.miniflux_url, len(TOKENS_BY_HEX),
+        "starting miniflux-mcp version %s on %s:%d (miniflux=%s) with %d client tokens",
+        __version__, bind_ip, CFG.port, CFG.miniflux_url, len(TOKENS_BY_HEX),
     )
     uvicorn.run(build_app(), host=bind_ip, port=CFG.port, log_level="info")
 

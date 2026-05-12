@@ -23,8 +23,14 @@ import subprocess
 import sys
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from pathlib import Path
 from typing import Any
+
+try:
+    __version__ = _pkg_version("signal-mcp")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 import httpx
 import uvicorn
@@ -300,6 +306,12 @@ async def signal_account() -> dict[str, Any]:
     return {"account": CFG.signal_account, "identities": result}
 
 
+# ── /version (bearer-required) ──────────────────────────────────────────────
+
+async def version_route(_request: Request) -> JSONResponse:
+    return JSONResponse({"name": "signal-mcp", "version": __version__})
+
+
 # ── /health (no auth) ───────────────────────────────────────────────────────
 
 async def health(_request: Request) -> JSONResponse:
@@ -348,6 +360,7 @@ def build_app() -> Starlette:
         debug=False,
         routes=[
             Route("/health", health, methods=["GET"]),
+            Route("/version", version_route, methods=["GET"]),
             Mount("/", app=mcp_app),
         ],
         middleware=[Middleware(BearerAuthMiddleware)],
@@ -356,6 +369,9 @@ def build_app() -> Starlette:
 
 
 def main() -> None:
+    if "--version" in sys.argv[1:]:
+        print(f"signal-mcp {__version__}")
+        return
     logging.basicConfig(
         level=os.environ.get("SIGNAL_MCP_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -365,8 +381,8 @@ def main() -> None:
     TOKENS_BY_HEX = load_tokens(CFG.tokens_file)
     bind_ip = CFG.resolve_bind_ip()
     log.info(
-        "starting signal-mcp on %s:%d (account=%s db=%s) with %d client tokens",
-        bind_ip, CFG.port, CFG.signal_account, CFG.db_path, len(TOKENS_BY_HEX),
+        "starting signal-mcp version %s on %s:%d (account=%s db=%s) with %d client tokens",
+        __version__, bind_ip, CFG.port, CFG.signal_account, CFG.db_path, len(TOKENS_BY_HEX),
     )
     uvicorn.run(build_app(), host=bind_ip, port=CFG.port, log_level="info")
 

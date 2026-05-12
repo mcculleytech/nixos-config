@@ -26,8 +26,14 @@ import os
 import re
 import sys
 from contextlib import asynccontextmanager
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from pathlib import Path
 from typing import Any
+
+try:
+    __version__ = _pkg_version("vault-indexer")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 import httpx
 from mcp import ClientSession
@@ -243,6 +249,9 @@ async def reconcile(vault_root: Path, am_url: str, bearer: str) -> None:
 
 
 def main() -> None:
+    if "--version" in sys.argv[1:]:
+        print(f"vault-indexer {__version__}")
+        return
     logging.basicConfig(
         level=os.environ.get("VAULT_INDEXER_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -254,7 +263,7 @@ def main() -> None:
         raise SystemExit(f"vault root not a directory: {vault_root}")
     with open(token_file) as f:
         bearer = f.read().strip()
-    log.info("vault-indexer starting (vault=%s am=%s)", vault_root, am_url)
+    log.info("vault-indexer version %s starting (vault=%s am=%s)", __version__, vault_root, am_url)
     asyncio.run(reconcile(vault_root, am_url, bearer))
 
 

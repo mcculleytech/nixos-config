@@ -16,8 +16,14 @@ import os
 import subprocess
 import sys
 from contextlib import asynccontextmanager
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from typing import Any
 from uuid import UUID
+
+try:
+    __version__ = _pkg_version("agent-memory-mcp")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 import httpx
 import psycopg
@@ -425,6 +431,17 @@ async def project_create(name: str, description: str | None = None) -> dict[str,
     }
 
 
+# ── /version route (bearer-required, via the same auth middleware) ───────────
+#
+# Returns the build version baked in at Nix-derivation time. Deliberately
+# gated by the same bearer middleware as every other path — avoids exposing
+# the exact commit SHA unauthenticated, which would aid targeted vulnerability
+# research.
+
+async def version_route(_request: Request) -> JSONResponse:
+    return JSONResponse({"name": "agent-memory-mcp", "version": __version__})
+
+
 # ── /health route (no auth) ───────────────────────────────────────────────────
 
 async def health(_request: Request) -> JSONResponse:
@@ -457,11 +474,12 @@ async def health(_request: Request) -> JSONResponse:
 def build_app() -> Starlette:
     """Compose the MCP streamable-http app with health route and auth middleware."""
     mcp_app = mcp.streamable_http_app()
-    # Mount MCP under the root and add the /health route alongside it.
+    # Mount MCP under the root and add the /health + /version routes alongside.
     return Starlette(
         debug=False,
         routes=[
             Route("/health", health, methods=["GET"]),
+            Route("/version", version_route, methods=["GET"]),
             Mount("/", app=mcp_app),
         ],
         middleware=[Middleware(BearerAuthMiddleware)],
@@ -470,6 +488,11 @@ def build_app() -> Starlette:
 
 
 def main() -> None:
+    # Handle --version before any other initialization so it works even when
+    # config is broken (missing tokens file, DB down, etc.).
+    if "--version" in sys.argv[1:]:
+        print(f"agent-memory-mcp {__version__}")
+        return
     logging.basicConfig(
         level=os.environ.get("AGENT_MEMORY_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -479,8 +502,8 @@ def main() -> None:
     TOKENS_BY_HEX = load_tokens(CFG.tokens_file)
     bind_ip = CFG.resolve_bind_ip()
     log.info(
-        "starting agent-memory-mcp on %s:%d with %d client tokens",
-        bind_ip, CFG.port, len(TOKENS_BY_HEX),
+        "starting agent-memory-mcp version %s on %s:%d with %d client tokens",
+        __version__, bind_ip, CFG.port, len(TOKENS_BY_HEX),
     )
     uvicorn.run(build_app(), host=bind_ip, port=CFG.port, log_level="info")
 

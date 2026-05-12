@@ -1,13 +1,22 @@
 { lib
 , python3
+, version ? "0.1.0"
 }:
 
 python3.pkgs.buildPythonApplication {
   pname = "agent-memory-mcp";
-  version = "0.1.0";
+  inherit version;
   pyproject = true;
 
   src = ./.;
+
+  # Substitute the placeholder in pyproject.toml with the version threaded
+  # through from the flake. Bakes the version into the installed package's
+  # metadata so importlib.metadata.version() returns it at runtime.
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
+  '';
 
   build-system = [ python3.pkgs.setuptools ];
 

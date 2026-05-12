@@ -18,8 +18,14 @@ import re
 import subprocess
 import sys
 from contextlib import asynccontextmanager
+from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from pathlib import Path
 from typing import Any
+
+try:
+    __version__ = _pkg_version("vault-mcp")
+except PackageNotFoundError:
+    __version__ = "0.0.0-dev"
 
 import uvicorn
 from mcp.server.fastmcp import FastMCP
@@ -306,6 +312,12 @@ async def vault_metadata(path: str) -> dict[str, Any]:
     }
 
 
+# ── /version route (bearer-required) ─────────────────────────────────────────
+
+async def version_route(_request: Request) -> JSONResponse:
+    return JSONResponse({"name": "vault-mcp", "version": __version__})
+
+
 # ── /health route (no auth) ──────────────────────────────────────────────────
 
 async def health(_request: Request) -> JSONResponse:
@@ -345,6 +357,7 @@ def build_app() -> Starlette:
         debug=False,
         routes=[
             Route("/health", health, methods=["GET"]),
+            Route("/version", version_route, methods=["GET"]),
             Mount("/", app=mcp_app),
         ],
         middleware=[Middleware(BearerAuthMiddleware)],
@@ -353,6 +366,9 @@ def build_app() -> Starlette:
 
 
 def main() -> None:
+    if "--version" in sys.argv[1:]:
+        print(f"vault-mcp {__version__}")
+        return
     logging.basicConfig(
         level=os.environ.get("VAULT_MCP_LOG_LEVEL", "INFO"),
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -362,8 +378,8 @@ def main() -> None:
     TOKENS_BY_HEX = load_tokens(CFG.tokens_file)
     bind_ip = CFG.resolve_bind_ip()
     log.info(
-        "starting vault-mcp on %s:%d (vault=%s) with %d client tokens",
-        bind_ip, CFG.port, CFG.vault_root, len(TOKENS_BY_HEX),
+        "starting vault-mcp version %s on %s:%d (vault=%s) with %d client tokens",
+        __version__, bind_ip, CFG.port, CFG.vault_root, len(TOKENS_BY_HEX),
     )
     uvicorn.run(build_app(), host=bind_ip, port=CFG.port, log_level="info")
 

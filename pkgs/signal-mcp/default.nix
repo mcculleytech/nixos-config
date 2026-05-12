@@ -1,13 +1,19 @@
 { lib
 , python3
+, version ? "0.1.0"
 }:
 
 python3.pkgs.buildPythonApplication {
   pname = "signal-mcp";
-  version = "0.1.0";
+  inherit version;
   pyproject = true;
 
   src = ./.;
+
+  postPatch = ''
+    substituteInPlace pyproject.toml \
+      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
+  '';
 
   build-system = [ python3.pkgs.setuptools ];
 
