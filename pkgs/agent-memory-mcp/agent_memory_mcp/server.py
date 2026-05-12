@@ -146,7 +146,11 @@ async def embed(text: str) -> list[float]:
             raise RuntimeError(
                 f"Ollama returned unexpected embedding shape: len={len(vec) if isinstance(vec, list) else 'n/a'}; expected {EMBED_DIM}"
             )
-        return vec
+        # Coerce every element to float. Ollama returns JSON numbers; json.loads
+        # parses integer-valued elements (0, 1, -2) as Python int rather than
+        # float, and psycopg's pgvector adapter rejects mixed-type lists with
+        # "cannot dump lists of mixed types; got: float, int".
+        return [float(x) for x in vec]
 
 
 # ── project resolution ────────────────────────────────────────────────────────
