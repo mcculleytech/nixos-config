@@ -32,6 +32,7 @@
     ./signal-cli
     ./signal-mcp
     ./radicale-mcp
+    ./miniflux-mcp
     # ./hermes-agent  — imported on saruman only (hosts/saruman/configuration.nix)
     # because it sets services.hermes-agent.* which only exists where the
     # upstream NousResearch/hermes-agent NixOS module is loaded.
