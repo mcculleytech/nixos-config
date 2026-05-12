@@ -68,6 +68,9 @@ in
       "d /var/lib/signal-mcp 0750 ${cfg.user} ${cfg.user} -"
     ];
 
+    # `signal-mcp --version` on PATH for operator convenience.
+    environment.systemPackages = [ pkgs.signal-mcp ];
+
     systemd.services.signal-mcp = {
       description = "Signal outbound MCP gateway (with approval gate)";
       after = [

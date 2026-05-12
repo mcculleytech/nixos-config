@@ -45,6 +45,9 @@ in
       mode = "0400";
     };
 
+    # `vault-indexer --version` on PATH for operator convenience.
+    environment.systemPackages = [ pkgs.vault-indexer ];
+
     systemd.services.vault-indexer = {
       description = "Index vault chunks into agent_memory";
       after = [

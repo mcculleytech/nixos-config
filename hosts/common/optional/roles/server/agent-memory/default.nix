@@ -110,6 +110,11 @@ in
       "d /persist/backups/postgres/agent_memory 0700 postgres postgres -"
     ];
 
+    # Expose the binary on system PATH so `agent-memory-mcp --version` works
+    # from any shell on the host (otherwise the only paths are the per-unit
+    # store path or `journalctl -u agent-memory-mcp`).
+    environment.systemPackages = [ pkgs.agent-memory-mcp ];
+
     # ─── MCP gateway systemd unit ──────────────────────────────────────────
     systemd.services.agent-memory-mcp = {
       description = "Agent memory MCP gateway (pgvector + Ollama)";

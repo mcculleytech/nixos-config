@@ -100,6 +100,9 @@ in
       "d /var/lib/radicale-mcp 0750 ${cfg.user} ${cfg.user} -"
     ];
 
+    # `radicale-mcp --version` on PATH for operator convenience.
+    environment.systemPackages = [ pkgs.radicale-mcp ];
+
     systemd.services.radicale-mcp = {
       description = "Radicale CalDAV/CardDAV MCP gateway";
       after = [ "network-online.target" "tailscaled.service" ];

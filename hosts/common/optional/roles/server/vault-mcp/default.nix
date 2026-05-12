@@ -52,6 +52,9 @@ in
       restartUnits = [ "vault-mcp.service" ];
     };
 
+    # `vault-mcp --version` on PATH for operator convenience.
+    environment.systemPackages = [ pkgs.vault-mcp ];
+
     systemd.services.vault-mcp = {
       description = "Vault MCP gateway (Obsidian vault on disk)";
       after = [ "network-online.target" "tailscaled.service" ];

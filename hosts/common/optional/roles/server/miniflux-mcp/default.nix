@@ -85,6 +85,9 @@ in
       "d /var/lib/miniflux-mcp 0750 ${cfg.user} ${cfg.user} -"
     ];
 
+    # `miniflux-mcp --version` on PATH for operator convenience.
+    environment.systemPackages = [ pkgs.miniflux-mcp ];
+
     systemd.services.miniflux-mcp = {
       description = "Miniflux RSS reader MCP gateway";
       after = [ "network-online.target" "tailscaled.service" ];
