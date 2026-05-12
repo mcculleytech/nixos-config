@@ -55,6 +55,12 @@
       ripgrep
       fd
       bat
+      # Secrets toolchain — lets alex@faramir edit sops files and unlock the
+      # git-crypt symmetric key on this repo. age is sops' encryption backend
+      # and is needed for `age-keygen` if a fresh key is ever required.
+      sops
+      age
+      git-crypt
     ] ++ lib.optional (config.lab.ironclaw.enable && !config.lab.ironclaw.fromBrew) pkgs.ironclaw
       ++ lib.optional config.lab.signalChannel.enable pkgs.signal-cli;
 
