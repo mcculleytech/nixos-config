@@ -104,10 +104,12 @@ in
 
     systemd.tmpfiles.rules = [
       "d /var/lib/agent-memory-mcp 0750 ${dbUser} ${dbUser} -"
-      # Backup landing zone — postgres-only so pg_dump output isn't world-readable.
+      # Local backup landing zone — root-owned so the dump unit (which now
+      # runs as root for symmetry with the immich/NAS pattern) can write
+      # directly. World can't read; only operator (root) restores from here.
       "d /persist/backups 0755 root root -"
-      "d /persist/backups/postgres 0700 postgres postgres -"
-      "d /persist/backups/postgres/agent_memory 0700 postgres postgres -"
+      "d /persist/backups/postgres 0700 root root -"
+      "d /persist/backups/postgres/agent_memory 0700 root root -"
     ];
 
     # Expose the binary on system PATH so `agent-memory-mcp --version` works
@@ -158,37 +160,58 @@ in
     # Open the gateway port on the tailnet interface only — never on LAN/WAN.
     networking.firewall.interfaces.${cfg.tailnetInterface}.allowedTCPPorts = [ cfg.port ];
 
-    # ─── Daily pg_dump of agent_memory ─────────────────────────────────────
-    # Custom format (-Fc): smaller than plain SQL, restorable in parallel via
-    # pg_restore --jobs, and pg_dump compresses inline. 30-day retention is
-    # enforced inline; off-host replication (NAS / faramir) is deliberately
-    # not wired here — single-host snapshots cover DB corruption and
-    # accidental deletes, not full saruman loss. Separate decision.
+    # ─── Daily pg_dump of agent_memory: local + NAS ────────────────────────
+    # Two-destination backup: local /persist for fast restore on accidental
+    # drops or corruption (no network dependency); NAS mirror for full-saruman-
+    # loss recovery. Both share the same pg_dump output — single dump operation,
+    # two writes.
+    #
+    # Unit runs as root so NFS maproot (UID 0 → 34) translates the NAS write
+    # cleanly. pg_dump drops to postgres via runuser for peer-auth, writing
+    # to PrivateTmp; from there the file is hard-linked to /persist and copied
+    # to NAS (when enabled).
     systemd.services.agent-memory-backup = {
-      description = "Daily pg_dump of agent_memory database";
+      description = "Daily pg_dump of agent_memory (local + NAS)";
       after = [ "postgresql.service" "agent-memory-db-setup.service" ];
       requires = [ "postgresql.service" ];
+      unitConfig = lib.mkIf config.lab.nas-backups.enable {
+        RequiresMountsFor = [ config.lab.nas-backups.mountPath ];
+      };
+      path = with pkgs; [ util-linux coreutils findutils config.services.postgresql.package ];
       serviceConfig = {
         Type = "oneshot";
-        User = "postgres";
-        Group = "postgres";
+        User = "root";
+        Group = "root";
         ProtectSystem = "strict";
         ProtectHome = true;
         PrivateTmp = true;
         NoNewPrivileges = true;
-        ReadWritePaths = [ "/persist/backups/postgres/agent_memory" ];
+        ReadWritePaths = [ "/persist/backups/postgres/agent_memory" ]
+          ++ lib.optional config.lab.nas-backups.enable config.lab.nas-backups.mountPath;
       };
       script = ''
         set -eu
-        ts=$(${pkgs.coreutils}/bin/date -u +%Y-%m-%d)
-        out=/persist/backups/postgres/agent_memory/agent_memory-$ts.dump
-        ${config.services.postgresql.package}/bin/pg_dump \
-          --format=custom \
-          --file="$out.tmp" \
-          ${dbName}
-        ${pkgs.coreutils}/bin/mv "$out.tmp" "$out"
-        ${pkgs.findutils}/bin/find /persist/backups/postgres/agent_memory \
-          -name 'agent_memory-*.dump' -mtime +30 -delete
+        ts=$(date -u +%Y-%m-%d)
+        local_dst=/persist/backups/postgres/agent_memory
+
+        # pg_dump as postgres (peer-auth) into PrivateTmp.
+        tmpfile=/tmp/agent_memory-$ts.dump.tmp
+        runuser -u postgres -- pg_dump --format=custom --file="$tmpfile" ${dbName}
+
+        # Local destination — primary, always written.
+        cp -f "$tmpfile" "$local_dst/agent_memory-$ts.dump"
+        find "$local_dst" -name 'agent_memory-*.dump' -mtime +30 -delete
+
+        ${lib.optionalString config.lab.nas-backups.enable ''
+          # NAS mirror — NFS maproot translates UID 0 → backup on write.
+          nas_dst=${config.lab.nas-backups.mountPath}/saruman/agent-memory
+          install -d -m 0750 -o backup -g backup "$nas_dst"
+          cp -f "$tmpfile" "$nas_dst/agent_memory-$ts.dump"
+          chown backup:backup "$nas_dst/agent_memory-$ts.dump" 2>/dev/null || true
+          find "$nas_dst" -name 'agent_memory-*.dump' -mtime +30 -delete
+        ''}
+
+        rm -f "$tmpfile"
       '';
     };
 

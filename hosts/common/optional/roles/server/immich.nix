@@ -67,21 +67,27 @@
       (commonAutoMountOptions // { where = "/mnt/nfs-photos"; })
     ];
 
-    # ─── Daily pg_dump of immich → NAS backup share ────────────────────────
-    # Photo/video blobs live on TrueNAS already (via the NFS mount at
-    # /var/lib/immich/media), so this backup only covers the postgres
-    # database — albums, faces, tags, sharing, EXIF index. Lose this and
-    # the blobs would survive but be an undifferentiated heap.
+    # tmpfiles for the local backup landing dir.
+    systemd.tmpfiles.rules = [
+      "d /persist/backups 0755 root root -"
+      "d /persist/backups/postgres 0700 root root -"
+      "d /persist/backups/postgres/immich 0700 root root -"
+    ];
+
+    # ─── Daily pg_dump of immich: local + NAS ──────────────────────────────
+    # Two-destination backup. Photo/video blobs live on TrueNAS already (via
+    # the NFS mount at /var/lib/immich/media), so this dump only covers the
+    # postgres database — albums, faces, tags, sharing, EXIF index. Lose
+    # this and the blobs survive but become an undifferentiated heap.
     #
-    # Unit runs as root so NFS maproot=backup (UID 0 → 34) translates writes
-    # cleanly into the NAS-side `backup` user's ownership. pg_dump itself
-    # drops to postgres via runuser for peer-auth; that intermediate file
-    # lives in PrivateTmp so it can't leak.
-    systemd.services.immich-backup = lib.mkIf config.lab.nas-backups.enable {
-      description = "Daily pg_dump of immich → NAS";
+    # Local /persist for fast restore; NAS for full-saruman-loss recovery.
+    # Unit runs as root for the NAS write (NFS maproot UID 0 → 34); pg_dump
+    # drops to postgres via runuser for peer-auth via PrivateTmp.
+    systemd.services.immich-backup = {
+      description = "Daily pg_dump of immich (local + NAS)";
       after = [ "postgresql.service" ];
       requires = [ "postgresql.service" ];
-      unitConfig = {
+      unitConfig = lib.mkIf config.lab.nas-backups.enable {
         RequiresMountsFor = [ config.lab.nas-backups.mountPath ];
       };
       serviceConfig = {
@@ -92,31 +98,37 @@
         ProtectHome = true;
         PrivateTmp = true;
         NoNewPrivileges = true;
-        ReadWritePaths = [ config.lab.nas-backups.mountPath ];
+        ReadWritePaths = [ "/persist/backups/postgres/immich" ]
+          ++ lib.optional config.lab.nas-backups.enable config.lab.nas-backups.mountPath;
       };
       path = with pkgs; [ util-linux coreutils findutils config.services.postgresql.package ];
       script = ''
         set -eu
         ts=$(date -u +%Y-%m-%d)
-        dst=${config.lab.nas-backups.mountPath}/saruman/immich
-        install -d -m 0750 -o backup -g backup "$dst"
+        local_dst=/persist/backups/postgres/immich
 
-        # pg_dump runs as postgres for peer-auth, writes into PrivateTmp.
+        # pg_dump as postgres (peer-auth) into PrivateTmp.
         tmpfile=/tmp/immich-pg-$ts.dump.tmp
         runuser -u postgres -- pg_dump --format=custom --file="$tmpfile" immich
 
-        # Move to NAS as root — NFS server maps UID 0 → backup (UID 34) via
-        # the export's maproot setting, so the file lands with correct
-        # NAS-side ownership. Explicit chown is belt-and-suspenders.
-        mv "$tmpfile" "$dst/immich-pg-$ts.dump"
-        chown backup:backup "$dst/immich-pg-$ts.dump"
+        # Local destination — primary, always written.
+        cp -f "$tmpfile" "$local_dst/immich-pg-$ts.dump"
+        find "$local_dst" -name 'immich-pg-*.dump' -mtime +30 -delete
 
-        # Retention.
-        find "$dst" -name 'immich-pg-*.dump' -mtime +30 -delete
+        ${lib.optionalString config.lab.nas-backups.enable ''
+          # NAS mirror — NFS maproot translates UID 0 → backup on write.
+          nas_dst=${config.lab.nas-backups.mountPath}/saruman/immich
+          install -d -m 0750 -o backup -g backup "$nas_dst"
+          cp -f "$tmpfile" "$nas_dst/immich-pg-$ts.dump"
+          chown backup:backup "$nas_dst/immich-pg-$ts.dump" 2>/dev/null || true
+          find "$nas_dst" -name 'immich-pg-*.dump' -mtime +30 -delete
+        ''}
+
+        rm -f "$tmpfile"
       '';
     };
 
-    systemd.timers.immich-backup = lib.mkIf config.lab.nas-backups.enable {
+    systemd.timers.immich-backup = {
       description = "Daily timer for immich pg_dump → NAS";
       wantedBy = [ "timers.target" ];
       timerConfig = {

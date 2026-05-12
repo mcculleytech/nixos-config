@@ -34,6 +34,7 @@
   tailscale-server.enable = true;
   agent-memory.enable = true;
   lab.nas-backups.enable = true;  # NFS-mounted /mnt/nas-backups for off-host backups
+  obsidian-backup.enable = true;   # daily rsync of /home/alex/obsidian → NAS
   obsidian-headless.enable = true;
   vault-mcp.enable = true;
   hermes-agent.enable = true;  # transitively enables signal-cli
