@@ -45,6 +45,12 @@ in
       default = "http://100.104.242.112:4283/mcp";
       description = "Streamable-HTTP URL for the Radicale CalDAV/CardDAV MCP.";
     };
+
+    minifluxMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://100.104.242.112:4284/mcp";
+      description = "Streamable-HTTP URL for the Miniflux RSS MCP.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -60,6 +66,7 @@ in
       future_hermes_vault = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_signal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_radicale = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      future_hermes_miniflux = { owner = "hermes"; group = "hermes"; mode = "0400"; };
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
@@ -77,6 +84,7 @@ in
         HERMES_VAULT_TOKEN=${config.sops.placeholder.future_hermes_vault}
         HERMES_SIGNAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_signal}
         HERMES_RADICALE_MCP_TOKEN=${config.sops.placeholder.future_hermes_radicale}
+        HERMES_MINIFLUX_MCP_TOKEN=${config.sops.placeholder.future_hermes_miniflux}
       '';
     };
 
@@ -115,6 +123,10 @@ in
         radicale = {
           url = cfg.radicaleMcpUrl;
           headers.Authorization = "Bearer \${HERMES_RADICALE_MCP_TOKEN}";
+        };
+        miniflux = {
+          url = cfg.minifluxMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_MINIFLUX_MCP_TOKEN}";
         };
       };
     };

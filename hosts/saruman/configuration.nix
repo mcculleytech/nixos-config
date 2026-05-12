@@ -35,6 +35,7 @@
   hermes-agent.enable = true;  # transitively enables signal-cli
   signal-mcp.enable = true;    # outbound Signal MCP with approval gate
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
+  miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
 
 
   boot.loader.systemd-boot.enable = true;
