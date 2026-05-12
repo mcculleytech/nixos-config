@@ -33,6 +33,18 @@ in
       default = "http://100.104.242.112:4281/mcp";
       description = "Streamable-HTTP URL for the vault MCP server.";
     };
+
+    signalMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://100.104.242.112:4282/mcp";
+      description = "Streamable-HTTP URL for the outbound Signal MCP (gated send).";
+    };
+
+    radicaleMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://100.104.242.112:4283/mcp";
+      description = "Streamable-HTTP URL for the Radicale CalDAV/CardDAV MCP.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -46,6 +58,8 @@ in
       hermes_allowlist = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_agent_memory = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_vault = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      future_hermes_signal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      future_hermes_radicale = { owner = "hermes"; group = "hermes"; mode = "0400"; };
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
@@ -61,6 +75,8 @@ in
         SIGNAL_ALLOWED_USERS=${config.sops.placeholder.hermes_allowlist}
         HERMES_AGENT_MEMORY_TOKEN=${config.sops.placeholder.future_hermes_agent_memory}
         HERMES_VAULT_TOKEN=${config.sops.placeholder.future_hermes_vault}
+        HERMES_SIGNAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_signal}
+        HERMES_RADICALE_MCP_TOKEN=${config.sops.placeholder.future_hermes_radicale}
       '';
     };
 
@@ -91,6 +107,14 @@ in
         vault = {
           url = cfg.vaultUrl;
           headers.Authorization = "Bearer \${HERMES_VAULT_TOKEN}";
+        };
+        signal = {
+          url = cfg.signalMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_SIGNAL_MCP_TOKEN}";
+        };
+        radicale = {
+          url = cfg.radicaleMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_RADICALE_MCP_TOKEN}";
         };
       };
     };
