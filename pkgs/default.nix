@@ -7,5 +7,7 @@
   signal-mcp = pkgs.callPackage ./signal-mcp { python3 = pkgs.python3; inherit version; };
   radicale-mcp = pkgs.callPackage ./radicale-mcp { python3 = pkgs.python3; inherit version; };
   miniflux-mcp = pkgs.callPackage ./miniflux-mcp { python3 = pkgs.python3; inherit version; };
+  gcal-mcp = pkgs.callPackage ./gcal-mcp { python3 = pkgs.python3; inherit version; };
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
+  escalator-mcp = pkgs.callPackage ./escalator-mcp { python3 = pkgs.python3; inherit version; };
 }

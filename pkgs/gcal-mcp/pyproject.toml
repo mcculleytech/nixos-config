@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gcal-mcp"
+version = "0.1.0"
+description = "MCP server fronting Google Calendar via existing google-workspace OAuth credentials"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.15",
+  "starlette>=0.47",
+  "uvicorn>=0.35",
+  "google-api-python-client>=2.130",
+  "google-auth>=2.30",
+  "google-auth-oauthlib>=1.2",
+]
+
+[project.scripts]
+gcal-mcp = "gcal_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["gcal_mcp*"]

@@ -33,6 +33,8 @@
     ./signal-mcp
     ./radicale-mcp
     ./miniflux-mcp
+    ./gcal-mcp
+    ./escalator-mcp
     ./vault-indexer
     ./nas-backups
     ./obsidian-backup

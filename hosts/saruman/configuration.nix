@@ -38,9 +38,12 @@
   obsidian-headless.enable = true;
   vault-mcp.enable = true;
   hermes-agent.enable = true;  # transitively enables signal-cli
+  hermes-agent.morningBriefingEnable = false;  # disabled — agentic briefing was too expensive + unreliable for the value
   signal-mcp.enable = true;    # outbound Signal MCP with approval gate
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
+  gcal-mcp.enable = true;      # Google Calendar MCP (reuses hermes's google-workspace OAuth)
+  escalator-mcp.enable = true; # one-shot consult_expert tool (Anthropic Opus via OR)
   hermes-dashboard.enable = true;  # web UI behind traefik (auth + tailnet allowlist)
   vault-indexer.enable = true;  # hourly: chunk vault → embed → agent_memory
 
