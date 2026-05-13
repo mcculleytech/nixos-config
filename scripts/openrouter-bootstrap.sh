@@ -15,6 +15,10 @@
 #   disable <hash>                 Shortcut for: update <hash> disabled=true.
 #   enable <hash>                  Shortcut for: update <hash> disabled=false.
 #   delete <hash>                  Revoke a sub-key permanently.
+#   balance                        Account-wide credit balance + total usage.
+#   cost [date]                    Per-model token + cost breakdown for the
+#                                  given date (default: today). Date in
+#                                  YYYY-MM-DD. Sorted by descending cost.
 #   policy-checklist               Print the UI-only steps (BYOK Gemini
 #                                  registration, account-wide privacy
 #                                  defaults) the API can't perform.
@@ -232,6 +236,50 @@ EOF
   printf '%s\n' "$runtime_key"
 }
 
+cmd_balance() {
+  require_key
+  local r
+  r="$(or_get /credits)"
+  # OR returns { data: { total_credits, total_usage } } — remaining is the
+  # difference. Some versions also expose total_remaining directly; we
+  # compute defensively.
+  jq '
+    .data as $d
+    | {
+        total_credits:   ($d.total_credits   // null),
+        total_usage:     ($d.total_usage     // null),
+        remaining:       ($d.total_remaining // (($d.total_credits // 0) - ($d.total_usage // 0))),
+      }
+  ' <<<"$r"
+}
+
+cmd_cost() {
+  local date="${1:-$(date +%F)}"
+  require_key
+  local r
+  r="$(or_get "/activity?date=$date")"
+  # Group by model, sum tokens and cost. Sort by descending cost so the
+  # expensive models float to the top.
+  jq --arg date "$date" '
+    .data as $rows
+    | ($rows | length) as $n
+    | ($rows | map(.usage // 0) | add // 0) as $total_cost
+    | ($rows | group_by(.model) | map({
+        model:          .[0].model,
+        calls:          length,
+        tokens_prompt:  (map(.tokens_prompt // 0)     | add // 0),
+        tokens_completion: (map(.tokens_completion // 0) | add // 0),
+        cost_usd:       (map(.usage // 0)             | add // 0),
+      })) as $by_model
+    | {
+        date:        $date,
+        total_calls: $n,
+        total_cost:  $total_cost,
+        by_model:    ($by_model | sort_by(-.cost_usd)),
+      }
+  ' <<<"$r"
+}
+
 cmd_policy_checklist() {
   cat <<'EOF'
 OpenRouter policy items — what the management API can vs. can't do.
@@ -288,6 +336,8 @@ case "$sub" in
   disable)           cmd_disable "$@"           ;;
   enable)            cmd_enable "$@"            ;;
   delete)            cmd_delete "$@"            ;;
+  balance)           cmd_balance "$@"           ;;
+  cost)              cmd_cost "$@"              ;;
   policy-checklist)  cmd_policy_checklist "$@"  ;;
   -h|--help|help)
     grep -E '^#( |$)' "$0" | sed 's/^# \{0,1\}//'
