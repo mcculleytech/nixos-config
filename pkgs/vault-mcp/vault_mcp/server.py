@@ -18,9 +18,13 @@ import re
 import subprocess
 import sys
 from contextlib import asynccontextmanager
+from datetime import date, datetime
+from fnmatch import fnmatch
 from importlib.metadata import PackageNotFoundError, version as _pkg_version
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 try:
     __version__ = _pkg_version("vault-mcp")
@@ -43,6 +47,13 @@ log = logging.getLogger("vault_mcp")
 SKIP_PREFIXES = (".obsidian", ".trash", ".git")
 TEXT_EXTENSIONS = (".md", ".canvas", ".txt")
 FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---\n", re.DOTALL)
+# Inline-tag scanner for vault_query_frontmatter. Obsidian tags allow
+# slashes for hierarchy (#area/project) and hyphens. The lookbehind
+# rejects `#` immediately after a word character (so `colors#fff` isn't a
+# tag). We strip fenced code blocks before scanning so code samples with
+# Python comments don't poison the index.
+TAG_RE = re.compile(r"(?<!\w)#([\w/-]+)")
+CODE_FENCE_RE = re.compile(r"```.*?```", re.DOTALL)
 
 
 class Config:
@@ -117,21 +128,63 @@ def iter_notes(folder: Path | None = None):
 
 
 def parse_frontmatter(content: str) -> tuple[dict[str, Any], str]:
-    """Best-effort YAML-like frontmatter parse. Returns (metadata, body).
-    Avoids a YAML dependency by treating the frontmatter as simple key:value
-    pairs; nested structures are returned as raw strings.
+    """Parse a YAML frontmatter block. Returns (metadata, body).
+
+    Uses PyYAML so lists, nested maps, dates, and booleans all come back
+    typed correctly — important for vault_query_frontmatter which filters
+    on these. Malformed YAML degrades to an empty dict rather than
+    raising, keeping the tools resilient on hand-written notes.
     """
     m = FRONTMATTER_RE.match(content)
     if not m:
         return {}, content
-    raw = m.group(1)
-    meta: dict[str, Any] = {}
-    for line in raw.splitlines():
-        if ":" not in line:
-            continue
-        key, _, val = line.partition(":")
-        meta[key.strip()] = val.strip().strip('"').strip("'")
+    try:
+        meta = yaml.safe_load(m.group(1)) or {}
+    except yaml.YAMLError:
+        meta = {}
+    if not isinstance(meta, dict):
+        meta = {}
     return meta, content[m.end():]
+
+
+def extract_tags(meta: dict[str, Any], body: str) -> set[str]:
+    """Collect tags from both frontmatter `tags:` and inline `#tag` refs
+    in the body. Strips fenced code blocks first so code samples don't
+    pollute the tag set.
+    """
+    tags: set[str] = set()
+    raw = meta.get("tags")
+    if isinstance(raw, list):
+        for t in raw:
+            if t:
+                tags.add(str(t).lstrip("#"))
+    elif isinstance(raw, str):
+        # Obsidian allows comma- or space-separated strings here too.
+        for t in re.split(r"[,\s]+", raw):
+            if t:
+                tags.add(t.lstrip("#"))
+    body_clean = CODE_FENCE_RE.sub("", body)
+    for m in TAG_RE.finditer(body_clean):
+        tags.add(m.group(1))
+    return tags
+
+
+def _coerce_date(value: Any) -> date | None:
+    """Best-effort date coercion for ISO strings and PyYAML date/datetime
+    values. Returns None on anything we can't parse.
+    """
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            return datetime.fromisoformat(value).date()
+        except ValueError:
+            return None
+    return None
 
 
 # ── auth middleware ───────────────────────────────────────────────────────────
@@ -310,6 +363,116 @@ async def vault_metadata(path: str) -> dict[str, Any]:
         "mtime": stat.st_mtime,
         "frontmatter": fm,
     }
+
+
+@mcp.tool()
+async def vault_query_frontmatter(
+    folder: str | None = None,
+    where: dict[str, Any] | None = None,
+    has_tag: str | None = None,
+    has_any_tag: list[str] | None = None,
+    after: str | None = None,
+    before: str | None = None,
+    name_glob: str | None = None,
+    sort_by: str = "mtime",
+    sort_desc: bool = True,
+    limit: int = 50,
+    fields: list[str] | None = None,
+) -> list[dict[str, Any]]:
+    """Dataview-style query over the vault's frontmatter + tags.
+
+    Filters notes by folder, frontmatter equality, tags (frontmatter
+    `tags:` AND inline `#tag` refs), date range (against file mtime),
+    and filename glob. Sorts and returns up to `limit` records with
+    `{path, mtime, frontmatter}`. Use this when the user wants a list
+    of notes matching some structured criteria — i.e. anything you'd
+    write as a Dataview LIST/TABLE in Obsidian.
+
+    Args:
+      folder: restrict to a subfolder of the vault. None = whole vault.
+      where: dict of frontmatter key=value equality matches (all must match).
+      has_tag: require this tag (leading '#' optional). Matches frontmatter
+        `tags:` list/string AND inline `#tag` refs in the body.
+      has_any_tag: list of tags; require at least one to match. Combine with
+        `has_tag` for AND-of-OR semantics.
+      after: ISO date (YYYY-MM-DD); keep notes with mtime >= this date.
+      before: ISO date; keep notes with mtime <= this date.
+      name_glob: filename glob match (e.g. "Journal-*.md").
+      sort_by: 'mtime' | 'name' | <frontmatter-field-name>.
+      sort_desc: descending sort (default True — most recent first).
+      limit: max records returned (default 50).
+      fields: subset of frontmatter keys to return (default: all).
+
+    Examples:
+      Recent project notes:
+        has_tag="project", sort_by="mtime", limit=20
+      May 2026 journal entries:
+        folder="Journal", after="2026-05-01", before="2026-05-31"
+      Meeting notes in Work/:
+        folder="Work", where={"type": "meeting"}, sort_by="date"
+    """
+    assert CFG is not None
+    base = safe_join(folder) if folder else CFG.vault_root
+    after_d = _coerce_date(after) if after else None
+    before_d = _coerce_date(before) if before else None
+    where = where or {}
+    has_tag_norm = has_tag.lstrip("#") if has_tag else None
+    has_any_norm = (
+        [t.lstrip("#") for t in has_any_tag] if has_any_tag else None
+    )
+
+    rows: list[dict[str, Any]] = []
+    for p in iter_notes(base):
+        # Cheap filters first to avoid reading the file body when possible.
+        if name_glob and not fnmatch(p.name, name_glob):
+            continue
+        stat = p.stat()
+        mtime_d = datetime.fromtimestamp(stat.st_mtime).date()
+        if after_d and mtime_d < after_d:
+            continue
+        if before_d and mtime_d > before_d:
+            continue
+
+        try:
+            content = p.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        meta, body = parse_frontmatter(content)
+
+        if any(meta.get(k) != v for k, v in where.items()):
+            continue
+
+        if has_tag_norm is not None or has_any_norm is not None:
+            note_tags = extract_tags(meta, body)
+            if has_tag_norm is not None and has_tag_norm not in note_tags:
+                continue
+            if (
+                has_any_norm is not None
+                and not any(t in note_tags for t in has_any_norm)
+            ):
+                continue
+
+        fm_out = (
+            {k: meta.get(k) for k in fields} if fields else meta
+        )
+        rows.append({
+            "path": str(p.relative_to(CFG.vault_root)),
+            "mtime": stat.st_mtime,
+            "frontmatter": fm_out,
+        })
+
+    def sort_key(row: dict[str, Any]) -> Any:
+        if sort_by == "mtime":
+            return row["mtime"]
+        if sort_by == "name":
+            return row["path"].lower()
+        val = row["frontmatter"].get(sort_by)
+        # Make None sort last regardless of direction by replacing it with a
+        # sentinel of the same type as the other rows where possible.
+        return (val is None, val)
+
+    rows.sort(key=sort_key, reverse=sort_desc)
+    return rows[:limit]
 
 
 # ── /version route (bearer-required) ─────────────────────────────────────────

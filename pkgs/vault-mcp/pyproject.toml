@@ -11,6 +11,7 @@ dependencies = [
   "mcp>=1.15",
   "starlette>=0.47",
   "uvicorn>=0.35",
+  "pyyaml>=6.0",
 ]
 
 [project.scripts]

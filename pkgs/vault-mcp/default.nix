@@ -21,6 +21,7 @@ python3.pkgs.buildPythonApplication {
     mcp
     starlette
     uvicorn
+    pyyaml
   ];
 
   doCheck = false;
