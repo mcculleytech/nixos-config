@@ -72,7 +72,23 @@ in
       future_hermes_signal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_radicale = { owner = "hermes"; group = "hermes"; mode = "0400"; };
       future_hermes_miniflux = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      hermes_github_pat = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      # Rendered directly into HERMES_HOME at the path the google-workspace
+      # skill's setup.py expects (hard-coded `${HERMES_HOME}/google_client_secret.json`).
+      hermes_google_client_secret = {
+        owner = "hermes";
+        group = "hermes";
+        mode = "0400";
+        path = "/var/lib/hermes/.hermes/google_client_secret.json";
+      };
     };
+
+    # The skill expects $HERMES_HOME to exist before sops writes the
+    # client_secret file into it. The hermes-agent service would create it
+    # on first run, but activation-time sops symlinks land earlier.
+    systemd.tmpfiles.rules = [
+      "d /var/lib/hermes/.hermes 0700 hermes hermes -"
+    ];
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
     # Hermes reads every secret it needs from this single file. No plaintext
@@ -96,12 +112,18 @@ in
         HERMES_SIGNAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_signal}
         HERMES_RADICALE_MCP_TOKEN=${config.sops.placeholder.future_hermes_radicale}
         HERMES_MINIFLUX_MCP_TOKEN=${config.sops.placeholder.future_hermes_miniflux}
+        GH_TOKEN=${config.sops.placeholder.hermes_github_pat}
       '';
     };
 
     # ─── Upstream module configuration ─────────────────────────────────────
     services.hermes-agent = {
       enable = true;
+
+      # `gh` is what the bundled github-* skills drive; without it on PATH
+      # they fall back to raw `git` + API calls and lose features (PR review,
+      # issue triage). `GH_TOKEN` (set above) is auto-picked-up by gh.
+      extraPackages = [ pkgs.gh ];
 
       environmentFiles = [ config.sops.templates."hermes-agent.env".path ];
 
@@ -209,7 +231,8 @@ in
           url = cfg.minifluxMcpUrl;
           headers.Authorization = "Bearer \${HERMES_MINIFLUX_MCP_TOKEN}";
           # feed_refresh is a manual op the LLM has no reason to invoke.
-          tools.exclude = [ "feed_refresh" ];
+          # *_delete are destructive bulk-purges; keep operator-only.
+          tools.exclude = [ "feed_refresh" "feed_delete" "category_delete" ];
         };
       };
     };

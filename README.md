@@ -146,7 +146,10 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Phase 1: Shared agent memory on saruman (PostgreSQL + pgvector + MCP gateway, Tailscale-bound, bearer-token auth) ✅ 2026-05-11
 	- [ ] Phase 2: Obsidian Sync via `obsidian-headless` on saruman; vault MCP server(s) for read/write access
 	- [ ] Phase 3: Hermes agent on saruman via upstream `NousResearch/hermes-agent`, Anthropic native now / OpenRouter for Nous Hermes later, Signal I/O via dedicated number on signal-cli
+		- [x] Hermes external-service auth — GitHub fine-grained PAT (`hermes_github_pat`) wired as `GH_TOKEN`, `pkgs.gh` on hermes runtime PATH for the bundled github-* skills; Google Calendar OAuth (calendar scope, app published to Production) via `hermes_google_client_secret` sops template + persistent `google_token.json` under `/var/lib/hermes/.hermes/` ✅ 2026-05-12
 	- [ ] Phase 4: Scheduled embedding/summarization jobs, task-capture workflows, web dashboard
+		- [ ] Hermes scheduled-jobs (cron): declarative Nix-defined jobs reconciled at boot via upstream `hermes cron` CLI. Starter set — morning briefing (calendar + RSS + tasks) + `--no-agent` MCP health watch.
+	- [x] Homelab MCPs (agent-memory, vault, signal, radicale, miniflux) wired into Claude Code on saruman at user scope, authenticated via the per-MCP `claude-personal` sops tokens ✅ 2026-05-12
 - [ ] Full Homelab Automation — Traditional Ops & AI-Augmented Ops (see [Automation Roadmap](AUTOMATION_ROADMAP.md))
 - [x] Disko configs for: ✅ 2024-03-01
 	- [x] achilles ✅ 2024-02-20

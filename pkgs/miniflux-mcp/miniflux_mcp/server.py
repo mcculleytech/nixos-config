@@ -136,6 +136,47 @@ async def category_list() -> list[dict[str, Any]]:
 
 
 @mcp.tool()
+async def category_create(title: str) -> dict[str, Any]:
+    """Create a new category. Miniflux rejects duplicate titles with HTTP 400."""
+    return await miniflux("POST", "/categories", json_body={"title": title})
+
+
+@mcp.tool()
+async def category_delete(category_id: int) -> dict[str, Any]:
+    """Delete a category. Feeds in it are reassigned to the default category."""
+    await miniflux("DELETE", f"/categories/{category_id}")
+    return {"category_id": category_id, "deleted": True}
+
+
+@mcp.tool()
+async def feed_discover(url: str) -> list[dict[str, Any]]:
+    """Discover feeds reachable from a homepage URL. Returns candidates with
+    {url, title, type} — pick one and pass its `url` to `feed_add`. Useful when
+    you only have a site URL (e.g. https://example.com) and need the feed URL."""
+    return await miniflux("POST", "/discover", json_body={"url": url})
+
+
+@mcp.tool()
+async def feed_add(feed_url: str, category_id: int | None = None) -> dict[str, Any]:
+    """Subscribe to a feed by its direct feed URL (Atom/RSS/JSON). When
+    `category_id` is omitted Miniflux files the feed under the default category.
+    Returns `{feed_id}` on success; raises on duplicates (Miniflux refuses to
+    re-subscribe to an already-tracked URL)."""
+    body: dict[str, Any] = {"feed_url": feed_url}
+    if category_id is not None:
+        body["category_id"] = category_id
+    return await miniflux("POST", "/feeds", json_body=body)
+
+
+@mcp.tool()
+async def feed_delete(feed_id: int) -> dict[str, Any]:
+    """Unsubscribe from a feed permanently. Removes the feed and all its
+    entries from the account."""
+    await miniflux("DELETE", f"/feeds/{feed_id}")
+    return {"feed_id": feed_id, "deleted": True}
+
+
+@mcp.tool()
 async def entry_list(
     status: str | None = None,
     feed_id: int | None = None,

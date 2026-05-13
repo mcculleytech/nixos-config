@@ -142,6 +142,7 @@ Reactive endpoint for the personal-agent stack: a Signal-driven agent that drive
 - [ ] **Bootstrap** — `sudo -u hermes signal-cli link -n saruman-hermes` once; QR-scan from the bot's Signal account on the phone.
 - [ ] **Verified end-to-end** — allowlisted contact sends "ping" via Signal; reply within seconds. Tool use against memory + vault confirmed via natural language ("search my agent memory for X", "list my homelab folder").
 - [ ] **Spending alert** — Anthropic API usage alert set at console.anthropic.com (separate from any Claude subscription).
+- [x] **External-service auth** — GitHub fine-grained PAT (`hermes_github_pat`) wired as `GH_TOKEN`, `pkgs.gh` added to hermes runtime PATH; Google Calendar OAuth (calendar scope only — Gmail restricted scopes intentionally skipped) via `hermes_google_client_secret` sops template rendered to `/var/lib/hermes/.hermes/google_client_secret.json`, app published to Production so refresh token persists. ✅ 2026-05-12
 
 ### B1: AI-Assisted Config Generation
 
