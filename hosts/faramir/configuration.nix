@@ -12,6 +12,7 @@
 
   homebrew.casks = [
     "lm-studio"
+    "wispr-flow"
   ];
 
   time.timeZone = "America/Chicago";
