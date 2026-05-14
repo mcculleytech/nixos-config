@@ -8,18 +8,6 @@ let
   # hosts-data.nix so we have one place to update if the IP ever changes.
   mcpHost = config.lab.hosts.saruman.tailnetIp;
 
-  # ─── Morning-briefing cron job definition ────────────────────────────────
-  # The job SCAFFOLDING (id, schedule, model) lives in Nix — declarative
-  # and git-tracked. The PROMPT content lives in sops (secrets/cron-jobs.yaml,
-  # key `morning_briefing_prompt`) because it includes alex's E.164 phone
-  # number (recipient for signal_send_message). sops.templates below
-  # renders the final jobs.json with the prompt substituted, then an
-  # activation script copies that to /var/lib/hermes/.hermes/cron/jobs.json.
-  #
-  # Adding more private cron jobs: add another key in secrets/cron-jobs.yaml,
-  # add a corresponding sops.secrets + sops.templates substitution here,
-  # extend the jobs[] list in the template content below.
-
   # ─── i18n locales patch ───────────────────────────────────────────────────
   # Upstream's pyproject.toml + nix derivation don't ship `locales/` to the
   # installed wheel, so agent/i18n.py's `Path(__file__).parent.parent/locales`
@@ -32,32 +20,7 @@ let
   localesPatch = pkgs.runCommand "hermes-locales-patch" {} ''
     mkdir -p $out/locales $out/python
     cp -r ${inputs.hermes-agent}/locales/* $out/locales/
-    cat > $out/python/sitecustomize.py <<'PYEOF'
-"""Inject locales/ into agent.i18n at Python startup.
-
-Hermes-agent's upstream wheel omits the locales/ YAML files, so the
-agent's i18n module returns raw keys for every translatable string.
-This sitecustomize.py runs during site initialization (before any
-user code, before hermes-agent's own modules import), imports the
-i18n module, and monkey-patches its `_locales_dir` function to point
-at our copy of the YAML catalogs.
-"""
-import os
-from pathlib import Path
-
-_override = Path(os.environ.get("HERMES_LOCALES_DIR", ""))
-if _override.is_dir():
-    try:
-        import agent.i18n as _i18n_mod  # noqa: E402
-        _i18n_mod._locales_dir = lambda: _override
-        # Also invalidate any cached catalog if i18n already lazily-loaded one.
-        for _cache_attr in ("_CATALOGS", "_catalogs", "_CACHE"):
-            if hasattr(_i18n_mod, _cache_attr):
-                getattr(_i18n_mod, _cache_attr).clear()
-    except ImportError:
-        # hermes-agent isn't on the path — quietly do nothing.
-        pass
-PYEOF
+    cp ${./sitecustomize.py} $out/python/sitecustomize.py
   '';
 in
 {
@@ -80,13 +43,19 @@ in
 
     defaultModel = lib.mkOption {
       type = lib.types.str;
-      default = "deepseek/deepseek-v4-pro";
+      default = "google/gemini-2.5-flash";
       description = ''
         The model that handles every Signal turn unless alex has
-        sent `/model <slug>` to override for the session. DeepSeek
-        V4 Pro via OpenRouter — strong tool use, ~$0.435 in / $0.87
-        out per Mtok, pinned to ZDR US-HQ providers via
-        `extra_body.provider` below.
+        sent `/model <slug>` to override for the session. Gemini 2.5
+        Flash via OpenRouter's BYOK routing — billed against alex's
+        Google AI Studio account where the $10/mo Pro-subscription
+        credit covers normal use-it-or-lose-it. ZDR comes from his
+        Google paid tier; the provider pin below restricts OR to the
+        google-ai-studio route so BYOK actually fires.
+
+        Was deepseek/deepseek-v4-pro pre-2026-05-14 — V4 Pro remains
+        available via `/model deep` for tool-heavy or harder
+        reasoning turns where Flash falls short.
       '';
     };
 
@@ -113,41 +82,6 @@ in
       description = "API key for local Ollama (Ollama doesn't validate; sentinel).";
     };
 
-    # ── MacBook (faramir) — LM Studio hosting Gemma 4 26B A4B over tailnet ──
-    macModel = lib.mkOption {
-      type = lib.types.str;
-      default = "mlx-community/gemma-4-26b-a4b-it";
-      description = ''
-        LM Studio model identifier for the MacBook-hosted Gemma 4 26B
-        A4B IT (MLX-quantized). Reachable via `/model mac` in Signal.
-      '';
-    };
-
-    macBaseUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://100.90.82.127:1234/v1";
-      description = ''
-        Faramir's tailnet IP at LM Studio's default OpenAI-compatible
-        port (1234). Hardcoded since faramir isn't NixOS-managed and
-        doesn't appear in `hosts-data.nix`.
-      '';
-    };
-
-    macApiKey = lib.mkOption {
-      type = lib.types.str;
-      default = "lmstudio";
-      description = ''
-        API key for LM Studio. Empirically, hermes-agent's
-        `model_aliases.*.api_key` field does NOT expand ${"\${VARS}"}
-        substitutions (only mcpServers.headers does). So putting a sops
-        reference here ended up sending the literal "${"\${LMSTUDIO_API_KEY}"}"
-        string as the bearer token. Easier path: disable LM Studio's
-        "Require API key" toggle and rely on tailnet-only access as
-        the security perimeter. Then this sentinel just satisfies
-        hermes' shape requirement.
-      '';
-    };
-
     sessionIdleMinutes = lib.mkOption {
       type = lib.types.int;
       default = 120;
@@ -168,36 +102,6 @@ in
         All must be US-HQ'd and honor zero-retention. Together is
         omitted despite being US-HQ'd because its DeepSeek-V4-Pro
         endpoint has been flapping (~65%% uptime when last checked).
-      '';
-    };
-
-    morningBriefingEnable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = ''
-        Whether to register the 6 AM morning-briefing cron job.
-        Job creates today's daily note in the vault, pulls radicale
-        + Google calendar events, summarizes, and sends via Signal.
-        Pinned to `google/gemini-2.5-flash-lite` via BYOK for ~free
-        execution against the Google quota.
-      '';
-    };
-
-    morningBriefingSchedule = lib.mkOption {
-      type = lib.types.str;
-      default = "0 6 * * *";
-      description = "Cron expression for the morning briefing (default 6:00 AM daily).";
-    };
-
-    morningBriefingModel = lib.mkOption {
-      type = lib.types.str;
-      default = "deepseek/deepseek-v4-pro";
-      description = ''
-        Model that runs the briefing. DeepSeek V4 Pro — proven
-        reliable tool calls via OR, ~$0.02/run = ~$0.60/mo. Tried
-        Gemini Flash Lite first (would have been near-free via BYOK)
-        but it wrote Python via execute_code instead of calling MCP
-        tools directly. V4 Pro doesn't have that confusion.
       '';
     };
 
@@ -248,49 +152,78 @@ in
     # Hermes is meaningless without the signal-cli HTTP daemon — turn it on.
     signal-cli.enable = true;
 
+    # ─── Run hermes-agent as alex, not a dedicated system user ──────────────
+    # Why: bundled skills (google-workspace, github-*, claude-code) all
+    # assume the operator's auth state is at well-known paths under the
+    # service user's HOME (~/.claude/, gh's keychain, etc.). With a
+    # dedicated `hermes` system user, every such skill needs a workaround
+    # (sops-managed credential copies, sudoers rule to invoke claude as
+    # alex, etc.). Running the service as alex eliminates the entire class
+    # of workarounds — claude finds alex's auth, gh finds alex's keyring,
+    # google-workspace can write its tokens straight into alex's profile.
+    #
+    # Trade-off: the service loses process-isolation from alex's
+    # interactive session. Acceptable for a single-user homelab on
+    # tailnet (no untrusted human accounts on this host).
+    #
+    # createUser = false stops the upstream module from declaring the
+    # hermes user (alex is declared elsewhere in our config); we still
+    # need to ensure the `hermes` GROUP exists because we keep using it
+    # to share secrets with sibling MCP service users (gcal-mcp,
+    # escalator-mcp). See `users.groups.hermes` below.
+
+    # The `hermes` group survives the user removal — it stays as a
+    # shared-secret group: alex + escalator_mcp + gcal_mcp users are
+    # all members, secrets are mode 0440 group=hermes.
+    users.groups.hermes = { };
+    # Add alex to the hermes group so the service (running as alex) can
+    # read its own sops-rendered EnvironmentFile (mode 0400 owner=alex)
+    # AND the shared mode-0440 group=hermes secrets the MCPs depend on.
+    users.users.alex.extraGroups = [ "hermes" ];
+
     # ─── sops scalars (values added via `sops secrets/main.yaml`) ───────────
     sops.secrets = {
       # The single key that fronts ALL model traffic. A runtime sub-key
-      # created via scripts/openrouter-bootstrap.sh with a one-shot
+      # created out-of-band against the OR provisioning key with a one-shot
       # provisioning key (which is never stored). Sub-key carries a hard
       # monthly credit cap. The user's Gemini key is registered in OR
       # as BYOK so tier-1 inference still bills against the Google quota.
       # Shared with escalator-mcp (which also needs to make OR calls).
       # mode 0440 so anyone in the hermes group can read; escalator-mcp's
       # service user joins the hermes group via its module.
-      openrouter_api_key = { owner = "hermes"; group = "hermes"; mode = "0440"; };
+      openrouter_api_key = { owner = "alex"; group = "hermes"; mode = "0440"; };
+      # Management key for OR — different from the inference sub-key
+      # above. /credits accepts the inference key, but /activity (the
+      # per-request log used for spend reporting) requires the master
+      # provisioning key. The /spend plugin reads this; until alex
+      # replaces the placeholder via `sops secrets/main.yaml`, the
+      # plugin's per-model breakdown gracefully degrades to "not
+      # configured".
+      openrouter_provisioning_key = {
+        owner = "alex";
+        group = "hermes";
+        mode = "0440";
+      };
       # Tavily for web_search / web_extract tools. Free tier = 1000
       # searches/mo at https://app.tavily.com — plenty for personal use.
-      tavily_api_key = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      # Morning briefing prompt content (contains alex's E.164 as the
-      # Signal recipient). Lives in secrets/hermes-cron-jobs.yaml — a
-      # dedicated sops file for private hermes scheduled-task content.
-      # restartUnits bounces hermes-agent when the prompt is edited so
-      # the new content gets picked up immediately, no manual restart.
-      morning_briefing_prompt = {
-        owner = "hermes";
-        group = "hermes";
-        mode = "0400";
-        sopsFile = ../../../../../../secrets/hermes-cron-jobs.yaml;
-        restartUnits = [ "hermes-agent.service" ];
-      };
-      hermes_bot_account = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      hermes_allowlist = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_agent_memory = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_vault = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_signal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_radicale = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_miniflux = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_gcal = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      future_hermes_escalator = { owner = "hermes"; group = "hermes"; mode = "0400"; };
-      hermes_github_pat = { owner = "hermes"; group = "hermes"; mode = "0400"; };
+      tavily_api_key = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      hermes_bot_account = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      hermes_allowlist = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_agent_memory = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_vault = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_signal = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_radicale = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_miniflux = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_gcal = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_escalator = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      hermes_github_pat = { owner = "alex"; group = "hermes"; mode = "0400"; };
       # Rendered directly into HERMES_HOME at the path the google-workspace
       # skill's setup.py expects (hard-coded `${HERMES_HOME}/google_client_secret.json`).
       # Mode 0440 (group-readable) so gcal-mcp's service user, which has
       # secondary membership in the `hermes` group, can read it for
       # token refresh.
       hermes_google_client_secret = {
-        owner = "hermes";
+        owner = "alex";
         group = "hermes";
         mode = "0440";
         path = "/var/lib/hermes/.hermes/google_client_secret.json";
@@ -304,62 +237,50 @@ in
       # HERMES_HOME has to allow group traversal (0750 not 0700) so
       # gcal-mcp's service user (member of the `hermes` group via
       # extraGroups) can reach the google credential + token files.
-      "d /var/lib/hermes/.hermes 0750 hermes hermes -"
-      "d /var/lib/hermes/.hermes/cron 2770 hermes hermes -"
+      "d /var/lib/hermes/.hermes 0750 alex hermes -"
+      "d /var/lib/hermes/.hermes/cron 2770 alex hermes -"
       # The skill writes google_token.json with the running user's
       # default umask (typically 0600). Force group-readable so gcal-mcp
       # can read it for token refreshes. tmpfiles's `z` mode adjusts an
       # EXISTING file without creating it.
-      "z /var/lib/hermes/.hermes/google_token.json 0640 hermes hermes -"
+      "z /var/lib/hermes/.hermes/google_token.json 0640 alex hermes -"
     ];
 
-    # Build jobs.json at activation time by combining the Nix-defined
-    # job scaffolding (id, schedule, model) with the sops-rendered
-    # prompt text. We can't just stuff a sops placeholder into a JSON
-    # string via sops.templates — sops substitutes verbatim and
-    # multi-line prompt content breaks the JSON. So instead we use jq
-    # to splice the raw prompt (which sops decrypts into a plain text
-    # file) into a proper JSON document, with jq handling the
-    # string-escaping for us.
-    system.activationScripts.hermes-cron-seed = lib.mkIf cfg.morningBriefingEnable {
+    # One-shot state migration: when we flip the service user from the
+    # dedicated `hermes` system user to `alex`, every file under
+    # /var/lib/hermes that was created by the old user is still owned by
+    # uid=hermes:gid=hermes. With createUser = false, NixOS will tear down
+    # the hermes USER on this activation, orphaning those files (numeric
+    # uid with no name). Walk the tree and chown by subtree:
+    #   • /var/lib/hermes/.hermes        → alex:hermes  (hermes-agent state)
+    #   • /var/lib/hermes/workspace      → alex:hermes  (agent workspace)
+    #   • /var/lib/hermes/signal-cli     → alex:users   (signal-cli state;
+    #     narrow group, not shared with the MCPs)
+    # The parent /var/lib/hermes itself is alex:hermes (tmpfiles-managed).
+    # Idempotent: subsequent runs are no-ops. Removable after the first
+    # successful deploy.
+    system.activationScripts.hermes-state-chown = {
       text = ''
-        prompt_file="${config.sops.secrets.morning_briefing_prompt.path}"
-        if [ ! -r "$prompt_file" ]; then
-          echo "hermes-cron-seed: WARN prompt file not readable; skipping" >&2
-          exit 0
+        if [ -d /var/lib/hermes ]; then
+          ${pkgs.coreutils}/bin/chown alex:hermes /var/lib/hermes || true
+          for sub in .hermes workspace; do
+            if [ -d /var/lib/hermes/$sub ]; then
+              ${pkgs.coreutils}/bin/chown -R alex:hermes /var/lib/hermes/$sub || true
+            fi
+          done
+          if [ -d /var/lib/hermes/signal-cli ]; then
+            ${pkgs.coreutils}/bin/chown -R alex:users /var/lib/hermes/signal-cli || true
+          fi
         fi
-        ${pkgs.jq}/bin/jq -n \
-          --rawfile prompt "$prompt_file" \
-          --arg schedule "${cfg.morningBriefingSchedule}" \
-          --arg model "${cfg.morningBriefingModel}" \
-          '{
-            jobs: [{
-              id: "mornbrf000001",
-              name: "morning-briefing",
-              schedule: { kind: "cron", display: "every day at 6:00 AM", expr: $schedule },
-              deliver: "local",
-              prompt: $prompt,
-              model: $model,
-              provider: "openrouter",
-              enabled: true,
-              state: "scheduled",
-              created_at: "2026-05-13T00:00:00Z"
-            }],
-            updated_at: "2026-05-13T00:00:00Z"
-          }' > /var/lib/hermes/.hermes/cron/jobs.json.tmp
-        install -o hermes -g hermes -m 0640 \
-          /var/lib/hermes/.hermes/cron/jobs.json.tmp \
-          /var/lib/hermes/.hermes/cron/jobs.json
-        rm -f /var/lib/hermes/.hermes/cron/jobs.json.tmp
       '';
-      deps = [ "setupSecrets" "users" "groups" ];
+      deps = [ "users" "groups" ];
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
     # Hermes reads every secret it needs from this single file. No plaintext
     # ever lives in the Nix store.
     sops.templates."hermes-agent.env" = {
-      owner = "hermes";
+      owner = "alex";
       group = "hermes";
       mode = "0400";
       # Hermes reads every secret via this template fan-out. When any of
@@ -370,6 +291,7 @@ in
       restartUnits = [ "hermes-agent.service" ];
       content = ''
         OPENROUTER_API_KEY=${config.sops.placeholder.openrouter_api_key}
+        OPENROUTER_PROVISIONING_KEY=${config.sops.placeholder.openrouter_provisioning_key}
         TAVILY_API_KEY=${config.sops.placeholder.tavily_api_key}
         SIGNAL_ACCOUNT=${config.sops.placeholder.hermes_bot_account}
         SIGNAL_ALLOWED_USERS=${config.sops.placeholder.hermes_allowlist}
@@ -381,12 +303,24 @@ in
         HERMES_GCAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_gcal}
         HERMES_ESCALATOR_MCP_TOKEN=${config.sops.placeholder.future_hermes_escalator}
         GH_TOKEN=${config.sops.placeholder.hermes_github_pat}
+        # In-process plugins (hermes-plugin-intel) call miniflux's REST
+        # API directly rather than going through miniflux-mcp's bearer
+        # auth dance. We co-locate the upstream token here so the
+        # plugin can read it from os.environ at handler time. The
+        # sops secret itself is owned by alex:hermes mode 0440 — see
+        # miniflux-mcp module.
+        MINIFLUX_API_TOKEN=${config.sops.placeholder.miniflux_api_token}
       '';
     };
 
     # ─── Upstream module configuration ─────────────────────────────────────
     services.hermes-agent = {
       enable = true;
+
+      # See the "Run hermes-agent as alex" comment block above for why.
+      user = "alex";
+      group = "hermes";
+      createUser = false;  # alex declared elsewhere; hermes group above.
 
       # Note: there's a known cosmetic bug where slash-command responses
       # come back as raw i18n keys (`gateway.model.switched` etc.) because
@@ -403,13 +337,45 @@ in
       # `gh` is what the bundled github-* skills drive; without it on PATH
       # they fall back to raw `git` + API calls and lose features (PR review,
       # issue triage). `GH_TOKEN` (set above) is auto-picked-up by gh.
-      extraPackages = [ pkgs.gh ];
+      #
+      # `claude` (from sadjow/claude-code-nix flake input) is on PATH so the
+      # bundled claude-code skill can shell out for deep coding / repo-aware
+      # tasks. Since the service runs as alex, auth state resolves to
+      # /home/alex/.claude/ natively — no sudo, no auth copy needed.
+      extraPackages = [
+        pkgs.gh
+        inputs.claude-code.packages.${pkgs.system}.default
+      ];
+
+      # Directory-style plugins — symlinked into $HERMES_HOME/plugins/<name>/
+      # and auto-discovered by hermes on startup. See pkgs/hermes-plugin-intel/
+      # for the source. Pure-Python, in-process — no separate systemd unit,
+      # no bearer-token dance, just a slash command handler.
+      extraPlugins = [
+        pkgs.hermes-plugin-intel
+        pkgs.hermes-plugin-today
+        pkgs.hermes-plugin-spend
+      ];
 
       environmentFiles = [ config.sops.templates."hermes-agent.env".path ];
 
       environment = {
         SIGNAL_HTTP_URL = "http://127.0.0.1:${toString signalCfg.httpPort}";
         HERMES_HOME = "/var/lib/hermes/.hermes";
+        # MCP endpoints for in-process plugins (hermes-plugin-today,
+        # etc.). The MCPs bind to the tailnet IP only, so the plugin
+        # needs the resolved URL — not the `saruman` hostname which
+        # routes to the LAN IP. Same values hermes' own mcpServers.*
+        # config uses, just reflected into the env so plugins don't
+        # have to parse config.yaml.
+        HERMES_PLUGIN_RADICALE_URL = cfg.radicaleMcpUrl;
+        HERMES_PLUGIN_GCAL_URL = cfg.gcalMcpUrl;
+        # Override the upstream module's HOME=/var/lib/hermes default so
+        # claude / gh / other bundled-skill tools resolve their auth state
+        # in /home/alex/{.claude,.config/gh}/ — the user's normal locations.
+        # HERMES_HOME stays explicit so hermes still stores its state in
+        # /var/lib/hermes/.hermes, NOT in /home/alex/.hermes.
+        HOME = "/home/alex";
         # i18n locales patch — see `localesPatch` derivation in the `let`
         # block above for the why. sitecustomize.py auto-loads via the
         # PYTHONPATH and patches agent.i18n._locales_dir at startup.
@@ -417,94 +383,35 @@ in
         HERMES_LOCALES_DIR = "${localesPatch}/locales";
       };
 
-      # Brief persona + tool-selection bias. The upstream module installs
-      # SOUL.md into the working directory and Hermes reads it as part of
-      # its system prompt every call. Inherited by delegated subagents.
-      documents."SOUL.md" = ''
-        You are Hermes — alex's personal AI assistant, reached via Signal.
-
-        ## Model selection (alex's lever, not yours)
-
-        Alex picks which model handles a conversation by sending
-        slash commands in Signal. You don't manage this — you just
-        execute whatever role you're configured for. The aliases:
-
-        - `/model deep` — DeepSeek V4 Pro (default, reset after 2 h idle)
-        - `/model opus` — Anthropic Claude Opus 4.7 Fast (top reasoning)
-        - `/model pro`  — Google Gemini 3.1 Pro Preview (long context)
-        - `/model think` — Kimi K2 Thinking (deep reasoning chains)
-        - `/model qwen` — Qwen 3.6 35B A3B (cheap MoE alternative)
-        - `/model flash` — Gemini 2.5 Flash Lite (cheapest cloud)
-        - `/model local` — Gemma 4 8B on saruman's GPU (free, private)
-        - `/model mac` — Gemma 4 26B A4B on alex's MacBook over tailnet
-          (free, private, bigger than `local` but requires faramir online)
-
-        When asked what model you are, answer truthfully based on the
-        actual model serving this turn — don't claim to be a model
-        that's not currently active.
-
-        ## Tool guidance
-
-        - For any question that references past notes, prior work, a project,
-          or anything previously discussed, prefer **memory_search**. It is
-          semantic (cosine similarity), ranked by relevance, and indexes BOTH
-          the Obsidian vault (project='vault') AND bot-curated memories.
-        - Use vault_search ONLY when you need an exact substring match in a
-          specific file. memory_search is the default for "what did I/we
-          write about X".
-        - For Dataview-style queries — "list notes tagged X", "recent
-          journal entries", "meetings in Work/ this month" — use
-          **vault_query_frontmatter**. It filters by folder, frontmatter
-          fields, tags (frontmatter `tags:` and inline `#tag` refs),
-          mtime range, and filename glob, and returns `{path, mtime,
-          frontmatter}` per match. Cheaper than reading every candidate
-          file with vault_read.
-        - Use vault_read / vault_list / vault_write for direct file ops once
-          you already know the path (often discovered via memory_search hits
-          which carry a `source` field of the form vault:<path>#<heading>).
-        - For outbound Signal messages, signal_send_message queues only —
-          you MUST present the pending entry to alex and wait for explicit
-          confirmation before calling signal_pending_approve.
-        - Calendar → **radicale-mcp** (`event_list`, `event_create`) the radicale General 
-          calendar is the default write. Default query for both radicale calendars and shared gmail calendars.
-          Only write for **gcal-mcp** when alex
-          specifically mentions writing to shared Google calendar. Contacts → radicale-mcp. RSS
-          feeds → miniflux-mcp.
-        - For current/external info (news, docs, what-is-X-today), use
-          **web_search** for a list of relevant snippets, then
-          **web_extract** on the most useful URL for the full content.
-          The 1000-searches-per-month budget is shared across all of
-          alex's bot traffic — reach for memory_search and vault tools
-          first when the answer is likely already in his notes.
-        - **consult_expert** is a single-shot escalation tool useful
-          when you (whatever model you currently are) need a one-off
-          high-quality answer to a hard sub-question without changing
-          the active conversation model. Alex's preferred path for
-          full-conversation escalation is the `/model` slash above —
-          consult_expert is for *sub-questions within a turn*. Pass
-          `model="anthropic/claude-opus-4.7-fast"` for Opus,
-          `"deepseek/deepseek-v4-pro"` for DeepSeek,
-          `"google/gemini-3.1-pro-preview"` for Gemini Pro. Returns
-          the expert's text answer for you to relay or summarize.
-
-        Be concise. Signal messages are short by nature.
-      '';
+      # Persona + tool-selection bias for the in-context system prompt.
+      # Lives in a sibling SOUL.md so it can be edited as plain markdown
+      # (linting, preview, no nix heredoc escape pain). Upstream installs
+      # the document into the working directory; hermes reads it on every
+      # call and inherited by delegated subagents.
+      documents."SOUL.md" = builtins.readFile ./SOUL.md;
 
       settings = {
-        # ─── Default model: DeepSeek V4 Pro via OR ────────────────────
+        # ─── Default model: Gemini 2.5 Flash via OR BYOK ──────────────
         model = {
           provider = "openrouter";
           default = cfg.defaultModel;
-          # 64K is hermes' floor. V4 Pro supports 1M+ context but we
-          # cap so the compression math stays sane on Signal chats.
+          # 64K is hermes' floor; Gemini Flash supports 1M context but we
+          # cap so compression math stays sane on Signal chats.
           context_length = 64000;
-          # ZDR + US-HQ provider pinning for every default-model call.
+          # Pin OR to the google-ai-studio provider so BYOK fires
+          # (otherwise OR could route via google-vertex which doesn't
+          # use alex's Google AI Studio key). data_collection=deny is a
+          # belt-and-suspenders ZDR check — the actual retention
+          # guarantee comes from alex's Google paid tier. allow_fallbacks
+          # off → if Google errors, we deliberately fall through to
+          # `fallback_model` below (deepseek-v4-flash on ZDR US-HQ
+          # providers) rather than silently routing to a non-BYOK
+          # Google path that would bill OR credit.
           extra_body = {
             provider = {
               data_collection = "deny";
-              only = cfg.delegateProviders;
-              allow_fallbacks = true;
-              sort = { by = "price"; };
+              only = [ "google-ai-studio" ];
+              allow_fallbacks = false;
             };
           };
         };
@@ -535,18 +442,6 @@ in
             model = "google/gemini-3.1-pro-preview";
             provider = "openrouter";
           };
-          think = {
-            # Extended-reasoning model. Use for genuinely hard
-            # problems that benefit from "show your work" depth.
-            model = "moonshotai/kimi-k2-thinking";
-            provider = "openrouter";
-          };
-          qwen = {
-            # Cheap MoE alternative to V4 Pro, comparable input cost
-            # to flash but stronger reasoning for agentic tool use.
-            model = "qwen/qwen3.6-35b-a3b";
-            provider = "openrouter";
-          };
           deep = {
             # Explicit alias for the default. Useful for typing
             # `/model deep` to switch back after using another alias.
@@ -567,18 +462,6 @@ in
             api_key = cfg.localApiKey;
           };
 
-          # ── MacBook alias ──
-          # `/model mac` hits LM Studio on faramir over tailnet.
-          # Gemma 4 26B A4B (4B active, MoE) at MLX-native quality on
-          # Apple Silicon. Bigger and stronger than the local 8B
-          # Gemma on saruman, but only available when faramir is
-          # online + LM Studio is running with the model loaded.
-          mac = {
-            model = cfg.macModel;
-            provider = "custom";
-            base_url = cfg.macBaseUrl;
-            api_key = cfg.macApiKey;
-          };
         };
 
         # ─── Fallback model ─────────────────────────────────────────
@@ -639,6 +522,17 @@ in
         platform_toolsets = {
           signal = [ "hermes-signal" "web" ];
         };
+
+        # User-installed plugins are opt-in via this allow-list (bundled
+        # backends auto-load, ours doesn't). Registry key for a flat
+        # extraPlugins package is the symlink directory name —
+        # nix-managed-<pname> — but the manifest's `name` field is also
+        # accepted as a fallback. We list both to be safe.
+        plugins.enabled = [
+          "intel" "nix-managed-hermes-plugin-intel"
+          "today" "nix-managed-hermes-plugin-today"
+          "spend" "nix-managed-hermes-plugin-spend"
+        ];
 
         # The `custom` provider handles the local-Ollama `/model local`
         # alias. Cold start (Gemma 4 loading 9.4 GB onto the GPU) can
@@ -725,6 +619,15 @@ in
       environment = {
         PYTHONPATH = "${localesPatch}/python";
         HERMES_LOCALES_DIR = "${localesPatch}/locales";
+        # The upstream module hardcodes `HOME = cfg.stateDir` on the
+        # systemd unit (line ~874 in nixosModules.nix) so subprocesses
+        # spawned by hermes inherit HOME=/var/lib/hermes. That breaks
+        # claude / gh / etc., which look for auth state under
+        # ~/.claude and ~/.config/gh. We're running as alex; point HOME
+        # at /home/alex so those tools resolve to alex's real auth.
+        # lib.mkForce because the upstream module sets the same key
+        # without mkDefault.
+        HOME = lib.mkForce "/home/alex";
       };
       # Auto-restart whenever the rendered settings change. The upstream
       # module writes its config.yaml via the activation script, but it
@@ -737,11 +640,11 @@ in
         (builtins.toJSON config.services.hermes-agent.mcpServers)
         config.services.hermes-agent.documents."SOUL.md" or ""
         (builtins.toJSON config.services.hermes-agent.environment)
-        # Cron-jobs.json's content goes through sops.templates which has
-        # its own restartUnits hook (above), so this trigger only needs
-        # to fire when the template SHAPE changes — schedule, model, etc.
-        (builtins.toJSON cfg.morningBriefingSchedule)
-        (builtins.toJSON cfg.morningBriefingModel)
+        # Plugin packages (e.g. hermes-plugin-intel) — without this trigger,
+        # a plugin source-code change deploys to disk but the running
+        # hermes process keeps the old code loaded. Hash of the package
+        # list catches both content edits and add/remove churn.
+        (builtins.toJSON (map toString config.services.hermes-agent.extraPlugins))
       ];
       # ExecStartPre: hermes-agent calls signal-cli's HTTP RPC at startup
       # and exits 1 if the connection fails. systemd's After= only orders

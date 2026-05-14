@@ -59,11 +59,16 @@ in
     };
     # miniflux_api_token feeds the env template below — restartUnits is on
     # the template so a token rotation re-renders the env file and bounces
-    # the service.
+    # the service. Ownership: alex:hermes mode 0440 so the hermes-agent
+    # service (running as alex) can read this directly when called from
+    # in-process plugins (e.g. /intel briefing) without having to go
+    # through the miniflux-mcp bearer-auth dance. miniflux-mcp itself
+    # reads the rendered .env template (separately owned), so this
+    # ownership change doesn't affect it.
     sops.secrets.miniflux_api_token = {
-      owner = cfg.user;
-      group = cfg.user;
-      mode = "0400";
+      owner = "alex";
+      group = "hermes";
+      mode = "0440";
     };
 
     # Render an EnvironmentFile with just the upstream Miniflux API token.

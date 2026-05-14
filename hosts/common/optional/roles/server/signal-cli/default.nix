@@ -16,11 +16,25 @@ in
 
     user = lib.mkOption {
       type = lib.types.str;
-      default = "hermes";
+      default = "alex";
       description = ''
-        UNIX user that owns signal-cli state and runs the daemon. Created
-        by the upstream hermes-agent NixOS module — we only depend on it
-        (and order ourselves before hermes-agent.service).
+        UNIX user that owns signal-cli state and runs the daemon. We
+        share identity with hermes-agent (which also runs as alex) so
+        signal-cli's data dir under /var/lib/hermes/ is co-owned by
+        the same user. Previously defaulted to the dedicated `hermes`
+        system user but we collapsed that into alex; see the
+        hermes-agent module's user/group override comment for context.
+      '';
+    };
+
+    group = lib.mkOption {
+      type = lib.types.str;
+      default = "users";
+      description = ''
+        UNIX group for signal-cli state. Defaults to `users` (alex's
+        primary group). The state isn't shared with any other service,
+        so a narrow group is fine — unlike hermes-agent's secrets
+        which live under the `hermes` shared-secret group.
       '';
     };
 
@@ -51,11 +65,11 @@ in
     # Persist the entire signal-cli state dir across reboots — losing it
     # would mean re-linking the device.
     environment.persistence."/persist".directories = [
-      { directory = cfg.dataDir; user = cfg.user; group = cfg.user; mode = "0700"; }
+      { directory = cfg.dataDir; user = cfg.user; group = cfg.group; mode = "0700"; }
     ];
 
     systemd.tmpfiles.rules = [
-      "d ${cfg.dataDir} 0700 ${cfg.user} ${cfg.user} -"
+      "d ${cfg.dataDir} 0700 ${cfg.user} ${cfg.group} -"
       # Backup landing zone — root-only; signal-cli state is sensitive
       # (linked-device protobuf, axolotl session keys, identity).
       "d /persist/backups 0755 root root -"
@@ -78,7 +92,7 @@ in
       serviceConfig = {
         ExecStart = "${pkgs.signal-cli}/bin/signal-cli --config ${cfg.dataDir} daemon --http=127.0.0.1:${toString cfg.httpPort}";
         User = cfg.user;
-        Group = cfg.user;
+        Group = cfg.group;
         Restart = "always";
         RestartSec = "5s";
 

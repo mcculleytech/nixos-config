@@ -1,0 +1,5 @@
+name: today
+version: 0.1.0
+description: "Morning briefing — /today slash. Creates the day's Obsidian daily note from the Templater template (idempotent), collects calendar + tasks + open vault TODOs, returns a Signal-friendly summary."
+author: alex
+kind: backend

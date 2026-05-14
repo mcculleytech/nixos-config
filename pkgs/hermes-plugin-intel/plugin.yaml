@@ -1,0 +1,5 @@
+name: intel
+version: 0.1.0
+description: "Red-team intel briefing — /intel slash. Pulls last 24h of Miniflux entries, triages with Gemini Flash Lite (BYOK), synthesizes a tight categorized brief."
+author: alex
+kind: backend

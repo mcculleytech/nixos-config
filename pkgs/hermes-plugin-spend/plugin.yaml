@@ -1,0 +1,5 @@
+name: spend
+version: 0.1.0
+description: "Spend tracker — /spend slash. Aggregates OpenRouter activity into OR-direct spend, Anthropic-via-OR pass-through, and Google-BYOK estimated spend (no Anthropic/GCP APIs required)."
+author: alex
+kind: backend
