@@ -18,3 +18,4 @@ result-*
 
 # Claude Code runtime files
 .claude/scheduled_tasks.lock
+pkgs/hermes-plugin-spend/__pycache__/

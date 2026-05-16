@@ -11,7 +11,13 @@
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
   escalator-mcp = pkgs.callPackage ./escalator-mcp { python3 = pkgs.python3; inherit version; };
   prometheus-mcp = pkgs.callPackage ./prometheus-mcp { python3 = pkgs.python3; inherit version; };
-  hermes-plugin-intel = pkgs.callPackage ./hermes-plugin-intel { };
-  hermes-plugin-today = pkgs.callPackage ./hermes-plugin-today { };
+  hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };
+  hermes-plugin-intel = pkgs.callPackage ./hermes-plugin-intel {
+    hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };
+  };
+  hermes-plugin-today = pkgs.callPackage ./hermes-plugin-today {
+    hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };
+  };
   hermes-plugin-spend = pkgs.callPackage ./hermes-plugin-spend { };
+  hermes-skill-obsidian = pkgs.callPackage ./hermes-skill-obsidian { };
 }

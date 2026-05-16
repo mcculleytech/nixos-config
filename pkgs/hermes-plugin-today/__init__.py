@@ -51,6 +51,8 @@ DAILY_NOTES_ROOT = VAULT_ROOT / DAILY_NOTE_DIR
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 SYNTH_MODEL = "google/gemini-2.5-flash-lite"
 
+from .aliases import _model_aliases, _resolve_alias  # noqa: E402
+
 # The MCPs bind to saruman's tailnet IP only — the `saruman` hostname
 # resolves to its LAN IP, which the MCP listener doesn't accept. The
 # nix module injects the real URLs as env vars (same values hermes
@@ -649,20 +651,31 @@ def _build_brief(
 
 # ─── LLM synthesis (shape-of-day one-liner) ─────────────────────────────────
 
-async def _shape_of_day(client: httpx.AsyncClient, data: dict) -> str | None:
-    key = os.environ.get("OPENROUTER_API_KEY")
-    if not key:
+async def _shape_of_day(
+    client: httpx.AsyncClient,
+    data: dict,
+    model_cfg: dict | None = None,
+) -> str | None:
+    cfg = model_cfg or {"model": SYNTH_MODEL, "provider": "openrouter"}
+    provider = cfg.get("provider", "openrouter")
+    if provider == "custom":
+        base = cfg["base_url"].rstrip("/") + "/chat/completions"
+        api_key = cfg.get("api_key", "")
+    else:
+        base = OPENROUTER_URL
+        api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    if not api_key:
         return None
     summary = json.dumps(data, default=str, ensure_ascii=False)
     try:
         r = await client.post(
-            OPENROUTER_URL,
+            base,
             headers={
-                "Authorization": f"Bearer {key}",
+                "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
             },
             json={
-                "model": SYNTH_MODEL,
+                "model": cfg["model"],
                 "messages": [
                     {"role": "system", "content": SYNTH_SYSTEM},
                     {"role": "user", "content": summary},
@@ -680,7 +693,11 @@ async def _shape_of_day(client: httpx.AsyncClient, data: dict) -> str | None:
 
 # ─── Handler ────────────────────────────────────────────────────────────────
 
-async def _run_today(raw: bool, skip_note: bool) -> str:
+async def _run_today(
+    raw: bool,
+    skip_note: bool,
+    model_override: dict | None = None,
+) -> str:
     today = date.today()
 
     if skip_note:
@@ -726,6 +743,7 @@ async def _run_today(raw: bool, skip_note: bool) -> str:
                     ],
                     "sample_daily_tasks": [t for _, t in daily_tasks[:5]],
                 },
+                model_cfg=model_override,
             )
 
     return _build_brief(
@@ -733,19 +751,45 @@ async def _run_today(raw: bool, skip_note: bool) -> str:
     )
 
 
+_RESERVED_ARGS = {"raw", "no-note", "help", "-h", "--help"}
+
+
 async def _handle_slash(raw_args: str):
     args = raw_args.strip().lower().split()
     if any(a in ("help", "-h", "--help") for a in args):
+        aliases = sorted(_model_aliases().keys())
+        alias_list = ", ".join(aliases) if aliases else "(none configured)"
         return (
             "/today — morning briefing (calendar + tasks + vault TODOs).\n"
-            "  raw      — skip the LLM shape-of-day one-liner.\n"
-            "  no-note  — skip the daily-note creation step.\n"
-            "Default: creates today's note (if missing) and synthesizes the line."
+            "  raw              — skip the LLM shape-of-day one-liner.\n"
+            "  no-note          — skip the daily-note creation step.\n"
+            "  <alias>|<slug>   — override the shape-of-day model.\n"
+            f"    aliases: {alias_list}\n"
+            "    or any literal OpenRouter slug (must contain `/`).\n"
+            "Default: creates today's note (if missing) + Gemini Flash Lite synth."
         )
+
+    override_cfg: dict | None = None
+    unknown_args: list[str] = []
+    for a in args:
+        if a in _RESERVED_ARGS:
+            continue
+        cfg = _resolve_alias(a)
+        if cfg and override_cfg is None:
+            override_cfg = cfg
+        else:
+            unknown_args.append(a)
+    if unknown_args:
+        return (
+            f"today: unknown arg(s) {unknown_args}. "
+            f"Try `/today help` for the alias list."
+        )
+
     try:
         return await _run_today(
             raw="raw" in args,
             skip_note="no-note" in args,
+            model_override=override_cfg,
         )
     except Exception as e:  # noqa: BLE001
         log.exception("today: unexpected failure")
@@ -757,5 +801,5 @@ def register(ctx) -> None:
         "today",
         handler=_handle_slash,
         description="Morning briefing — calendar, tasks, vault TODOs, daily note.",
-        args_hint="[raw|no-note]",
+        args_hint="[raw|no-note] [<model-alias>]",
     )

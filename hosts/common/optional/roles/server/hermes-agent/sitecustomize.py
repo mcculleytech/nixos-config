@@ -1,17 +1,18 @@
-"""Inject locales/ into agent.i18n at Python startup.
+"""Site-startup patches for hermes-agent's upstream package.
 
-Hermes-agent's upstream wheel omits the locales/ YAML files, so the
-agent's i18n module returns raw keys for every translatable string
-(`gateway.model.switched`, etc.). This sitecustomize.py runs during
-site initialization — before any user code, before hermes-agent's
-own modules import — imports the i18n module, and monkey-patches its
-`_locales_dir` function to point at the YAML catalogs we copied out
-of the source tree at activation time.
+Two surgical monkey-patches applied during Python's site initialization
+(before hermes' own modules import):
 
-The companion `localesPatch` derivation in the hermes-agent nix
-module copies this file into the venv's PYTHONPATH and copies the
-upstream `locales/` directory next to it; the HERMES_LOCALES_DIR
-env var resolves at runtime to the latter.
+  1. Inject locales/ into agent.i18n — upstream's wheel forgets to ship
+     locales/, so without this every translatable string returns its raw
+     key (`gateway.model.switched`, …).
+
+  2. Prepend alex's `/model` alias list to the gateway's bare `/model`
+     response on platforms without an interactive picker (Signal). Bare
+     `/model` then returns the alias reference table *plus* the upstream
+     provider listing, so you don't have to remember which alias maps to
+     which slug. Pure additive — alias resolution itself is already wired
+     into `model_switch.py`'s `DirectAlias` path.
 """
 import os
 from pathlib import Path
@@ -28,3 +29,64 @@ if _override.is_dir():
     except ImportError:
         # hermes-agent isn't on the path — quietly do nothing.
         pass
+
+
+# ─── /model alias reference patch ───────────────────────────────────────────
+def _render_alias_block() -> str:
+    """Format alex's `/model` aliases as a markdown block. Tags the alias
+    whose model matches the gateway's configured default. Returns empty
+    string when no aliases are configured or config.yaml is unreadable."""
+    try:
+        import yaml
+    except ImportError:
+        return ""
+    hermes_home = Path(os.environ.get("HERMES_HOME", "/var/lib/hermes/.hermes"))
+    cfg_path = hermes_home / "config.yaml"
+    try:
+        with cfg_path.open() as f:
+            cfg = yaml.safe_load(f) or {}
+    except OSError:
+        return ""
+    aliases = cfg.get("model_aliases") or {}
+    if not aliases:
+        return ""
+    default_model = ((cfg.get("model") or {}).get("default") or "").strip()
+    width = max((len(k) for k in aliases), default=0)
+    lines = ["*Aliases:*"]
+    for name in sorted(aliases):
+        entry = aliases[name] or {}
+        model = entry.get("model", "?")
+        provider = entry.get("provider", "")
+        tags = []
+        if model == default_model:
+            tags.append("default")
+        if provider == "custom":
+            base = entry.get("base_url", "")
+            tags.append(f"custom: {base}")
+        tail = f"  _({', '.join(tags)})_" if tags else ""
+        lines.append(f"  `{name.ljust(width)}` → `{model}`{tail}")
+    return "\n".join(lines)
+
+
+try:
+    from gateway import run as _gw_run
+
+    _orig_handle_model = _gw_run.GatewayRunner._handle_model_command
+
+    async def _patched_handle_model(self, event):
+        raw_args = event.get_command_args().strip()
+        result = await _orig_handle_model(self, event)
+        # Only inject on bare `/model` (no args), and only when the upstream
+        # path actually returned text (the picker path returns None — the
+        # adapter handles output asynchronously). Signal has no picker, so
+        # this is the common Signal case.
+        if not raw_args and isinstance(result, str):
+            block = _render_alias_block()
+            if block:
+                return f"{block}\n\n{result}"
+        return result
+
+    _gw_run.GatewayRunner._handle_model_command = _patched_handle_model
+except ImportError:
+    # gateway package not present — running under cli.py only, skip.
+    pass

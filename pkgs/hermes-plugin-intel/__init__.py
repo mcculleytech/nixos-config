@@ -31,6 +31,8 @@ from datetime import datetime, timezone
 
 import httpx
 
+from .aliases import _model_aliases, _resolve_alias
+
 log = logging.getLogger("hermes.plugins.intel")
 
 MINIFLUX_URL = os.environ.get("MINIFLUX_URL", "http://10.1.8.121:8080")
@@ -169,11 +171,36 @@ async def _mark_entries_read(client: httpx.AsyncClient, ids: list[int]) -> None:
 async def _call_openrouter(
     client: httpx.AsyncClient, model: str, system: str, user: str
 ) -> str:
+    return await _call_chat(
+        client, {"model": model, "provider": "openrouter"}, system, user
+    )
+
+
+async def _call_chat(
+    client: httpx.AsyncClient,
+    model_cfg: dict,
+    system: str,
+    user: str,
+) -> str:
+    """Dispatch a chat-completion call to the right provider. Supports the
+    same provider shapes as hermes' `/model` aliases: `openrouter`
+    (default, uses OPENROUTER_API_KEY) and `custom` (uses the alias's own
+    `base_url` + `api_key`, e.g. local ollama / LM Studio)."""
+    provider = model_cfg.get("provider", "openrouter")
+    if provider == "custom":
+        base = model_cfg["base_url"].rstrip("/") + "/chat/completions"
+        api_key = model_cfg.get("api_key", "")
+    else:
+        base = OPENROUTER_URL
+        api_key = os.environ.get("OPENROUTER_API_KEY", "")
     r = await client.post(
-        OPENROUTER_URL,
-        headers=_openrouter_headers(),
+        base,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
         json={
-            "model": model,
+            "model": model_cfg["model"],
             "messages": [
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -325,15 +352,20 @@ def _build_synth_payload(survivors: list[dict]) -> str:
     return "\n".join(lines)
 
 
-async def _run_intel(preview: bool) -> str:
+async def _run_intel(preview: bool, model_override: dict | None = None) -> str:
+    triage_cfg = model_override or {"model": TRIAGE_MODEL, "provider": "openrouter"}
+    synth_cfg = model_override or {"model": SYNTH_MODEL, "provider": "openrouter"}
     async with httpx.AsyncClient() as client:
         entries = await _fetch_recent_entries(client)
         if not entries:
             return "No new entries in the last 24h."
 
-        log.info("intel: fetched %d entries", len(entries))
-        triage_raw = await _call_openrouter(
-            client, TRIAGE_MODEL, TRIAGE_SYSTEM, _build_triage_payload(entries)
+        log.info(
+            "intel: fetched %d entries (triage=%s, synth=%s)",
+            len(entries), triage_cfg["model"], synth_cfg["model"],
+        )
+        triage_raw = await _call_chat(
+            client, triage_cfg, TRIAGE_SYSTEM, _build_triage_payload(entries)
         )
         triage = _parse_triage_response(triage_raw)
         log.info("intel: triage returned %d scored entries", len(triage))
@@ -348,8 +380,8 @@ async def _run_intel(preview: bool) -> str:
             )
 
         top = survivors[:TOP_N_FOR_SYNTH]
-        brief = await _call_openrouter(
-            client, SYNTH_MODEL, SYNTH_SYSTEM, _build_synth_payload(top)
+        brief = await _call_chat(
+            client, synth_cfg, SYNTH_SYSTEM, _build_synth_payload(top)
         )
 
         if not preview:
@@ -361,20 +393,47 @@ async def _run_intel(preview: bool) -> str:
             f"📡 *Intel — last 24h* — "
             f"{len(entries)} entries → {len(survivors)} kept → top {len(top)} below"
             + ("  _(preview, none marked read)_" if preview else "")
+            + (f"  _(model: {synth_cfg['model']})_" if model_override else "")
         )
         return f"{header}\n\n{brief.strip()}"
 
 
+_RESERVED_ARGS = {"preview", "help", "-h", "--help"}
+
+
 async def _handle_slash(raw_args: str):
     args = raw_args.strip().lower().split()
-    preview = "preview" in args
     if any(a in ("help", "-h", "--help") for a in args):
+        aliases = sorted(_model_aliases().keys())
+        alias_list = ", ".join(aliases) if aliases else "(none configured)"
         return (
             "/intel — brief on last 24h of red-team RSS.\n"
-            "/intel preview — same, but don't mark entries read."
+            "  preview          — don't mark entries read.\n"
+            "  <alias>|<slug>   — override the triage+synth model.\n"
+            f"    aliases: {alias_list}\n"
+            "    or any literal OpenRouter slug (must contain `/`).\n"
+            "Default: Gemini 2.5 Flash Lite (BYOK)."
         )
+
+    preview = "preview" in args
+    override_cfg: dict | None = None
+    unknown_args: list[str] = []
+    for a in args:
+        if a in _RESERVED_ARGS:
+            continue
+        cfg = _resolve_alias(a)
+        if cfg and override_cfg is None:
+            override_cfg = cfg
+        else:
+            unknown_args.append(a)
+    if unknown_args:
+        return (
+            f"intel: unknown arg(s) {unknown_args}. "
+            f"Try `/intel help` for the alias list."
+        )
+
     try:
-        return await _run_intel(preview=preview)
+        return await _run_intel(preview=preview, model_override=override_cfg)
     except httpx.HTTPStatusError as e:
         log.exception("intel: upstream HTTP error")
         return f"intel error: {e.response.status_code} from {e.request.url.host}"
@@ -388,5 +447,5 @@ def register(ctx) -> None:
         "intel",
         handler=_handle_slash,
         description="Red-team intel briefing — last 24h, filtered + categorised.",
-        args_hint="[preview]",
+        args_hint="[preview] [<model-alias>]",
     )
