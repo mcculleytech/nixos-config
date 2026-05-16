@@ -256,6 +256,70 @@ async def addressbook_list() -> list[dict[str, Any]]:
 
 # ── events ─────────────────────────────────────────────────────────────────
 
+_RRULE_KEYS_SCALAR = {"FREQ", "INTERVAL", "COUNT", "WKST", "UNTIL"}
+_RRULE_KEYS_LIST = {
+    "BYDAY", "BYMONTHDAY", "BYYEARDAY", "BYWEEKNO",
+    "BYMONTH", "BYSETPOS", "BYHOUR", "BYMINUTE", "BYSECOND",
+}
+
+
+def _normalize_rrule(rrule: str | dict | None) -> str | None:
+    """Accept RRULE in either RFC-5545 string form (`FREQ=WEEKLY;BYDAY=MO,WE`)
+    or dict form (`{"FREQ":"WEEKLY","BYDAY":["MO","WE"]}`) and return the
+    canonical RFC-5545 string for embedding into the VEVENT. Returns None
+    when the input is None/empty.
+
+    Validates FREQ is set + uppercases keys + comma-joins list values.
+    Does NOT validate that key/value combinations form a valid RRULE —
+    the upstream calendar will reject malformed input on save."""
+    if rrule is None:
+        return None
+    if isinstance(rrule, str):
+        s = rrule.strip()
+        if not s:
+            return None
+        # Accept "RRULE:FREQ=..." prefix and strip it.
+        if s.upper().startswith("RRULE:"):
+            s = s[6:]
+        if "FREQ=" not in s.upper():
+            raise ValueError(
+                f"RRULE string must contain FREQ=… (got {s!r})"
+            )
+        return s
+    if isinstance(rrule, dict):
+        if not rrule:
+            return None
+        parts: list[str] = []
+        upper = {k.upper(): v for k, v in rrule.items()}
+        if "FREQ" not in upper:
+            raise ValueError(
+                "RRULE dict must contain FREQ key (e.g. 'DAILY', 'WEEKLY', "
+                "'MONTHLY', 'YEARLY')"
+            )
+        # FREQ first by convention
+        parts.append(f"FREQ={str(upper['FREQ']).upper()}")
+        for key, val in upper.items():
+            if key == "FREQ":
+                continue
+            if key in _RRULE_KEYS_LIST and isinstance(val, (list, tuple)):
+                parts.append(f"{key}={','.join(str(v).upper() for v in val)}")
+            elif key == "UNTIL":
+                # Allow either RFC-5545 form (20261231T235959Z) or ISO-8601 —
+                # normalize ISO to the basic form caldav expects.
+                v = str(val).replace("-", "").replace(":", "")
+                if "T" not in v:
+                    v = f"{v}T000000Z"
+                elif not v.endswith("Z"):
+                    v = f"{v}Z"
+                parts.append(f"UNTIL={v}")
+            else:
+                parts.append(f"{key}={val}")
+        return ";".join(parts)
+    raise TypeError(
+        f"rrule must be str, dict, or None (got {type(rrule).__name__})"
+    )
+
+
 @mcp.tool()
 async def event_create(
     summary: str,
@@ -265,6 +329,7 @@ async def event_create(
     description: str | None = None,
     location: str | None = None,
     tz: str | None = None,
+    rrule: str | dict | None = None,
 ) -> dict[str, Any]:
     """Create a calendar event (VEVENT).
 
@@ -279,11 +344,43 @@ async def event_create(
       start='2026-05-12T20:00:00Z'                       → 8pm UTC
 
     `calendar` is the display name; if omitted, uses the first calendar.
+
+    `rrule` makes the event recurring. Accepts either:
+      • RFC-5545 string: 'FREQ=WEEKLY;BYDAY=MO,WE,FR;UNTIL=20261231T235959Z'
+      • dict form:       {'FREQ': 'WEEKLY', 'BYDAY': ['MO','WE','FR'],
+                          'UNTIL': '2026-12-31T23:59:59'}
+    FREQ is required (DAILY/WEEKLY/MONTHLY/YEARLY). Common companions:
+      INTERVAL=N         every Nth occurrence
+      COUNT=N            stop after N occurrences (mutex with UNTIL)
+      UNTIL=<iso|basic>  stop on/before this datetime
+      BYDAY=MO,WE,FR     for WEEKLY: which weekdays
+      BYMONTHDAY=15      for MONTHLY: which day-of-month
+      BYMONTH=1,6,12     for YEARLY: which months
+      WKST=SU            week start (rarely needed)
+
+    Examples:
+      • Weekly on Wed at 3pm:
+          start='2026-05-13T15:00:00', tz='America/Chicago',
+          rrule={'FREQ':'WEEKLY','BYDAY':['WE']}
+      • Every weekday for 10 occurrences:
+          rrule={'FREQ':'WEEKLY','BYDAY':['MO','TU','WE','TH','FR'],
+                 'COUNT':10}
+      • First of every month until end of year:
+          rrule={'FREQ':'MONTHLY','BYMONTHDAY':1,
+                 'UNTIL':'2026-12-31T23:59:59'}
+      • Yearly on May 14:
+          rrule='FREQ=YEARLY'   (DTSTART carries the date, FREQ alone is enough)
+
+    The created event's UID is returned; use it with event_update /
+    event_delete to manage the whole series. Per-occurrence overrides
+    (RECURRENCE-ID) aren't currently supported here — modify or delete
+    the master event, or fall through to the radicale web UI.
     """
     cal = _find_calendar(calendar)
     dts, dte = _parse_dt(start, tz), _parse_dt(end, tz)
     uid = str(uuid4())
-    cal.save_event(
+    rrule_str = _normalize_rrule(rrule)
+    event = cal.save_event(
         dtstart=dts,
         dtend=dte,
         summary=summary,
@@ -291,7 +388,27 @@ async def event_create(
         location=location,
         uid=uid,
     )
-    return {"uid": uid, "calendar": cal.name, "summary": summary, "start": dts.isoformat(), "end": dte.isoformat()}
+    # caldav's save_event helper doesn't accept RRULE as a kwarg in the
+    # version we use, so attach via vobject post-save (same pattern as
+    # event_update's description/location handling). icalendar parses the
+    # RRULE string into a dict-of-lists on the wire, so we set the raw
+    # string value and let it round-trip.
+    if rrule_str:
+        vc = event.vobject_instance
+        ve = vc.vevent
+        if hasattr(ve, "rrule"):
+            ve.rrule.value = rrule_str
+        else:
+            ve.add("rrule").value = rrule_str
+        event.save()
+    return {
+        "uid": uid,
+        "calendar": cal.name,
+        "summary": summary,
+        "start": dts.isoformat(),
+        "end": dte.isoformat(),
+        "rrule": rrule_str,
+    }
 
 
 @mcp.tool()
@@ -329,10 +446,17 @@ async def event_update(
     description: str | None = None,
     location: str | None = None,
     tz: str | None = None,
+    rrule: str | dict | None = None,
+    clear_rrule: bool = False,
 ) -> dict[str, Any]:
     """Update fields on an existing event by UID. `start`/`end` follow the
-    same tz rules as event_create.
+    same tz rules as event_create. Pass `rrule` to set or replace the
+    recurrence (same accepted forms as event_create — string or dict);
+    pass `clear_rrule=True` to remove an existing RRULE and make the
+    event a one-shot. `rrule` and `clear_rrule` are mutually exclusive.
     """
+    if rrule is not None and clear_rrule:
+        raise ValueError("pass either rrule or clear_rrule, not both")
     cal = _find_calendar(calendar)
     event = cal.event_by_uid(uid)
     vc = event.vobject_instance
@@ -353,6 +477,18 @@ async def event_update(
             ve.location.value = location
         else:
             ve.add("location").value = location
+    if clear_rrule and hasattr(ve, "rrule"):
+        # vobject doesn't expose a delete; remove from the contents list.
+        ve.contents.pop("rrule", None)
+    elif rrule is not None:
+        rrule_str = _normalize_rrule(rrule)
+        if rrule_str is None:
+            # An explicitly-None-after-normalize is treated as clear too.
+            ve.contents.pop("rrule", None)
+        elif hasattr(ve, "rrule"):
+            ve.rrule.value = rrule_str
+        else:
+            ve.add("rrule").value = rrule_str
     event.save()
     return _vevent_summary(event)
 
