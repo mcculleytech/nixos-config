@@ -35,6 +35,7 @@
     ./miniflux-mcp
     ./gcal-mcp
     ./escalator-mcp
+    ./prometheus-mcp
     ./vault-indexer
     ./nas-backups
     ./obsidian-backup

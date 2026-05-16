@@ -50,6 +50,21 @@ in
             }
           ];
         }
+        {
+          # nvidia_gpu_exporter on every host with `nvidia.enable = true`
+          # (wired in `hosts/common/optional/nvidia.nix`). Today that's
+          # just saruman — Ollama + Immich ML + Jellyfin transcodes all
+          # share one GPU there. Add new hosts to this static list when
+          # the nvidia module fires up on them.
+          job_name = "nvidia-gpu";
+          static_configs = [
+            {
+              targets = [
+                "${hosts.saruman.ip}:9835"
+              ];
+            }
+          ];
+        }
       ];
     };
 

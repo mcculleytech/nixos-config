@@ -1,4 +1,8 @@
-{ lib, pkgs, config, outputs, ...}: {
+{ lib, pkgs, config, outputs, ...}:
+let
+  advertisedRoutes = "10.0.0.0/24,10.1.8.0/24,10.2.1.0/24,10.3.29.0/24";
+in
+{
 
 options = {
 		tailscale-server.enable =
@@ -32,14 +36,24 @@ options = {
         # wait for tailscaled to settle
         sleep 2
 
-        # check if we are already authenticated to tailscale
+        # authenticate if not already
         status="$(${tailscale}/bin/tailscale status -json | ${jq}/bin/jq -r .BackendState)"
-        if [ $status = "Running" ]; then # if so, then do nothing
-          exit 0
+        if [ "$status" != "Running" ]; then
+          ${tailscale}/bin/tailscale up \
+            --authkey file:${config.sops.templates."tskey-reusable".path} \
+            --ssh \
+            --advertise-routes=${advertisedRoutes} \
+            --advertise-exit-node \
+            --reset
         fi
 
-        # otherwise authenticate with tailscale
-        ${tailscale}/bin/tailscale up --authkey file:${config.sops.templates."tskey-reusable".path} --ssh --advertise-routes=10.0.0.0/24,10.1.8.0/24,10.2.1.0/24,10.3.29.0/24 --advertise-exit-node --reset
+        # Re-assert subnet-router prefs every boot. `tailscale set` is idempotent;
+        # this prevents drift if prefs get cleared via the admin console or a
+        # stray `tailscale set --reset` (which silently nuked routes once and
+        # took down DNS for off-LAN clients).
+        ${tailscale}/bin/tailscale set \
+          --advertise-routes=${advertisedRoutes} \
+          --advertise-exit-node=true
       '';
     };
 	};
