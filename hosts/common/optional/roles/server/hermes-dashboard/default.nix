@@ -91,7 +91,15 @@ in
       '';
 
       serviceConfig = {
-        User = "hermes";
+        # Runs as alex (same as hermes-agent) since the `hermes` system
+        # user was removed 2026-05-13 — leaving `User = "hermes"` here
+        # exited with 217/USER on a fresh start (the running process had
+        # been working via PID inheritance from before the user was
+        # dropped; first auto-deploy SIGTERM+start surfaced this).
+        # The `hermes` GROUP still exists as a shared-secret group and
+        # is set as the supplementary group so dashboard can read the
+        # group-mode-0440 sops secrets that hermes-agent uses.
+        User = "alex";
         Group = "hermes";
         Restart = "on-failure";
         RestartSec = "5s";
