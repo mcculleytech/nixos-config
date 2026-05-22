@@ -109,7 +109,15 @@
       onActivation = {
         autoUpdate = true;
         upgrade = true;
-        cleanup = "zap";
+        # `cleanup = "zap"` will uninstall+wipe ANY brew/cask/tap not
+        # declared here. That's destructive on a system where Homebrew is
+        # also used imperatively — a single forgotten declaration wipes
+        # the app and its data. Use "none" to make the homebrew block
+        # additive ("ensure these are present") and only flip back to
+        # "uninstall" or "zap" if/when faramir's homebrew is fully
+        # declarative. See 2026-05-20 incident: zap removed 48 casks +
+        # 190 formulae before being blocked by a dependency.
+        cleanup = "none";
       };
       taps = [ ];
       brews = lib.optional (config.lab.ironclaw.enable && config.lab.ironclaw.fromBrew) "ironclaw";
