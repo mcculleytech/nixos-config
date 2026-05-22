@@ -10,7 +10,6 @@ let
 in
 {
   imports = [
-    ./claude-code-telemetry.nix
     ./git.nix
     ./vim.nix
   ];
