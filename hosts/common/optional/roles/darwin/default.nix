@@ -48,6 +48,13 @@
 
     programs.zsh.enable = true;
 
+    # nix-darwin counterpart to the NixOS `os-rebuild` alias in
+    # hosts/common/global/env-vars.nix. Home-manager is wired in as a
+    # darwin module (see flake.nix), so one switch covers system + home.
+    environment.shellAliases = {
+      mac-rebuild = "sudo darwin-rebuild switch --flake '/Users/alex/Repositories/personal/nixos-config/#'$(hostname -s)";
+    };
+
     environment.systemPackages = with pkgs; [
       curl
       git
