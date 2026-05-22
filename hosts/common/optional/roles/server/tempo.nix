@@ -48,6 +48,14 @@
       };
     };
 
+    # 3200 is Tempo's HTTP API (Grafana datasource queries land here, and
+    # /metrics is scraped by Prometheus). Grafana on the same host reaches
+    # Tempo via localhost so this only matters for off-host callers, but
+    # match the loki/prometheus pattern — leaving it closed makes ad-hoc
+    # curl debugging from a workstation hang on connect, which already
+    # bit us once.
+    networking.firewall.allowedTCPPorts = [ 3200 ];
+
     # Tempo's NixOS module runs as a DynamicUser, so actual state lives
     # under /var/lib/private/tempo (with /var/lib/tempo being a symlink).
     # Persist the private path with root:root 0700, mirroring ntfy.nix.

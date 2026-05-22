@@ -100,7 +100,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(claude_code_active_time_total_seconds_total[24h]))"
+          "expr": "sum(increase(claude_code_active_time_seconds_total[24h]))"
         }
       ],
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "s", "thresholds": { "mode": "absolute", "steps": [ { "color": "blue", "value": null } ] } } },
@@ -199,7 +199,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(claude_code_code_edit_tool_decision_count_total{decision=\"accept\"}[24h])) / clamp_min(sum(rate(claude_code_code_edit_tool_decision_count_total[24h])), 1)"
+          "expr": "sum(rate(claude_code_code_edit_tool_decision_total{decision=\"accept\"}[24h])) / clamp_min(sum(rate(claude_code_code_edit_tool_decision_total[24h])), 1)"
         }
       ],
       "fieldConfig": { "defaults": { "unit": "percentunit", "decimals": 1, "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "orange", "value": 0.5 }, { "color": "green", "value": 0.85 } ] } } },
