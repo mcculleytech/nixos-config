@@ -1,5 +1,6 @@
 {
   imports = [
+    ./alloy.nix
     ./docker.nix
     ./ironclaw.nix
     ./ironclaw-linux.nix
