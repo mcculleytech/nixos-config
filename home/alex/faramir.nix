@@ -23,6 +23,7 @@
     tmux
     jq
     yq
+    antigravity-cli
   ];
 
   programs.direnv = {

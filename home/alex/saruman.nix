@@ -24,6 +24,7 @@
     firefox
     obsidian
     inputs.claude-code.packages.x86_64-linux.default
+    antigravity-cli
     unstable.ollama
     unstable.lmstudio
     unstable.xonotic
