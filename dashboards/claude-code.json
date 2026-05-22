@@ -322,7 +322,7 @@
         {
           "refId": "A",
           "queryType": "traceql",
-          "query": "{ resource.service.name=\"claude-code\" && name=\"claude_code.interaction\" } | select(interaction.duration_ms, user_prompt_length)"
+          "query": "{ resource.service.name=\"claude-code\" && name=\"claude_code.interaction\" } | select(span.interaction.duration_ms, span.user_prompt_length)"
         }
       ]
     }
