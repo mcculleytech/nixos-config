@@ -56,6 +56,7 @@ in
       				"tts.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ntfy.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"hermes.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"otel.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       			};
       		};
       		blocking = {

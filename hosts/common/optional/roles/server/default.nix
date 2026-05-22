@@ -22,6 +22,9 @@
     ./paperless.nix
     ./prometheus.nix
     ./grafana.nix
+    ./loki.nix
+    ./tempo.nix
+    ./otel-collector.nix
     ./smokeping.nix
     ./ntfy.nix
     ./kokoro.nix

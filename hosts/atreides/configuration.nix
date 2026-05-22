@@ -20,6 +20,9 @@
   home-impermanence.enable = true;
   prometheus-server.enable = true;
   grafana.enable = true;
+  loki.enable = true;
+  tempo.enable = true;
+  otel-collector.enable = true;
   smokeping.enable = true;
   ntfy.enable = true;
 

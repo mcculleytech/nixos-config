@@ -28,7 +28,7 @@ Shared across both tracks — observability is useful regardless of how deploys 
 - [x] `prometheus-node-exporter` on every host for hardware/OS metrics ✅ 2026-03-17
 - [x] Grafana dashboards for system health, disk usage, service status ✅ 2026-03-17
 - [ ] Alertmanager rules for disk full, service down, high load — notify via ntfy/email
-- [ ] Optional: Loki for centralized log aggregation
+- [x] Loki for centralized log aggregation — deployed on atreides alongside OTEL collector + Tempo; Claude Code ships logs/metrics/traces via OTLP/HTTP through `otel.home.mcculley.tech` ✅ 2026-05-21
 
 **Auto-Update Pipeline:**
 
@@ -166,7 +166,7 @@ Replace static Alertmanager rules with an AI layer that correlates metrics and p
 
 Use AI to surface anomalies and patterns in logs that static rules would miss.
 
-- [ ] Loki for centralized log aggregation (shared with Track A if both run)
+- [x] Loki for centralized log aggregation (shared with Track A if both run) ✅ 2026-05-21
 - [ ] Periodic log summarization: cron job feeds recent logs to LLM, outputs a daily digest of notable events
 - [ ] Anomaly detection: flag log patterns that deviate from baseline (e.g. sudden spike in auth failures, unusual systemd restarts)
 - [ ] Query interface: natural language queries against logs — "what happened on phantom between 2am and 4am?"

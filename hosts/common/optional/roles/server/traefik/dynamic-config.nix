@@ -248,6 +248,15 @@ in
 	   				};
 	   				middlewares = [ "auth" "default-headers" "https-redirectscheme" ];
 	   			};
+	   			otel = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`otel.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "otel";
+	   			};
 	   			hermes-dashboard = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`hermes.${tr_secrets.traefik.homelab_domain}`)";
@@ -451,6 +460,14 @@ in
 	   					# atreides reaches via tailscale0 from its own tailnet IP.
 	   					servers = [
 	   						{url = "http://${hosts.saruman.tailnetIp}:9119";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			otel = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.atreides.ip}:4318";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

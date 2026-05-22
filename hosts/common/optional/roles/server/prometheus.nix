@@ -14,6 +14,10 @@ in
     services.prometheus = {
       enable = true;
       port = 9090;
+      # --web.enable-otlp-receiver exposes /api/v1/otlp/v1/metrics, the
+      # native OTLP HTTP ingest path. The otel-collector exporter pushes
+      # Claude Code metrics here; removes the need for prometheusremotewrite.
+      extraFlags = [ "--web.enable-otlp-receiver" ];
       globalConfig = {
         scrape_interval = "15s";
       };
@@ -63,6 +67,24 @@ in
                 "${hosts.saruman.ip}:9835"
               ];
             }
+          ];
+        }
+        {
+          job_name = "otel-collector";
+          static_configs = [
+            { targets = [ "${hosts.atreides.ip}:8888" ]; }
+          ];
+        }
+        {
+          job_name = "loki";
+          static_configs = [
+            { targets = [ "${hosts.atreides.ip}:3100" ]; }
+          ];
+        }
+        {
+          job_name = "tempo";
+          static_configs = [
+            { targets = [ "${hosts.atreides.ip}:3200" ]; }
           ];
         }
       ];

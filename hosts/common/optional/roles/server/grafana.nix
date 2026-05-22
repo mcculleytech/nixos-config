@@ -26,14 +26,58 @@ in
         };
       };
       provision = {
-        datasources.settings.datasources = [
+        datasources.settings = {
+          # Old Prometheus rows pre-date the file-provisioned config and
+          # have auto-generated UIDs that can't be mutated in place. Drop
+          # them so the entries below recreate cleanly with stable UIDs
+          # that the dashboards reference.
+          deleteDatasources = [
+            { name = "Prometheus"; orgId = 1; }
+            { name = "prometheus-1"; orgId = 1; }
+          ];
+          datasources = [
           {
             name = "Prometheus";
             type = "prometheus";
+            uid = "prometheus";
             url = "http://localhost:9090";
             isDefault = true;
           }
-        ];
+          {
+            name = "Loki";
+            type = "loki";
+            uid = "loki";
+            url = "http://localhost:3100";
+          }
+          {
+            name = "Tempo";
+            type = "tempo";
+            uid = "tempo";
+            url = "http://localhost:3200";
+            # Drill from a trace span into Loki logs sharing the same
+            # service.name. tracesToMetrics + serviceMap intentionally
+            # omitted — they require explicit queries / span_metrics and
+            # would otherwise fail provisioning at startup.
+            jsonData = {
+              tracesToLogsV2 = {
+                datasourceUid = "loki";
+                tags = [ { key = "service.name"; value = "service_name"; } ];
+                filterByTraceID = false;
+              };
+            };
+          }
+          ];
+        };
+        dashboards.settings = {
+          apiVersion = 1;
+          providers = [
+            {
+              name = "homelab";
+              type = "file";
+              options.path = ../../../../../dashboards;
+            }
+          ];
+        };
       };
     };
 
