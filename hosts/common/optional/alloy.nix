@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
 let
-  lokiEndpoint = "http://${config.lab.hosts.atreides.ip}:3100/loki/api/v1/push";
+  cfg = config.lab.alloy;
+  lokiEndpoint = "http://${cfg.lokiHost}:3100/loki/api/v1/push";
 
   # Alloy config (River syntax). Reads systemd-journald and ships to the
   # central Loki on atreides. Hostname is taken from the agent at runtime
@@ -47,13 +48,26 @@ let
   '';
 in
 {
-  options.lab.alloy.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = "Run Grafana Alloy as a journald → Loki log shipper.";
+  options.lab.alloy = {
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Run Grafana Alloy as a journald → Loki log shipper.";
+    };
+
+    lokiHost = lib.mkOption {
+      type = lib.types.str;
+      default = config.lab.hosts.atreides.ip;
+      description = ''
+        Address (IP or hostname) of the central Loki instance the shipper
+        should push to. Defaults to atreides's nix-subnet LAN IP. Override
+        per-host when a box can't reach that — e.g. vader on the DMZ
+        subnet uses atreides's tailnet IP instead.
+      '';
+    };
   };
 
-  config = lib.mkIf config.lab.alloy.enable {
+  config = lib.mkIf cfg.enable {
     services.alloy = {
       enable = true;
       configPath = alloyConfig;
