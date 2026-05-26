@@ -32,13 +32,10 @@
     ./auto-deploy.nix
     ./agent-memory
     ./obsidian-headless
-    ./vault-mcp
     ./signal-cli
-    ./signal-mcp
     ./radicale-mcp
     ./mcp
     ./gcal-mcp
-    ./prometheus-mcp
     ./vault-indexer
     ./nas-backups
     ./obsidian-backup

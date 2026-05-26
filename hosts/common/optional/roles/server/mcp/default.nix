@@ -13,5 +13,8 @@
   imports = [
     ./escalator
     ./miniflux
+    ./prometheus
+    ./signal
+    ./vault
   ];
 }

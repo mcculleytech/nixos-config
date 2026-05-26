@@ -3,14 +3,14 @@
   ironclaw = pkgs.callPackage ./ironclaw { rustPlatform = pkgs.unstable.rustPlatform; };
   agent-memory-mcp = pkgs.callPackage ./agent-memory-mcp { python3 = pkgs.python3; inherit version; };
   obsidian-headless = pkgs.callPackage ./obsidian-headless { };
-  vault-mcp = pkgs.callPackage ./vault-mcp { python3 = pkgs.python3; inherit version; };
-  signal-mcp = pkgs.callPackage ./signal-mcp { python3 = pkgs.python3; inherit version; };
+  vault-mcp = pkgs.callPackage ./vault-mcp { inherit version; };
+  signal-mcp = pkgs.callPackage ./signal-mcp { inherit version; };
   radicale-mcp = pkgs.callPackage ./radicale-mcp { python3 = pkgs.python3; inherit version; };
   miniflux-mcp = pkgs.callPackage ./miniflux-mcp { inherit version; };
   gcal-mcp = pkgs.callPackage ./gcal-mcp { python3 = pkgs.python3; inherit version; };
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
   escalator-mcp = pkgs.callPackage ./escalator-mcp { inherit version; };
-  prometheus-mcp = pkgs.callPackage ./prometheus-mcp { python3 = pkgs.python3; inherit version; };
+  prometheus-mcp = pkgs.callPackage ./prometheus-mcp { inherit version; };
   hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };
   hermes-plugin-intel = pkgs.callPackage ./hermes-plugin-intel {
     hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };

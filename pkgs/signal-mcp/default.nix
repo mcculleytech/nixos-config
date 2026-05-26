@@ -1,33 +1,24 @@
 { lib
-, python3
-, version ? "0.1.0"
+, buildGoModule
+, version ? "0.2.0"
 }:
 
-python3.pkgs.buildPythonApplication {
+buildGoModule {
   pname = "signal-mcp";
   inherit version;
-  pyproject = true;
 
   src = ./.;
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
-  '';
+  # Discovered via `nix-build` failing on lib.fakeHash; update if go.sum changes.
+  # Larger than peer MCPs because modernc.org/sqlite pulls a substantial dep tree.
+  vendorHash = "sha256-OYeAnrRmTXbbdZlaoTEe9hhmTk57JwZgtie5RitlYo8=";
 
-  build-system = [ python3.pkgs.setuptools ];
-
-  dependencies = with python3.pkgs; [
-    mcp
-    starlette
-    uvicorn
-    httpx
-  ];
+  ldflags = [ "-s" "-w" ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "MCP server for outbound Signal messaging with mandatory approval gate";
+    description = "MCP server for outbound Signal messaging with mandatory approval gate (Go)";
     license = licenses.mit;
     mainProgram = "signal-mcp";
     platforms = platforms.linux;
