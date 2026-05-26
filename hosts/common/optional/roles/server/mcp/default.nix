@@ -12,6 +12,7 @@
   # here, 4) appending the import below, 5) enabling on the relevant host.
   imports = [
     ./agent-memory
+    ./email
     ./escalator
     ./gcal
     ./miniflux

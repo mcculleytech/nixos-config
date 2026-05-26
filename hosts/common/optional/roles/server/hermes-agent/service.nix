@@ -348,6 +348,15 @@ in
           # Read-only by design — no exclusions needed. If/when we add
           # write-side tools (silence creation, etc.) revisit.
         };
+        email = {
+          url = cfg.emailMcpUrl;
+          headers.Authorization = "Bearer \${HERMES_EMAIL_MCP_TOKEN}";
+          # email_pending_deny is operator-side cleanup; the LLM should never
+          # reject a queued send on its own behalf (mirrors signal). The
+          # send path stays gated: email_send queues only, email_pending_approve
+          # is the sole SMTP path — alex approves every outbound.
+          tools.exclude = [ "email_pending_deny" ];
+        };
       };
     };
 

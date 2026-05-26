@@ -8,6 +8,7 @@
   radicale-mcp = pkgs.callPackage ./radicale-mcp { inherit version; };
   miniflux-mcp = pkgs.callPackage ./miniflux-mcp { inherit version; };
   gcal-mcp = pkgs.callPackage ./gcal-mcp { inherit version; };
+  email-mcp = pkgs.callPackage ./email-mcp { inherit version; };
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
   escalator-mcp = pkgs.callPackage ./escalator-mcp { inherit version; };
   prometheus-mcp = pkgs.callPackage ./prometheus-mcp { inherit version; };

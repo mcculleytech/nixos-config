@@ -19,10 +19,12 @@ in
   # credential from Proton account login (revocable from Proton web UI),
   # and Proton 2FA on the account is the real backstop.
   #
-  # Exposes loopback only:
-  #   127.0.0.1:1143 — IMAP (TLS)
-  #   127.0.0.1:1025 — SMTP submission
-  # Future email MCP on saruman connects to those for hermes integration.
+  # Exposes loopback only (Bridge picked the +1 ports because 1143/1025 had
+  # stale TIME_WAIT holds during the 2026-05-26 bootstrap, and it persists the
+  # choice in its vault):
+  #   127.0.0.1:1144 — IMAP (STARTTLS, self-signed)
+  #   127.0.0.1:1026 — SMTP submission (STARTTLS + AUTH)
+  # email-mcp on saruman connects to these (EMAIL_MCP_IMAP_ADDR/SMTP_ADDR).
   options.lab.protonmail-bridge = {
     enable = lib.mkEnableOption ''
       headless Proton Mail Bridge, autostart at boot via user-linger

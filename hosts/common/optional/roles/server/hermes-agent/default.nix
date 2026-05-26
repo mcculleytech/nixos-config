@@ -153,6 +153,12 @@ in
       default = "http://${mcpHost}:4287/mcp";
       description = "Streamable-HTTP URL for the Prometheus + Alertmanager MCP.";
     };
+
+    emailMcpUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://${mcpHost}:4288/mcp";
+      description = "Streamable-HTTP URL for the email MCP (Proton Bridge IMAP/SMTP, gated send).";
+    };
   };
 
   config = lib.mkIf cfg.enable {

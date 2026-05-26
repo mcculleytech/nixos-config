@@ -46,6 +46,7 @@ in
       future_hermes_gcal = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_escalator = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_prometheus = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      future_hermes_email = { owner = "alex"; group = "hermes"; mode = "0400"; };
       hermes_github_pat = { owner = "alex"; group = "hermes"; mode = "0400"; };
       # Rendered directly into HERMES_HOME at the path the google-workspace
       # skill's setup.py expects (hard-coded `${HERMES_HOME}/google_client_secret.json`).
@@ -94,6 +95,7 @@ in
         HERMES_GCAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_gcal}
         HERMES_ESCALATOR_MCP_TOKEN=${config.sops.placeholder.future_hermes_escalator}
         HERMES_PROMETHEUS_MCP_TOKEN=${config.sops.placeholder.future_hermes_prometheus}
+        HERMES_EMAIL_MCP_TOKEN=${config.sops.placeholder.future_hermes_email}
         GH_TOKEN=${config.sops.placeholder.hermes_github_pat}
         # In-process plugins (hermes-plugin-intel) call miniflux's REST
         # API directly rather than going through miniflux-mcp's bearer
