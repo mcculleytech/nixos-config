@@ -66,6 +66,30 @@
   networking.hostName = "saruman";
   networking.networkmanager.enable = true;
 
+  # ─── Podman storage on the big disk ───────────────────────────────────────
+  # Relocate podman's graphroot to encryptedHome (/home, 932GB) instead of
+  # encryptedRoot (the 233GB NVMe shared with /nix). Without this, container
+  # image weight (Kokoro 13.7GB + whatever else) competes with the Nix store
+  # for the small disk — caused the 2026-05-26 disk-full cascade where a
+  # deploy storm couldn't recover even with manual GC.
+  #
+  # /home is on a separate LUKS+btrfs disk, not subject to impermanence, so
+  # the new graphroot persists across reboots naturally — no /persist binds
+  # needed. runroot stays in /run (tmpfs) per upstream default; it's
+  # ephemeral runtime state and small.
+  #
+  # Migration: stop podman-*.service, rsync /var/lib/containers/storage/ to
+  # /home/podman/storage/, deploy, services restart reading new path.
+  virtualisation.containers.storage.settings.storage = {
+    driver = "overlay";
+    graphroot = "/home/podman/storage";
+    runroot = "/run/containers/storage";
+  };
+  systemd.tmpfiles.rules = [
+    "d /home/podman 0700 root root -"
+    "d /home/podman/storage 0700 root root -"
+  ];
+
   time.timeZone = "America/Chicago";
 
   services.pulseaudio.enable = false;

@@ -3,6 +3,19 @@ let
   hosts = config.lab.hosts;
 in
 {
+  # ─── Module structure ────────────────────────────────────────────────────
+  # Split for navigability:
+  #   • default.nix       — option declaration + core scrape configs
+  #   • alertmanager.nix  — alertmanager service + ntfy webhook routing
+  #   • alerts-<group>.nix — one file per logical alert group; each
+  #                          contributes to services.prometheus.rules via
+  #                          the NixOS module merge. To add a new alert
+  #                          group: create alerts-foo.nix, declare its
+  #                          rules, drop into imports below.
+  imports = [
+    ./alertmanager.nix
+    ./alerts-disk.nix
+  ];
 
   options = {
     prometheus-server.enable =

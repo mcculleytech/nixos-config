@@ -6,6 +6,14 @@
     settings = {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
+      # Mid-build GC safety net. When free space on the store volume
+      # drops below `min-free`, the daemon triggers an in-band GC that
+      # runs until `max-free` is available. Without this, the daemon
+      # happily fills the disk then crashes — observed 2026-05-26 when
+      # a deploy storm + heavy container image pulls (5GB Speaches,
+      # 13.7GB Kokoro) saturated /nix on saruman's 233GB system disk.
+      min-free = toString (10 * 1024 * 1024 * 1024);   # 10 GB
+      max-free = toString (50 * 1024 * 1024 * 1024);   # 50 GB
       substituters = [
         "https://cosmic.cachix.org/"
         "https://nix-community.cachix.org"
@@ -24,8 +32,13 @@
     };
     gc = {
       automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 14d";
+      # Daily cadence (was weekly). A workstation that deploys multiple
+      # times a day can fill the store between weekly runs — see
+      # 2026-05-26 incident notes in `min-free` comment above.
+      dates = "daily";
+      # One week of rollback targets retained. Auto-deploy carries its
+      # own snapshot mechanism for emergencies, so 7d is plenty.
+      options = "--delete-older-than 7d";
     };
   };
   # Keep 5 boot generations across both bootloaders

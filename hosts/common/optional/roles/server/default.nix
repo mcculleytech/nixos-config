@@ -20,7 +20,7 @@
     ./n8n.nix
     ./miniflux.nix
     ./paperless.nix
-    ./prometheus.nix
+    ./prometheus
     ./grafana.nix
     ./loki.nix
     ./tempo.nix
