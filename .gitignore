@@ -9,6 +9,11 @@ id_*
 result
 result-*
 
+# Go build artifacts — `go build` without -o drops a binary named after the
+# package directory into that directory.
+pkgs/*-mcp/*-mcp
+!pkgs/*-mcp/*-mcp/
+
 # Editor/OS artifacts
 .direnv/
 .DS_Store

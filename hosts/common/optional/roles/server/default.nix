@@ -36,7 +36,7 @@
     ./signal-cli
     ./signal-mcp
     ./radicale-mcp
-    ./miniflux-mcp
+    ./mcp
     ./gcal-mcp
     ./escalator-mcp
     ./prometheus-mcp

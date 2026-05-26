@@ -27,6 +27,12 @@ Use the `/pre-merge` skill before merging a branch **or** before committing dire
 ## new deployments
 Use the `/deploy-service` skill. It encodes the full deployment workflow with approval gates.
 
+## MCP conventions
+- MCP servers are written in **Go**. New MCPs use `github.com/mark3labs/mcp-go` with a Streamable-HTTP transport at `/mcp` and the same bearer-token + sops pattern as existing services.
+- Package source: `pkgs/<name>-mcp/` (`main.go` + `go.mod` + `default.nix` using `buildGoModule`).
+- NixOS module: `hosts/common/optional/roles/server/mcp/<name>/default.nix` (NOT mixed in with non-MCP service modules under `roles/server/`).
+- Port allocations 4280–4287 are spoken for; new MCPs claim 4288+.
+
 ## impermanence
 - All hosts use impermanence with a blank root btrfs subvol snapshot. Persistent state lives under `/persist`.
 - When a service requires subdirectories inside its state directory (e.g., `/var/lib/foo/data`), impermanence will bind-mount the parent directory but won't create subdirectories. If the service's pre-start script expects them to exist, it will fail.

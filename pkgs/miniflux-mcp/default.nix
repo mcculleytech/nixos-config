@@ -1,33 +1,24 @@
 { lib
-, python3
-, version ? "0.1.0"
+, buildGoModule
+, version ? "0.2.0"
 }:
 
-python3.pkgs.buildPythonApplication {
+buildGoModule {
   pname = "miniflux-mcp";
   inherit version;
-  pyproject = true;
 
   src = ./.;
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
-  '';
+  # Discovered via `nix-build` failing on lib.fakeHash; update if go.sum changes.
+  vendorHash = "sha256-Nhj/P8IqRqkX3DiPz58H5Q/iTRIyRM45kg/DCtbM+ME=";
 
-  build-system = [ python3.pkgs.setuptools ];
-
-  dependencies = with python3.pkgs; [
-    mcp
-    starlette
-    uvicorn
-    httpx
-  ];
+  # ldflags trim build paths from the binary; -s -w drop debug/symbol tables.
+  ldflags = [ "-s" "-w" ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "MCP server fronting a Miniflux RSS reader instance";
+    description = "MCP server fronting a Miniflux RSS reader instance (Go)";
     license = licenses.mit;
     mainProgram = "miniflux-mcp";
     platforms = platforms.linux;
