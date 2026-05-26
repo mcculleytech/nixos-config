@@ -30,7 +30,6 @@
     ./kokoro.nix
     ./protonmail-bridge.nix
     ./auto-deploy.nix
-    ./agent-memory
     ./obsidian-headless
     ./signal-cli
     ./mcp
