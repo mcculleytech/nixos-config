@@ -36,6 +36,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -529,23 +530,32 @@ func fetchEnvelopes(ctx context.Context, c *imapclient.Client, uids []imap.UID, 
 	if len(uids) == 0 {
 		return []map[string]any{}, nil
 	}
-	// Most-recent first; cap to limit.
-	if len(uids) > limit {
-		uids = uids[len(uids)-limit:]
-	}
 	set := imap.UIDSetNum(uids...)
 	opts := &imap.FetchOptions{Envelope: true, UID: true}
 	msgs, err := c.Fetch(set, opts).Collect()
 	if err != nil {
 		return nil, fmt.Errorf("fetch envelopes: %w", err)
 	}
+	// Sort by the message Date header, most recent first. UID order does NOT
+	// track Date in folders like "All Mail" where messages are added out of
+	// order (an older message archived recently gets a higher UID), so sorting
+	// by UID would answer "the latest ..." with the wrong message. Sort the
+	// whole match set by Date, THEN cap to limit, so the cap keeps the newest.
+	msgDate := func(m *imapclient.FetchMessageBuffer) time.Time {
+		if m != nil && m.Envelope != nil {
+			return m.Envelope.Date
+		}
+		return time.Time{}
+	}
+	sort.SliceStable(msgs, func(i, j int) bool {
+		return msgDate(msgs[i]).After(msgDate(msgs[j]))
+	})
+	if len(msgs) > limit {
+		msgs = msgs[:limit]
+	}
 	out := make([]map[string]any, 0, len(msgs))
 	for _, m := range msgs {
 		out = append(out, envelopeSummary(m.UID, m.Envelope, folder, ""))
-	}
-	// Reverse so most recent is first.
-	for i, j := 0, len(out)-1; i < j; i, j = i+1, j-1 {
-		out[i], out[j] = out[j], out[i]
 	}
 	return out, nil
 }
