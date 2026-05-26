@@ -27,3 +27,12 @@ CREATE INDEX IF NOT EXISTS memories_project_id_idx ON memories (project_id);
 CREATE INDEX IF NOT EXISTS memories_tags_gin_idx   ON memories USING gin (tags);
 CREATE INDEX IF NOT EXISTS memories_embedding_hnsw
   ON memories USING hnsw (embedding vector_cosine_ops);
+-- Partial unique index on `source` makes duplicate insertion structurally
+-- impossible for namespaced memories (e.g. vault:* chunks). Source can be
+-- NULL for free-form memories where there's no canonical identifier; the
+-- partial filter keeps that pathway working. Memory_insert uses an
+-- ON CONFLICT (source) WHERE source IS NOT NULL DO UPDATE upsert that
+-- references this index. Added 2026-05-26 after the vault-indexer
+-- duplication incident exposed the missing constraint.
+CREATE UNIQUE INDEX IF NOT EXISTS memories_source_uniq
+  ON memories (source) WHERE source IS NOT NULL;

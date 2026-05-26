@@ -663,7 +663,13 @@ func toolResultJSON(v any) *mcp.CallToolResult {
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("encode result: %v", err))
 	}
-	return mcp.NewToolResultText(string(b))
+	// Structured + text fallback. MCP structuredContent must be an object, so
+	// wrap bare values under "result" (matches FastMCP; clients unwrap).
+	structured := any(v)
+	if _, isMap := v.(map[string]any); !isMap {
+		structured = map[string]any{"result": v}
+	}
+	return mcp.NewToolResultStructured(structured, string(b))
 }
 
 func toolErr(err error) *mcp.CallToolResult {

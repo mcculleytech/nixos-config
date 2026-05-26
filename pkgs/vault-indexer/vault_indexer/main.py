@@ -206,7 +206,32 @@ async def reconcile(vault_root: Path, am_url: str, bearer: str) -> None:
             "memory_list_by_source",
             {"source_prefix": "vault:", "limit": 1_000_000},
         )
-        by_source: dict[str, dict[str, Any]] = {row["source"]: row for row in (existing or [])}
+        # Build by_source as a list-valued map first, so we can detect any
+        # surviving duplicates from before the schema's UNIQUE INDEX landed.
+        # In steady state every list has exactly one entry; if any have more,
+        # the indexer cleans them up by deleting the older rows and proceeds
+        # with the newest. Observed 2026-05-26: a partial-crashed run seeded
+        # ~1115 duplicates that the Python dict comprehension's last-write-
+        # wins semantics couldn't surface (each indexer run only deleted one
+        # dup row at a time, perpetuating the rest). Belt-and-suspenders to
+        # the schema constraint, mostly defensive.
+        by_source_lists: dict[str, list[dict[str, Any]]] = {}
+        for row in (existing or []):
+            by_source_lists.setdefault(row["source"], []).append(row)
+
+        # The Go MCP's memory_list_by_source orders by (source, created_at DESC)
+        # so the first row of each list is already the newest. Defensive cleanup
+        # of any stragglers — should be a no-op now that the schema has the
+        # UNIQUE INDEX, but kept for self-healing if it's ever dropped.
+        by_source: dict[str, dict[str, Any]] = {}
+        dup_cleanup_count = 0
+        for source, rows in by_source_lists.items():
+            by_source[source] = rows[0]
+            for stale in rows[1:]:
+                await call_tool(session, "memory_delete", {"id": stale["id"]})
+                dup_cleanup_count += 1
+        if dup_cleanup_count:
+            log.warning("cleaned up %d duplicate rows during snapshot", dup_cleanup_count)
         log.info("found %d existing vault chunks in agent_memory", len(by_source))
 
         # 2. Walk disk, build set of desired sources.

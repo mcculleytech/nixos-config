@@ -264,7 +264,17 @@ func toolResultJSON(v any) *mcp.CallToolResult {
 	if err != nil {
 		return mcp.NewToolResultError(fmt.Sprintf("encode result: %v", err))
 	}
-	return mcp.NewToolResultText(string(b))
+	// Return BOTH structured content (programmatic clients like vault-indexer
+	// parse structuredContent) AND a JSON text fallback (LLM clients like
+	// hermes read text blocks). MCP structuredContent must be a JSON object,
+	// so bare values (arrays/scalars) get wrapped under "result" — matches
+	// Python FastMCP, which vault-indexer's call_tool unwraps via
+	// sc.get("result"). See 2026-05-26 dedup incident.
+	structured := any(v)
+	if _, isMap := v.(map[string]any); !isMap {
+		structured = map[string]any{"result": v}
+	}
+	return mcp.NewToolResultStructured(structured, string(b))
 }
 
 func toolErr(err error) *mcp.CallToolResult {
@@ -408,7 +418,11 @@ func handlerMemoryListBySource(pool *pgxpool.Pool) server.ToolHandlerFunc {
 			FROM memories m
 			LEFT JOIN projects p ON p.id = m.project_id
 			WHERE m.source LIKE $1
-			ORDER BY m.source
+			-- Tie-breaker on created_at DESC makes the snapshot deterministic
+			-- even if the schema ever permits multiple rows per source again.
+			-- Callers who dedup by source in-memory (e.g. vault-indexer) get
+			-- the newest row consistently rather than an arbitrary one.
+			ORDER BY m.source, m.created_at DESC
 			LIMIT $2
 		`, prefix+"%", limit)
 		if err != nil {
@@ -475,18 +489,32 @@ func handlerMemoryInsert(pool *pgxpool.Pool, emb *embedClient) server.ToolHandle
 		}
 
 		var id string
-		var createdAt time.Time
+		var createdAt, updatedAt time.Time
+		// True upsert on the `memories_source_uniq` partial unique index. If
+		// the same `source` is inserted twice, we update in place rather than
+		// creating a duplicate row. The partial-index inference syntax
+		// (ON CONFLICT (source) WHERE source IS NOT NULL) lets us coexist
+		// with free-form (source=NULL) memories where duplicates are allowed.
 		err = pool.QueryRow(ctx, `
 			INSERT INTO memories (content, embedding, source, project_id, tags, metadata)
 			VALUES ($1, $2, $3, $4::uuid, $5, $6)
-			RETURNING id::text, created_at
-		`, content, pgvector.NewVector(vec), source, projectID, tags, metadata).Scan(&id, &createdAt)
+			ON CONFLICT (source) WHERE source IS NOT NULL
+			DO UPDATE SET
+				content    = EXCLUDED.content,
+				embedding  = EXCLUDED.embedding,
+				project_id = EXCLUDED.project_id,
+				tags       = EXCLUDED.tags,
+				metadata   = EXCLUDED.metadata,
+				updated_at = now()
+			RETURNING id::text, created_at, updated_at
+		`, content, pgvector.NewVector(vec), source, projectID, tags, metadata).Scan(&id, &createdAt, &updatedAt)
 		if err != nil {
-			return toolErr(fmt.Errorf("insert: %w", err)), nil
+			return toolErr(fmt.Errorf("upsert: %w", err)), nil
 		}
 		return toolResultJSON(map[string]any{
 			"id":         id,
 			"created_at": createdAt.Format(time.RFC3339Nano),
+			"updated_at": updatedAt.Format(time.RFC3339Nano),
 		}), nil
 	}
 }
