@@ -19,6 +19,7 @@ package main
 
 import (
 	"context"
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -146,7 +147,14 @@ func bearerAuthMiddleware(tokens map[string]string, next http.Handler) http.Hand
 			return
 		}
 		tok := strings.TrimSpace(auth[7:])
-		if _, ok := tokens[tok]; !ok {
+		tokBytes := []byte(tok)
+		matched := false
+		for stored := range tokens {
+			if subtle.ConstantTimeCompare(tokBytes, []byte(stored)) == 1 {
+				matched = true
+			}
+		}
+		if !matched {
 			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid token"})
 			return
 		}

@@ -15,6 +15,7 @@ package main
 
 import (
 	"context"
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -177,7 +178,14 @@ func bearerAuthMiddleware(tokens map[string]string, next http.Handler) http.Hand
 			return
 		}
 		tok := strings.TrimSpace(auth[7:])
-		if _, ok := tokens[tok]; !ok {
+		tokBytes := []byte(tok)
+		matched := false
+		for stored := range tokens {
+			if subtle.ConstantTimeCompare(tokBytes, []byte(stored)) == 1 {
+				matched = true
+			}
+		}
+		if !matched {
 			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid token"})
 			return
 		}
@@ -593,10 +601,14 @@ func handlerVaultSearch(cfg *config) server.ToolHandlerFunc {
 				if end > len(line) {
 					end = len(line)
 				}
+				snippet := line[start:end]
+				// Byte-window slicing can split a multibyte rune; ensure valid
+				// UTF-8 so json.Marshal in toolResultJSON does not choke.
+				snippet = strings.ToValidUTF8(snippet, "")
 				hits = append(hits, map[string]any{
 					"path":    rel,
 					"line":    i + 1,
-					"snippet": line[start:end],
+					"snippet": snippet,
 				})
 				if len(hits) >= limit {
 					return filepath.SkipAll

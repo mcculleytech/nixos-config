@@ -13,6 +13,7 @@ package main
 
 import (
 	"context"
+	"crypto/subtle"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -35,6 +36,8 @@ const (
 )
 
 const openRouterURL = "https://openrouter.ai/api/v1/chat/completions"
+
+const maxResponseBytes = 32 << 20 // 32 MiB cap on upstream response bodies
 
 // ─── Configuration ──────────────────────────────────────────────────────────
 
@@ -166,7 +169,14 @@ func bearerAuthMiddleware(tokens map[string]string, next http.Handler) http.Hand
 			return
 		}
 		tok := strings.TrimSpace(auth[7:])
-		if _, ok := tokens[tok]; !ok {
+		tokBytes := []byte(tok)
+		matched := false
+		for stored := range tokens {
+			if subtle.ConstantTimeCompare(tokBytes, []byte(stored)) == 1 {
+				matched = true
+			}
+		}
+		if !matched {
 			writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid token"})
 			return
 		}
@@ -234,7 +244,7 @@ func (o *openRouterClient) consult(ctx context.Context, model, userMessage strin
 		return nil, fmt.Errorf("openrouter request failed: %w", err)
 	}
 	defer resp.Body.Close()
-	respBody, _ := io.ReadAll(resp.Body)
+	respBody, _ := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes))
 	if resp.StatusCode != 200 {
 		snippet := string(respBody)
 		if len(snippet) > 500 {
