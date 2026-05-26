@@ -1,34 +1,24 @@
 { lib
-, python3
-, version ? "0.1.0"
+, buildGoModule
+, version ? "0.2.0"
 }:
 
-python3.pkgs.buildPythonApplication {
+buildGoModule {
   pname = "radicale-mcp";
   inherit version;
-  pyproject = true;
 
   src = ./.;
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
-  '';
+  # Discovered via `nix-build` failing on lib.fakeHash; update if go.sum changes.
+  vendorHash = "sha256-n/hkGkSBTsJ+yhOmmObMv5COFOo9DyHJC8WMH3+fayI=";
 
-  build-system = [ python3.pkgs.setuptools ];
-
-  dependencies = with python3.pkgs; [
-    mcp
-    starlette
-    uvicorn
-    caldav
-    vobject
-  ];
+  # ldflags trim build paths from the binary; -s -w drop debug/symbol tables.
+  ldflags = [ "-s" "-w" ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "MCP server fronting a Radicale CalDAV/CardDAV instance";
+    description = "MCP server fronting a Radicale CalDAV/CardDAV instance (Go)";
     license = licenses.mit;
     mainProgram = "radicale-mcp";
     platforms = platforms.linux;

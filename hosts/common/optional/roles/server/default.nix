@@ -33,9 +33,7 @@
     ./agent-memory
     ./obsidian-headless
     ./signal-cli
-    ./radicale-mcp
     ./mcp
-    ./gcal-mcp
     ./vault-indexer
     ./nas-backups
     ./obsidian-backup

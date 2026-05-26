@@ -12,8 +12,10 @@
   # here, 4) appending the import below, 5) enabling on the relevant host.
   imports = [
     ./escalator
+    ./gcal
     ./miniflux
     ./prometheus
+    ./radicale
     ./signal
     ./vault
   ];

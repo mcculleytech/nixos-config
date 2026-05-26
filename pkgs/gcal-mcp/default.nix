@@ -1,35 +1,25 @@
 { lib
-, python3
-, version ? "0.1.0"
+, buildGoModule
+, version ? "0.2.0"
 }:
 
-python3.pkgs.buildPythonApplication {
+buildGoModule {
   pname = "gcal-mcp";
   inherit version;
-  pyproject = true;
 
   src = ./.;
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
-  '';
+  # Discovered via `nix-build` failing on lib.fakeHash; update if go.sum changes.
+  # Google API libraries pull a substantial vendor closure.
+  vendorHash = "sha256-YcH/VP9x4/IS5dDN00c3ADWOpDTofcxZP7/OHas4fH0=";
 
-  build-system = [ python3.pkgs.setuptools ];
-
-  dependencies = with python3.pkgs; [
-    mcp
-    starlette
-    uvicorn
-    google-api-python-client
-    google-auth
-    google-auth-oauthlib
-  ];
+  # ldflags trim build paths from the binary; -s -w drop debug/symbol tables.
+  ldflags = [ "-s" "-w" ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "MCP server fronting Google Calendar via existing OAuth credentials";
+    description = "MCP server fronting Google Calendar via existing OAuth credentials (Go)";
     license = licenses.mit;
     mainProgram = "gcal-mcp";
     platforms = platforms.linux;

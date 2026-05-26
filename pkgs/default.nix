@@ -5,9 +5,9 @@
   obsidian-headless = pkgs.callPackage ./obsidian-headless { };
   vault-mcp = pkgs.callPackage ./vault-mcp { inherit version; };
   signal-mcp = pkgs.callPackage ./signal-mcp { inherit version; };
-  radicale-mcp = pkgs.callPackage ./radicale-mcp { python3 = pkgs.python3; inherit version; };
+  radicale-mcp = pkgs.callPackage ./radicale-mcp { inherit version; };
   miniflux-mcp = pkgs.callPackage ./miniflux-mcp { inherit version; };
-  gcal-mcp = pkgs.callPackage ./gcal-mcp { python3 = pkgs.python3; inherit version; };
+  gcal-mcp = pkgs.callPackage ./gcal-mcp { inherit version; };
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
   escalator-mcp = pkgs.callPackage ./escalator-mcp { inherit version; };
   prometheus-mcp = pkgs.callPackage ./prometheus-mcp { inherit version; };
