@@ -194,7 +194,18 @@ async def call_tool(session: ClientSession, name: str, args: dict[str, Any]) -> 
 async def reconcile(vault_root: Path, am_url: str, bearer: str) -> None:
     async with open_session(am_url, bearer) as session:
         # 1. Snapshot existing vault: rows in agent_memory under source LIKE 'vault:%'.
-        existing = await call_tool(session, "memory_list_by_source", {"source_prefix": "vault:"})
+        # Explicit large limit overrides memory_list_by_source's default cap of
+        # 10 000. Without this, snapshots are silently truncated once the vault
+        # exceeds ~10k chunks — any source past the cap is treated as missing
+        # by the sha-skip check below, gets re-inserted every hour, and the
+        # table grows exponentially. Observed 2026-05-26: 12.7k unique sources
+        # multiplied to 4.1M rows (~325× duplication) before postgres ran out
+        # of disk. 1M is comfortable headroom for years of vault growth.
+        existing = await call_tool(
+            session,
+            "memory_list_by_source",
+            {"source_prefix": "vault:", "limit": 1_000_000},
+        )
         by_source: dict[str, dict[str, Any]] = {row["source"]: row for row in (existing or [])}
         log.info("found %d existing vault chunks in agent_memory", len(by_source))
 
