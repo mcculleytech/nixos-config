@@ -570,7 +570,7 @@ func registerTools(s *server.MCPServer, p *promClient, amEnabled bool) {
 
 	s.AddTool(mcp.NewTool("series",
 		mcp.WithDescription("Find time series matching one or more label selectors. Returns the matched series as `[{__name__, label1: ..., ...}]`."),
-		mcp.WithArray("selectors",
+		mcp.WithArray("selectors", mcp.WithStringItems(),
 			mcp.Description("Array of selector strings like `up{job=\"node\"}` or `node_cpu_seconds_total{instance=\"saruman:9100\"}`."),
 			mcp.Required()),
 		mcp.WithString("start",

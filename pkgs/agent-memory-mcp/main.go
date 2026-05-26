@@ -689,7 +689,7 @@ func registerTools(s *server.MCPServer, pool *pgxpool.Pool, emb *embedClient) {
 		mcp.WithDescription("Semantic search across memories. Embeds the query, returns up to `limit` rows sorted by cosine similarity (largest first). Optional project + tags filters narrow the search."),
 		mcp.WithString("query", mcp.Description("Natural-language query text."), mcp.Required()),
 		mcp.WithString("project", mcp.Description("Restrict to memories under this project name.")),
-		mcp.WithArray("tags", mcp.Description("Restrict to memories sharing at least one of these tags.")),
+		mcp.WithArray("tags", mcp.WithStringItems(), mcp.Description("Restrict to memories sharing at least one of these tags.")),
 		mcp.WithNumber("limit", mcp.Description("Max rows (default 10).")),
 	), handlerMemorySearch(pool, emb))
 
@@ -704,7 +704,7 @@ func registerTools(s *server.MCPServer, pool *pgxpool.Pool, emb *embedClient) {
 		mcp.WithString("content", mcp.Description("Text body to embed and store."), mcp.Required()),
 		mcp.WithString("project", mcp.Description("Project name. Auto-created if new.")),
 		mcp.WithString("source", mcp.Description("Free-form source identifier (e.g., vault path, conversation id).")),
-		mcp.WithArray("tags", mcp.Description("List of tag strings.")),
+		mcp.WithArray("tags", mcp.WithStringItems(), mcp.Description("List of tag strings.")),
 		mcp.WithObject("metadata", mcp.Description("Arbitrary JSON metadata.")),
 	), handlerMemoryInsert(pool, emb))
 
@@ -712,7 +712,7 @@ func registerTools(s *server.MCPServer, pool *pgxpool.Pool, emb *embedClient) {
 		mcp.WithDescription("Update one or more fields on an existing memory. If `content` is supplied, the embedding is re-computed. Omitted fields are left untouched. Returns true iff a row was modified."),
 		mcp.WithString("id", mcp.Description("UUID of the memory to update."), mcp.Required()),
 		mcp.WithString("content", mcp.Description("Replacement text. Triggers a re-embed.")),
-		mcp.WithArray("tags", mcp.Description("Replacement tag list.")),
+		mcp.WithArray("tags", mcp.WithStringItems(), mcp.Description("Replacement tag list.")),
 		mcp.WithObject("metadata", mcp.Description("Replacement metadata object.")),
 	), handlerMemoryUpdate(pool, emb))
 

@@ -539,12 +539,12 @@ func registerTools(s *server.MCPServer, mfx *minifluxClient) {
 
 	s.AddTool(mcp.NewTool("entry_mark_read",
 		mcp.WithDescription("Mark one or more entries as read."),
-		mcp.WithArray("entry_ids", mcp.Description("Array of entry ids."), mcp.Required()),
+		mcp.WithArray("entry_ids", mcp.Description("Array of entry ids."), mcp.Items(map[string]any{"type": "integer"}), mcp.Required()),
 	), handlerEntryMarkStatus(mfx, "read"))
 
 	s.AddTool(mcp.NewTool("entry_mark_unread",
 		mcp.WithDescription("Mark one or more entries as unread."),
-		mcp.WithArray("entry_ids", mcp.Description("Array of entry ids."), mcp.Required()),
+		mcp.WithArray("entry_ids", mcp.Description("Array of entry ids."), mcp.Items(map[string]any{"type": "integer"}), mcp.Required()),
 	), handlerEntryMarkStatus(mfx, "unread"))
 
 	s.AddTool(mcp.NewTool("entry_star",

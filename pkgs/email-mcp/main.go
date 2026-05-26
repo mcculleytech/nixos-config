@@ -1080,13 +1080,13 @@ func registerTools(s *server.MCPServer, cfg *config, db *sql.DB, id *imapDialer)
 
 	s.AddTool(mcp.NewTool("email_mark_read",
 		mcp.WithDescription("Mark one or more messages as read (add the \\Seen flag)."),
-		mcp.WithArray("uids", mcp.Description("Array of message UIDs."), mcp.Required()),
+		mcp.WithArray("uids", mcp.Description("Array of message UIDs."), mcp.Items(map[string]any{"type": "integer"}), mcp.Required()),
 		mcp.WithString("folder", mcp.Description("Mailbox name (default INBOX).")),
 	), storeSeen(id, true))
 
 	s.AddTool(mcp.NewTool("email_mark_unread",
 		mcp.WithDescription("Mark one or more messages as unread (remove the \\Seen flag)."),
-		mcp.WithArray("uids", mcp.Description("Array of message UIDs."), mcp.Required()),
+		mcp.WithArray("uids", mcp.Description("Array of message UIDs."), mcp.Items(map[string]any{"type": "integer"}), mcp.Required()),
 		mcp.WithString("folder", mcp.Description("Mailbox name (default INBOX).")),
 	), storeSeen(id, false))
 

@@ -955,14 +955,14 @@ func registerTools(s *server.MCPServer, cfg *config) {
 		mcp.WithString("folder", mcp.Description("Restrict to a subfolder of the vault. Omit for whole vault.")),
 		mcp.WithObject("where", mcp.Description("Object of frontmatter key=value equality matches (all must match).")),
 		mcp.WithString("has_tag", mcp.Description("Require this tag (leading '#' optional). Matches frontmatter tags: list/string AND inline #tag refs in the body.")),
-		mcp.WithArray("has_any_tag", mcp.Description("List of tags; require at least one to match. Combine with has_tag for AND-of-OR semantics.")),
+		mcp.WithArray("has_any_tag", mcp.WithStringItems(), mcp.Description("List of tags; require at least one to match. Combine with has_tag for AND-of-OR semantics.")),
 		mcp.WithString("after", mcp.Description("ISO date (YYYY-MM-DD); keep notes with mtime >= this date.")),
 		mcp.WithString("before", mcp.Description("ISO date (YYYY-MM-DD); keep notes with mtime <= this date.")),
 		mcp.WithString("name_glob", mcp.Description("Filename glob match (e.g. 'Journal-*.md').")),
 		mcp.WithString("sort_by", mcp.Description("'mtime' | 'name' | <frontmatter-field-name>. Default 'mtime'.")),
 		mcp.WithBoolean("sort_desc", mcp.Description("Descending sort. Default true (most recent first).")),
 		mcp.WithNumber("limit", mcp.Description("Max records returned. Default 50.")),
-		mcp.WithArray("fields", mcp.Description("Subset of frontmatter keys to return. Default: all.")),
+		mcp.WithArray("fields", mcp.WithStringItems(), mcp.Description("Subset of frontmatter keys to return. Default: all.")),
 	), handlerVaultQueryFrontmatter(cfg))
 }
 
