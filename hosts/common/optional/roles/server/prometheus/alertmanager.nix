@@ -77,8 +77,15 @@
     };
 
     # Alertmanager state (silences, notification log) — survives reboots.
+    # The nixpkgs alertmanager unit runs with DynamicUser=true + StateDirectory=alertmanager,
+    # so systemd keeps the real state under /var/lib/private/alertmanager and exposes
+    # /var/lib/alertmanager as a symlink. Persisting the symlink path as a real directory
+    # makes StateDirectory setup fail with status=238/STATE_DIRECTORY. Persist the actual
+    # private state dir as root:root 0700 — the same pattern the other DynamicUser services
+    # here use (ntfy, tempo, otel-collector). systemd re-chowns the inner dir to the
+    # per-boot dynamic UID on start.
     environment.persistence."/persist".directories = [
-      { directory = "/var/lib/alertmanager"; user = "alertmanager"; group = "alertmanager"; }
+      { directory = "/var/lib/private/alertmanager"; user = "root"; group = "root"; mode = "0700"; }
     ];
   };
 }
