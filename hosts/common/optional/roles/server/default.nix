@@ -28,6 +28,7 @@
     ./smokeping.nix
     ./ntfy.nix
     ./kokoro.nix
+    ./protonmail-bridge.nix
     ./auto-deploy.nix
     ./agent-memory
     ./obsidian-headless

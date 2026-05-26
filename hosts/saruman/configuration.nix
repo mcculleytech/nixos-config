@@ -30,6 +30,7 @@
   kde.enable = true;
   bluetooth.enable = true;
   kokoro.enable = true;
+  lab.protonmail-bridge.enable = true;  # headless Bridge for hermes email integration
   auto-deploy.enable = true;
   tailscale-server.enable = true;
   agent-memory.enable = true;
