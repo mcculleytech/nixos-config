@@ -38,7 +38,6 @@
     ./radicale-mcp
     ./mcp
     ./gcal-mcp
-    ./escalator-mcp
     ./prometheus-mcp
     ./vault-indexer
     ./nas-backups

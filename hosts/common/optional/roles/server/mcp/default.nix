@@ -11,6 +11,7 @@
   # 2) registering in `pkgs/default.nix`, 3) creating `./<name>/default.nix`
   # here, 4) appending the import below, 5) enabling on the relevant host.
   imports = [
+    ./escalator
     ./miniflux
   ];
 }

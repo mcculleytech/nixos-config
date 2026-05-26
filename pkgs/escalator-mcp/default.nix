@@ -1,33 +1,23 @@
 { lib
-, python3
-, version ? "0.1.0"
+, buildGoModule
+, version ? "0.2.0"
 }:
 
-python3.pkgs.buildPythonApplication {
+buildGoModule {
   pname = "escalator-mcp";
   inherit version;
-  pyproject = true;
 
   src = ./.;
 
-  postPatch = ''
-    substituteInPlace pyproject.toml \
-      --replace-fail 'version = "0.1.0"' 'version = "${version}"'
-  '';
+  # Discovered via `nix-build` failing on lib.fakeHash; update if go.sum changes.
+  vendorHash = "sha256-Nhj/P8IqRqkX3DiPz58H5Q/iTRIyRM45kg/DCtbM+ME=";
 
-  build-system = [ python3.pkgs.setuptools ];
-
-  dependencies = with python3.pkgs; [
-    mcp
-    starlette
-    uvicorn
-    httpx
-  ];
+  ldflags = [ "-s" "-w" ];
 
   doCheck = false;
 
   meta = with lib; {
-    description = "MCP exposing a consult_expert tool for one-shot frontier-model queries via OpenRouter";
+    description = "Single-tool MCP for one-shot frontier-model consults via OpenRouter (Go)";
     license = licenses.mit;
     mainProgram = "escalator-mcp";
     platforms = platforms.linux;
