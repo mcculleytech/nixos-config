@@ -2,6 +2,7 @@
 {
   imports = [
     ../../ironclaw.nix
+    ./claude-code-telemetry.nix
   ];
 
   options.lab.lmStudio = {

@@ -31,6 +31,11 @@ in
       OTEL_LOGS_EXPORTER    = "otlp";
       OTEL_TRACES_EXPORTER  = "otlp";
 
+      # Include the actual prompt text on user_prompt log events. Default
+      # is redacted (Claude Code only emits prompt length + session id).
+      # Safe here because the OTEL endpoint is single-tenant homelab.
+      OTEL_LOG_USER_PROMPTS = "1";
+
       OTEL_EXPORTER_OTLP_PROTOCOL = "http/protobuf";
       OTEL_EXPORTER_OTLP_ENDPOINT = otelEndpoint;
 
