@@ -87,7 +87,7 @@ func loadConfig() (*config, error) {
 		return nil, errors.New("RADICALE_MCP_RADICALE_PASSWORD is required")
 	}
 	tzName := getenvOr("RADICALE_MCP_DEFAULT_TZ", "UTC")
-	loc, err := time.LoadLocation(tzName)
+	loc, err := loadIANALocation(tzName)
 	if err != nil {
 		return nil, fmt.Errorf("RADICALE_MCP_DEFAULT_TZ=%q: %w", tzName, err)
 	}
@@ -459,6 +459,17 @@ func parseDT(s, tzName string, defaultTZ *time.Location) (time.Time, error) {
 	if s == "" {
 		return time.Time{}, errors.New("empty datetime")
 	}
+	// Validate tzName upfront. time.LoadLocation silently accepts "Local"
+	// (returns time.Local) and the empty string (returns time.UTC); the
+	// "Local" case is what caused TZID=Local to leak into iCal output.
+	var tzLoc *time.Location
+	if tzName != "" {
+		l, err := loadIANALocation(tzName)
+		if err != nil {
+			return time.Time{}, err
+		}
+		tzLoc = l
+	}
 	// Layouts we try in order. RFC3339 covers offset/Z forms; the bare
 	// 2006-01-02T15:04:05 layout catches naive datetimes.
 	layouts := []struct {
@@ -474,12 +485,8 @@ func parseDT(s, tzName string, defaultTZ *time.Location) (time.Time, error) {
 	for _, l := range layouts {
 		if l.naive {
 			loc := defaultTZ
-			if tzName != "" {
-				z, err := time.LoadLocation(tzName)
-				if err != nil {
-					return time.Time{}, fmt.Errorf("unknown timezone %q: %w", tzName, err)
-				}
-				loc = z
+			if tzLoc != nil {
+				loc = tzLoc
 			}
 			if t, err := time.ParseInLocation(l.layout, s, loc); err == nil {
 				return t, nil
@@ -489,6 +496,26 @@ func parseDT(s, tzName string, defaultTZ *time.Location) (time.Time, error) {
 		}
 	}
 	return time.Time{}, fmt.Errorf("bad ISO datetime %q", s)
+}
+
+// loadIANALocation wraps time.LoadLocation but rejects the "Local" alias
+// and any name whose returned zone is time.Local. Both cases would
+// serialize to TZID=Local in iCal output, which no calendar client
+// understands. Callers must pass a real IANA zone name (e.g.
+// "America/Chicago") or "UTC".
+func loadIANALocation(tzName string) (*time.Location, error) {
+	if tzName == "Local" {
+		return nil, fmt.Errorf("non-IANA timezone %q: pass an IANA name like \"America/Chicago\" or \"UTC\"", tzName)
+	}
+	z, err := time.LoadLocation(tzName)
+	if err != nil {
+		return nil, fmt.Errorf("unknown timezone %q: %w", tzName, err)
+	}
+	// Defense in depth: catch any other Go alias that resolves to time.Local.
+	if z == time.Local {
+		return nil, fmt.Errorf("non-IANA timezone %q: pass an IANA name like \"America/Chicago\" or \"UTC\"", tzName)
+	}
+	return z, nil
 }
 
 // objectPath builds a target href under a collection path, appending the
