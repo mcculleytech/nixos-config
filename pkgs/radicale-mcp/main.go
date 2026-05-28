@@ -518,6 +518,104 @@ func loadIANALocation(tzName string) (*time.Location, error) {
 	return z, nil
 }
 
+// usDSTRule applies the US DST transition rules (DST begins 2nd Sunday of
+// March, ends 1st Sunday of November) to a VTIMEZONE component. fromOff
+// and toOff are TZOFFSETFROM/TO for the STANDARD segment; tzname pairs
+// match the standard / daylight TZNAMEs (e.g. "CST"/"CDT").
+func buildUSVTimezone(tzid, stdName, dstName, stdOff, dstOff string) *ical.Component {
+	vtz := ical.NewComponent(ical.CompTimezone)
+	vtz.Props.SetText(ical.PropTimezoneID, tzid)
+
+	std := ical.NewComponent(ical.CompTimezoneStandard)
+	std.Props.SetText("DTSTART", "20071104T020000")
+	std.Props.SetText("RRULE", "FREQ=YEARLY;BYMONTH=11;BYDAY=1SU")
+	std.Props.SetText("TZNAME", stdName)
+	std.Props.SetText("TZOFFSETFROM", dstOff)
+	std.Props.SetText("TZOFFSETTO", stdOff)
+	vtz.Children = append(vtz.Children, std)
+
+	dst := ical.NewComponent(ical.CompTimezoneDaylight)
+	dst.Props.SetText("DTSTART", "20070311T020000")
+	dst.Props.SetText("RRULE", "FREQ=YEARLY;BYMONTH=3;BYDAY=2SU")
+	dst.Props.SetText("TZNAME", dstName)
+	dst.Props.SetText("TZOFFSETFROM", stdOff)
+	dst.Props.SetText("TZOFFSETTO", dstOff)
+	vtz.Children = append(vtz.Children, dst)
+
+	return vtz
+}
+
+// buildFlatVTimezone returns a VTIMEZONE with a single STANDARD segment
+// and no DST rule — used for zones with no DST (e.g. Arizona) or as a
+// fallback when only an offset is known.
+func buildFlatVTimezone(tzid, tzname, offset string) *ical.Component {
+	vtz := ical.NewComponent(ical.CompTimezone)
+	vtz.Props.SetText(ical.PropTimezoneID, tzid)
+	std := ical.NewComponent(ical.CompTimezoneStandard)
+	std.Props.SetText("DTSTART", "19700101T000000")
+	std.Props.SetText("TZNAME", tzname)
+	std.Props.SetText("TZOFFSETFROM", offset)
+	std.Props.SetText("TZOFFSETTO", offset)
+	vtz.Children = append(vtz.Children, std)
+	return vtz
+}
+
+// vtimezoneBuilders returns a fresh VTIMEZONE component for known IANA
+// zones. The set is intentionally narrow — the homelab's default is
+// America/Chicago; other US zones are included so an LLM passing them
+// explicitly still gets a well-formed VTIMEZONE. Zones outside this
+// table get no VTIMEZONE block (clients with their own tzdata —
+// Apple, Thunderbird, DAVx5, Radicale's web UI — still resolve the
+// TZID; strict web clients fall back to UTC, which is the prior
+// behavior).
+var vtimezoneBuilders = map[string]func() *ical.Component{
+	"America/Chicago":     func() *ical.Component { return buildUSVTimezone("America/Chicago", "CST", "CDT", "-0600", "-0500") },
+	"America/New_York":    func() *ical.Component { return buildUSVTimezone("America/New_York", "EST", "EDT", "-0500", "-0400") },
+	"America/Denver":      func() *ical.Component { return buildUSVTimezone("America/Denver", "MST", "MDT", "-0700", "-0600") },
+	"America/Los_Angeles": func() *ical.Component { return buildUSVTimezone("America/Los_Angeles", "PST", "PDT", "-0800", "-0700") },
+	"America/Phoenix":     func() *ical.Component { return buildFlatVTimezone("America/Phoenix", "MST", "-0700") },
+}
+
+// ensureVTimezones prepends a VTIMEZONE component to cal for each
+// distinct TZID referenced by DTSTART/DTEND/DUE on its VEVENT/VTODO
+// children, when a builder is registered for that zone. Existing
+// VTIMEZONE children are kept and not duplicated. No-op for events
+// stored as UTC (Z) or floating times.
+func ensureVTimezones(cal *ical.Component) {
+	existing := map[string]bool{}
+	var wanted []string
+	for _, child := range cal.Children {
+		if child.Name == ical.CompTimezone {
+			if t, _ := child.Props.Text(ical.PropTimezoneID); t != "" {
+				existing[t] = true
+			}
+			continue
+		}
+		for _, propName := range []string{ical.PropDateTimeStart, ical.PropDateTimeEnd, ical.PropDue} {
+			for _, p := range child.Props.Values(propName) {
+				tzid := p.Params.Get(ical.ParamTimezoneID)
+				if tzid == "" || existing[tzid] {
+					continue
+				}
+				if _, ok := vtimezoneBuilders[tzid]; !ok {
+					continue
+				}
+				existing[tzid] = true // dedup across multiple props
+				wanted = append(wanted, tzid)
+			}
+		}
+	}
+	if len(wanted) == 0 {
+		return
+	}
+	vtzs := make([]*ical.Component, 0, len(wanted))
+	for _, tzid := range wanted {
+		vtzs = append(vtzs, vtimezoneBuilders[tzid]())
+	}
+	// Prepend — VTIMEZONE conventionally precedes VEVENT/VTODO in iCal.
+	cal.Children = append(vtzs, cal.Children...)
+}
+
 // objectPath builds a target href under a collection path, appending the
 // given filename (typically "<uid>.ics" or "<uid>.vcf").
 func objectPath(collectionPath, filename string) string {
@@ -810,6 +908,7 @@ func handlerEventCreate(rc *radicaleClient) server.ToolHandlerFunc {
 		}
 
 		target := objectPath(c.Path, uid+".ics")
+		ensureVTimezones(calObj.Component)
 		if _, err := rc.cal.PutCalendarObject(ctx, target, calObj); err != nil {
 			return toolErr(fmt.Errorf("put event: %w", err)), nil
 		}
@@ -940,6 +1039,7 @@ func handlerEventUpdate(rc *radicaleClient) server.ToolHandlerFunc {
 				ve.Props.Set(p)
 			}
 		}
+		ensureVTimezones(obj.Data.Component)
 		if _, err := rc.cal.PutCalendarObject(ctx, obj.Path, obj.Data); err != nil {
 			return toolErr(fmt.Errorf("put event: %w", err)), nil
 		}
@@ -1072,6 +1172,7 @@ func handlerTaskCreate(rc *radicaleClient) server.ToolHandlerFunc {
 		uid := uuid.NewString()
 		todo := newVTodo(uid, summary, desc, dueT, priority)
 		target := objectPath(c.Path, uid+".ics")
+		ensureVTimezones(todo.Component)
 		if _, err := rc.cal.PutCalendarObject(ctx, target, todo); err != nil {
 			return toolErr(fmt.Errorf("put todo: %w", err)), nil
 		}
@@ -1146,6 +1247,7 @@ func handlerTaskComplete(rc *radicaleClient) server.ToolHandlerFunc {
 		pc := ical.NewProp("PERCENT-COMPLETE")
 		pc.Value = "100"
 		vt.Props.Set(pc)
+		ensureVTimezones(obj.Data.Component)
 		if _, err := rc.cal.PutCalendarObject(ctx, obj.Path, obj.Data); err != nil {
 			return toolErr(fmt.Errorf("put todo: %w", err)), nil
 		}
