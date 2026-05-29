@@ -35,7 +35,13 @@
       group = "ollama";
       home = "/home/ollama";
       models = "/home/ollama/models";
-      environmentVariables = { };
+      environmentVariables = {
+        # Ollama's default CORS allow-list only covers http://localhost,
+        # which blocks Electron / web clients like OpenWhispr that use
+        # different origins. Wildcard is safe here because the endpoint
+        # is behind Traefik on the home LAN/tailnet — no internet exposure.
+        OLLAMA_ORIGINS = "*";
+      };
     };
 
     systemd.tmpfiles.rules = [
