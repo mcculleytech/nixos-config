@@ -30,6 +30,7 @@
   kde.enable = true;
   bluetooth.enable = true;
   kokoro.enable = true;
+  speaches.enable = true;  # GPU-accelerated Whisper STT (OpenAI-compatible) on tailnet :8000
   lab.protonmail-bridge.enable = true;  # headless Bridge for hermes email integration
   auto-deploy.enable = true;
   tailscale-server.enable = true;

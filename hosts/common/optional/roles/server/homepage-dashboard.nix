@@ -99,6 +99,13 @@ in
                   };
                 }
                 {
+                  "Speaches STT" = {
+                    icon = "mdi-microphone";
+                    href = "http://saruman:8000/";
+                    description = "Speech-to-Text (Whisper, tailnet-only)";
+                  };
+                }
+                {
                   "Octoprint" = {
                     icon = "octoprint.png";
                     href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
