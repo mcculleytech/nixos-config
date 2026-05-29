@@ -52,5 +52,21 @@
     # https://stt.${homelab_domain}; tailnet + LAN can both reach it
     # directly or via the proxy. No bearer auth.
     networking.firewall.allowedTCPPorts = [ 8000 ];
+
+    # ─── OpenWhispr client gotcha ────────────────────────────────────────
+    # When pointing OpenWhispr at this endpoint, set the URL under the
+    # "Self-hosted server" toggle, NOT the separate "Custom" provider
+    # field. Both store base URLs, but the Self-hosted branch silently
+    # overrides Custom — configuring Custom alone results in requests
+    # leaking to api.openai.com (debug logs show provider='custom',
+    # rawBaseUrl=https://api.openai.com/v1). Also: OpenWhispr ≤1.7.0
+    # had a separate bug ignoring the self-hosted URL entirely
+    # (upstream issue #750, fixed in 1.7.1). Use ≥1.7.2.
+    #
+    # OpenWhispr's STT field is hardcoded to model="whisper-1" with no
+    # dropdown; speaches maps that name to Systran/faster-whisper-large-v3,
+    # so pull that model (not just the turbo) for OpenWhispr compatibility:
+    #   sudo podman exec speaches huggingface-cli download \
+    #     Systran/faster-whisper-large-v3
   };
 }
