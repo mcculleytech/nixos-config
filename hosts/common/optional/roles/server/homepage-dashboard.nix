@@ -101,8 +101,15 @@ in
                 {
                   "Speaches STT" = {
                     icon = "mdi-microphone";
-                    href = "http://saruman:8000/";
-                    description = "Speech-to-Text (Whisper, tailnet-only)";
+                    href = "https://stt.${tr_secrets.traefik.homelab_domain}/";
+                    description = "Speech-to-Text (Whisper)";
+                  };
+                }
+                {
+                  "Ollama" = {
+                    icon = "ollama.png";
+                    href = "https://ollama.${tr_secrets.traefik.homelab_domain}/";
+                    description = "Local LLM API (raw OpenAI-compat)";
                   };
                 }
                 {

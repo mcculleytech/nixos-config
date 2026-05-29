@@ -61,6 +61,11 @@
 
     # No /persist persistence — /home is on encryptedHome and persists
     # natively (not impermanent). Same pattern as the podman storage move.
+
+    # Open :11434 on the firewall so Traefik on atreides can reverse-proxy
+    # to https://ollama.${homelab_domain}. Ollama already binds 0.0.0.0
+    # but NixOS's firewall was blocking external reach.
+    networking.firewall.allowedTCPPorts = [ 11434 ];
   };
 
 }

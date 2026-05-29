@@ -239,6 +239,24 @@ in
 	   				};
 	   				service = "tts";
 	   			};
+	   			stt = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`stt.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "stt";
+	   			};
+	   			ollama = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`ollama.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "ollama";
+	   			};
 	   			traefik = {
 	   				# entryPoints = [ "traefik" ];
 	   				rule = "Host(`traefik.${tr_secrets.traefik.homelab_domain}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))";
@@ -450,6 +468,22 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.saruman.ip}:8880";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			stt = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:8000";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			ollama = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:11434";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

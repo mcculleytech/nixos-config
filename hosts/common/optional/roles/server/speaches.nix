@@ -47,8 +47,10 @@
       "d /home/ollama/whisper-models/hub 0755 ollama ollama -"
     ];
 
-    # Tailnet-only — saruman.tailnet:8000. Trust boundary is the tailnet,
-    # matching how Ollama on this host is exposed. No bearer auth.
-    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 8000 ];
+    # Open :8000 on all interfaces — same posture as Kokoro and Ollama
+    # on this host. Reverse-proxied by Traefik on atreides at
+    # https://stt.${homelab_domain}; tailnet + LAN can both reach it
+    # directly or via the proxy. No bearer auth.
+    networking.firewall.allowedTCPPorts = [ 8000 ];
   };
 }
