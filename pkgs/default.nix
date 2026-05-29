@@ -22,4 +22,5 @@
   hermes-plugin-spend = pkgs.callPackage ./hermes-plugin-spend { };
   hermes-skill-obsidian = pkgs.callPackage ./hermes-skill-obsidian { };
   antigravity-cli = pkgs.callPackage ./antigravity-cli { };
+  openwhispr = pkgs.callPackage ./openwhispr { };
 }

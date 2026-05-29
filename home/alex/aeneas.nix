@@ -12,6 +12,7 @@
       #./optional/hyprland
       ./optional/nvim
       ./optional/cava.nix
+      ./optional/openwhispr.nix
     ];
 
     cosmic-customizations.enable = true;
@@ -22,5 +23,6 @@
     flameshot-gui.enable = true;
     nvim.enable = true;
     cava.enable = true;
+    openwhispr.enable = true;
 
 }
