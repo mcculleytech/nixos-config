@@ -37,9 +37,11 @@ in
         security = {
           # Grafana removed its built-in default secret_key in the
           # nixpkgs bump that landed via PR #96; option must be set
-          # explicitly. Read from sops at runtime via Grafana's
-          # $__file{} indirection — secret is declared below.
-          "secret_key$__file" = config.sops.secrets.grafana_secret_key.path;
+          # explicitly. The `$__file{...}` directive is part of
+          # Grafana's own ini-config syntax — it reads the file at
+          # service start, so the plaintext only lives in the sops
+          # secret on disk, never in the Nix store.
+          secret_key = "$__file{${config.sops.secrets.grafana_secret_key.path}}";
         };
       };
       provision = {
