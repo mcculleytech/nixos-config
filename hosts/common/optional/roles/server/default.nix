@@ -32,7 +32,7 @@
     ./protonmail-bridge.nix
     ./auto-deploy.nix
     ./obsidian-headless
-    ./signal-cli
+    ./signal-cli.nix
     ./mcp
     ./vault-indexer
     ./nas-backups

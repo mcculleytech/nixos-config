@@ -1,6 +1,5 @@
 { pkgs, version ? "0.0.0-dev" }:
 {
-  ironclaw = pkgs.callPackage ./ironclaw { rustPlatform = pkgs.unstable.rustPlatform; };
   agent-memory-mcp = pkgs.callPackage ./agent-memory-mcp { inherit version; };
   obsidian-headless = pkgs.callPackage ./obsidian-headless { };
   vault-mcp = pkgs.callPackage ./vault-mcp { inherit version; };

@@ -12,7 +12,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 | **Name** | Purpose                  											  							| Hardware                    |
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
-| aeneas   | Personal Laptop <br> ironclaw agent (Nix-built, PostgreSQL + pgvector)  						| AMD Framework 13in          |
+| aeneas   | Personal Laptop  						| AMD Framework 13in          |
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
@@ -140,6 +140,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 	- [x] Role-based directory structure for Desktop and Server (`roles/server/`, `roles/workstation/`) with `mkEnableOption` patterns ✅ 2026-04-04
 	- [x] Centralized host inventory (`hosts/common/hosts-data.nix`) — single source of truth for all IPs ✅ 2026-04-04
 	- [ ] Further consolidation (e.g. single function for group-based settings)
+	- [ ] Flatten single-file directory modules to `foo.nix` (signal-cli done ✅ 2026-06-02). Remaining non-MCP candidates: `obsidian-headless`, `hermes-dashboard`, `vault-indexer`, `nas-backups`, `obsidian-backup`. Leave `mcp/*` as dirs (mandated by CLAUDE.md MCP convention).
 - [ ] Make template files
 	- [x] Service module template (`templates/service.nix`)
 	- [ ] Host configuration template
@@ -165,10 +166,6 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Maldev shells (`shells/`)
 	- [x] `maldev-c.nix` — C/C++ toolchain (gcc, clang, mingw-w64 cross-compiler, make, cmake, nasm) ✅ 2026-04-03
 	- [x] `maldev-go.nix` — Go toolchain (Go, gopls, delve, garble) ✅ 2026-04-03
-- [x] ironclaw cross-platform NixOS/nix-darwin module (`hosts/common/optional/ironclaw.nix` + `ironclaw-linux.nix`) ✅ 2026-05-08
-	- [x] PostgreSQL 17 + pgvector provisioning on Linux ✅ 2026-05-08
-	- [x] ironclaw enabled on aeneas (Linux, Nix-built) ✅ 2026-05-08
-	- [x] Pivot away from ironclaw on all hosts; `lab.ironclaw.enable` left as default `false`, package derivation retained for future use ✅ 2026-05-11
 - [ ] Personal Agent Infrastructure
 	- [x] Phase 1: Shared agent memory on saruman (PostgreSQL + pgvector + MCP gateway, Tailscale-bound, bearer-token auth) ✅ 2026-05-11
 	- [ ] Phase 2: Obsidian Sync via `obsidian-headless` on saruman; vault MCP server(s) for read/write access

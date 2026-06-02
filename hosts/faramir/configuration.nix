@@ -62,7 +62,6 @@
     "hashcat"
     "htop"
     "hugo"
-    "ironclaw"
     "isl"
     "john"
     "libmpc"

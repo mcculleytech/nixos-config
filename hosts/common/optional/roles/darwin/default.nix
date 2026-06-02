@@ -1,7 +1,6 @@
 { lib, config, pkgs, outputs, ... }:
 {
   imports = [
-    ../../ironclaw.nix
     ./claude-code-telemetry.nix
   ];
 
@@ -69,32 +68,13 @@
       sops
       age
       git-crypt
-    ] ++ lib.optional (config.lab.ironclaw.enable && !config.lab.ironclaw.fromBrew) pkgs.ironclaw
-      ++ lib.optional config.lab.signalChannel.enable pkgs.signal-cli;
+    ];
 
-    environment.variables = lib.optionalAttrs config.lab.signalChannel.enable {
-      SIGNAL_HTTP_URL = "http://127.0.0.1:${toString config.lab.signalChannel.httpPort}";
-    };
-
-    launchd.user.agents = lib.optionalAttrs config.lab.signalChannel.enable {
-      signal-cli-http = {
-        # signal-cli daemon will fail-fast until you've linked an account via
-        # `signal-cli link -n faramir`. KeepAlive lets launchd retry on the
-        # default ThrottleInterval (10s) so it picks up the account once
-        # registration completes.
-        command = "${pkgs.signal-cli}/bin/signal-cli daemon --http=127.0.0.1:${toString config.lab.signalChannel.httpPort}";
-        serviceConfig = {
-          KeepAlive = true;
-          RunAtLoad = true;
-          StandardOutPath = "/Users/alex/Library/Logs/signal-cli.out.log";
-          StandardErrorPath = "/Users/alex/Library/Logs/signal-cli.err.log";
-        };
-      };
-    } // lib.optionalAttrs config.lab.lmStudio.autoStart {
+    launchd.user.agents = lib.optionalAttrs config.lab.lmStudio.autoStart {
       lms-server = {
         # `lms server start` brings up LM Studio's local API on 127.0.0.1:1234
         # and exits immediately. If autoLoadModel is set, queue a model load so
-        # ironclaw has its LLM endpoint warmed up before first request.
+        # the LLM endpoint is warmed up before first request.
         # KeepAlive disabled — the command is one-shot, not a long-running daemon.
         command =
           let
@@ -128,7 +108,7 @@
         cleanup = "none";
       };
       taps = [ ];
-      brews = lib.optional (config.lab.ironclaw.enable && config.lab.ironclaw.fromBrew) "ironclaw";
+      brews = [ ];
       casks = [ ];
     };
 

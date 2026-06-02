@@ -10,7 +10,7 @@
     sops-nix.url = "github:Mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     # cosmic-nightly = {
@@ -18,7 +18,7 @@
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
     # };
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     disko = {
@@ -32,7 +32,7 @@
     # Upstream agent runtime: ships its own flake + nixosModules.default and
     # a uv2nix-built sealed venv. Do NOT set inputs.nixpkgs.follows here —
     # the venv's lockfile is tied to nixos-unstable's Python toolchain;
-    # forcing it onto our nixpkgs (25.11) breaks the build.
+    # forcing it onto our nixpkgs (26.05) breaks the build.
     hermes-agent.url = "github:NousResearch/hermes-agent";
   };
 
