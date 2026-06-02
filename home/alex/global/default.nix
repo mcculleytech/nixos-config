@@ -64,7 +64,8 @@ in
       allowUnfree = true;
       allowUnfreePredicate = (_: true);
       permittedInsecurePackages = [
-        "electron-27.3.11" # needed for logseq
+        "electron-27.3.11" # needed for logseq (legacy bundle)
+        "electron-39.8.10" # needed for current logseq build
       ];
     };
   };
