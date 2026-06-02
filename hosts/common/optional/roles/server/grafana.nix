@@ -11,6 +11,16 @@ in
 
   config = lib.mkIf config.grafana.enable {
 
+    # Sops secret for the session-signing key. Generate a value with
+    # `head -c 32 /dev/urandom | base64 | tr -d '/+=' | head -c 32`
+    # and add it to atreides's secrets.yaml under `grafana_secret_key`.
+    sops.secrets.grafana_secret_key = {
+      sopsFile = ../../../../../hosts/atreides/secrets.yaml;
+      owner = "grafana";
+      group = "grafana";
+      mode = "0400";
+    };
+
     # Grafana Dashboards (import by ID):
     # Node Exporter Full (1860): https://grafana.com/grafana/dashboards/1860
     # Blocky (13768): https://grafana.com/grafana/dashboards/13768
@@ -23,6 +33,13 @@ in
           http_port = 3000;
           domain = "grafana.${tr_secrets.traefik.homelab_domain}";
           root_url = "https://grafana.${tr_secrets.traefik.homelab_domain}";
+        };
+        security = {
+          # Grafana removed its built-in default secret_key in the
+          # nixpkgs bump that landed via PR #96; option must be set
+          # explicitly. Read from sops at runtime via Grafana's
+          # $__file{} indirection — secret is declared below.
+          "secret_key$__file" = config.sops.secrets.grafana_secret_key.path;
         };
       };
       provision = {
