@@ -28,7 +28,8 @@
         cudaArches = [ "61" ];
       };
       enable = true;
-      acceleration = "cuda";
+      # `acceleration` was removed upstream — the choice is now made
+      # via `package` (we pick ollama-cuda explicitly above).
       host = "0.0.0.0";
       port = 11434;
       user = "ollama";
