@@ -12,7 +12,13 @@
       open = false;
       nvidiaSettings = true;
 
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # Pascal (GTX 1080 Ti on saruman) was dropped by the 595.xx branch —
+      # `stable`/`production`/`latest` all resolve to 595.71.05, which loads,
+      # ignores the GPU ("NVRM: No NVIDIA GPU found"), and exits ENODEV. That
+      # cascades into nvidia-cdi-generator + GPU podman units failing on
+      # activation. Pascal is supported through the 580.xx Legacy branch.
+      # saruman is the only host with nvidia.enable = true.
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
 
     environment.systemPackages = with pkgs; [
