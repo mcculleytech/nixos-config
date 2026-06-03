@@ -11,7 +11,7 @@
     git-crypt
     tmux
     tree
-    neofetch
+    fastfetch
     htop
     sops
     util-linux
