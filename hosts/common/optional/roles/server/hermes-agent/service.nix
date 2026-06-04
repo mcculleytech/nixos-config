@@ -421,6 +421,11 @@ in
       # its HTTP endpoint accepts connections, and hermes loses that race
       # on cold deploys. Poll until the daemon responds (or 30s timeout).
       serviceConfig.ExecStartPre = [
+        # hermes also resolves its own tailnet bind IP via `tailscale ip -4`
+        # at start, so it loses the same tailscaled-restart race as the MCPs
+        # (see mcp/default.nix for the full rationale). Gate on tailscale
+        # readiness first, then wait on signal-cli below.
+        "${pkgs.wait-tailnet-ip}/bin/wait-tailnet-ip"
         (pkgs.writeShellScript "wait-for-signal-cli" ''
           set -eu
           url="http://127.0.0.1:${toString signalCfg.httpPort}/api/v1/rpc"
