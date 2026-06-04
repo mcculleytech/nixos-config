@@ -29,9 +29,13 @@ rollback() {
     local rollback_short
     rollback_short=$(git rev-parse --short "$rollback_rev")
     logger -t "$LOG_TAG" "Rolling back $targets to $rollback_short"
-    git checkout "$rollback_rev"
+    # Send git's own chatter ("Switched to...", "Your branch is up to date...")
+    # to the log, not stdout — this function's stdout is captured into $ROLLED
+    # and interpolated into the failure notification, so it must be the short
+    # rev and nothing else.
+    git checkout "$rollback_rev" 2>&1 | logger -t "$LOG_TAG" || true
     colmena apply --on "$targets" 2>&1 | logger -t "$LOG_TAG" || true
-    git checkout master
+    git checkout master 2>&1 | logger -t "$LOG_TAG" || true
     echo "$rollback_short"
   else
     echo ""
@@ -106,14 +110,49 @@ if [ "$FAILED" = "1" ]; then
 fi
 
 # 4. Deploy saruman (self)
-if colmena apply --on saruman 2>&1 | logger -t "$LOG_TAG"; then
-  logger -t "$LOG_TAG" "Saruman deploy succeeded"
+#
+# colmena exits non-zero (commonly 4) when ANY unit is failed at the
+# activation *snapshot* — even one that systemd's Restart= heals seconds
+# later. saruman runs the MCP/hermes cluster, which briefly fails on a deploy
+# that also restarts tailscaled (see mcp/default.nix), so the bare exit code
+# is a false negative. Judge saruman on the SETTLED state instead: capture the
+# real exit code, and if it's non-zero, distinguish a genuine failure
+# (activation never completed) from a transient flap (activation completed,
+# units heal) by checking for "Activation successful" and then re-running a
+# `systemctl --failed` health check after a grace period.
+SARUMAN_LOG=$(mktemp)
+set +e
+colmena apply --on saruman 2>&1 | tee "$SARUMAN_LOG" | logger -t "$LOG_TAG"
+SARUMAN_RC=${PIPESTATUS[0]}
+set -e
+
+SARUMAN_OK=1
+SARUMAN_REASON=""
+if [ "$SARUMAN_RC" -ne 0 ]; then
+  if ! grep -q "Activation successful" "$SARUMAN_LOG"; then
+    SARUMAN_OK=0
+    SARUMAN_REASON="activation did not complete (colmena rc=$SARUMAN_RC)"
+  else
+    logger -t "$LOG_TAG" "colmena rc=$SARUMAN_RC but activation completed — settling 30s before health check"
+    sleep 30
+    FAILED_UNITS=$(systemctl --failed --no-legend | grep -v 'auto-deploy.service' || true)
+    if [ -n "$FAILED_UNITS" ]; then
+      SARUMAN_OK=0
+      SARUMAN_REASON="units still failed after settle: $(echo "$FAILED_UNITS" | grep -oE '[^[:space:]]+\.(service|socket|timer|target|mount|path)' | tr '\n' ' ')"
+    fi
+  fi
+fi
+rm -f "$SARUMAN_LOG"
+
+if [ "$SARUMAN_OK" = "1" ]; then
+  logger -t "$LOG_TAG" "Saruman deploy succeeded (colmena rc=$SARUMAN_RC)"
 else
+  logger -t "$LOG_TAG" "Saruman deploy FAILED: $SARUMAN_REASON"
   ROLLED=$(rollback "saruman")
   if [ -n "$ROLLED" ]; then
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV: $COMMIT_MSG. Rolled back to $ROLLED." "$NTFY_URL" || true
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV ($SARUMAN_REASON): $COMMIT_MSG. Rolled back to $ROLLED." "$NTFY_URL" || true
   else
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV: $COMMIT_MSG. No known-good revision to roll back to." "$NTFY_URL" || true
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "Saruman deploy failed at $SHORT_REV ($SARUMAN_REASON): $COMMIT_MSG. No known-good revision to roll back to." "$NTFY_URL" || true
   fi
   exit 1
 fi
