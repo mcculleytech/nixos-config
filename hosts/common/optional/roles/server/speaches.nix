@@ -37,14 +37,19 @@
       extraOptions = [ "--device" "nvidia.com/gpu=all" ];
     };
 
+    # Pre-create the cache dirs so speaches's startup scan_cache_dir() finds
+    # /home/ubuntu/.cache/huggingface/hub (it errors hard with CacheNotFound
+    # otherwise). Ownership is left to podman: the `:U` mount option chowns the
+    # volume to the container's `ubuntu` uid at container start. The owner/group
+    # fields MUST be "-" (leave unmodified on existing inodes) — pinning them to
+    # `ollama` re-chowns the dir away from the container user on every
+    # activation, and since the long-running container isn't restarted by a
+    # `switch`, `:U` doesn't re-apply, so transcriptions then fail with EACCES
+    # reading the cache (the container can't even traverse a 0700 ollama-owned
+    # dir). Mode 0755 is harmless to re-assert; ownership is the part that bites.
     systemd.tmpfiles.rules = [
-      "d /home/ollama/whisper-models 0755 ollama ollama -"
-      # Pre-create the huggingface_hub cache subdir — speaches calls
-      # huggingface_hub.scan_cache_dir() at startup which errors hard
-      # (CacheNotFound) if /home/ubuntu/.cache/huggingface/hub doesn't
-      # exist inside the container. The `:U` mount option chowns both
-      # parent and child to the container user.
-      "d /home/ollama/whisper-models/hub 0755 ollama ollama -"
+      "d /home/ollama/whisper-models 0755 - - -"
+      "d /home/ollama/whisper-models/hub 0755 - - -"
     ];
 
     # Open :8000 on all interfaces — same posture as Kokoro and Ollama
