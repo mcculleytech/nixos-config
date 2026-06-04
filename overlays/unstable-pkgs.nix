@@ -48,6 +48,7 @@ in
         permittedInsecurePackages = [
           "openssl-1.1.1w"
           "electron-25.9.0"
+          "electron-39.8.10" # unstable obsidian/signal/bitwarden/beeper bundle this
         ];
       };
       overlays = [];

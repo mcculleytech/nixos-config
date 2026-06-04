@@ -41,11 +41,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780258891,
-        "narHash": "sha256-KURy7kHE9TZG2wrQX0xaKScWp3JqEx7cYxboCJO/KPU=",
+        "lastModified": 1780524100,
+        "narHash": "sha256-aI9BuXyq7/MNAhSGaQ3i6nTz9bovfvAxj7cndY5UMPU=",
         "owner": "sadjow",
         "repo": "claude-code-nix",
-        "rev": "e65e7eca7efe776d0bf5f53e317d33b3ff973623",
+        "rev": "cc0c3dbca8490169974f03fe7feb4e362dfcca89",
         "type": "github"
       },
       "original": {
@@ -118,11 +118,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780048612,
-        "narHash": "sha256-Md/eOK5OjmvvHc2H52pLZe4zpP4XyfiS5vHqfRCz2HU=",
+        "lastModified": 1780290312,
+        "narHash": "sha256-eTAlX0CwgB84Ts3GaBd944A3DRXVMzgA0EqroZBISUo=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "caa775cf67bfdc47f940edd96c975b5016df9059",
+        "rev": "115e5211780054d8a890b41f0b7734cafad54dfe",
         "type": "github"
       },
       "original": {
@@ -276,11 +276,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1780065812,
-        "narHash": "sha256-SCSLUKBmwlSLGQ8Xbr8PjRFtiHNk0l9ktqkcmqdBkfE=",
+        "lastModified": 1780310866,
+        "narHash": "sha256-fPBRVf6A5xlACYcOI59shGrjURuvwu0lRsDoSCEXt/I=",
         "owner": "nixos",
         "repo": "nixos-hardware",
-        "rev": "b76b5639c0593e0aeb0b5879ad62d4b30596c144",
+        "rev": "4ed851c979641e28597a05086332d75cdc9e395f",
         "type": "github"
       },
       "original": {
@@ -300,11 +300,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1780284775,
-        "narHash": "sha256-TeMH3+caormb1T4Z7pu1jV6hE6xRPBuPKdJ572iGg+c=",
+        "lastModified": 1780543533,
+        "narHash": "sha256-tViiLtS3ph/CvC3irkE/+1+XbWRSKxQqitwDbAZXCEA=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "a60bff282ef8bfe9b191966bff71b86d7e4b38c9",
+        "rev": "e45dd2b0e72b5f73ccbea758599979493bd7b8ac",
         "type": "github"
       },
       "original": {
@@ -430,11 +430,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1780258655,
-        "narHash": "sha256-cSJ57CSWK3VbQulmREfJ1lcbnAcn+GGuWU8o0nMprpU=",
+        "lastModified": 1780519208,
+        "narHash": "sha256-oR1EAWnKejpx9Z8tSMNGD17lFAqhMc53JgKDsaIKKs4=",
         "ref": "refs/heads/main",
-        "rev": "515b883da63583bb2582b40deea005e2f3638038",
-        "revCount": 7392,
+        "rev": "04435fb857d4e3c5845bc43b077568d28e048c54",
+        "revCount": 7412,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
@@ -785,11 +785,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1779560665,
-        "narHash": "sha256-tpyBcxPpcQb8ukyNF7DoCwfSY3VPsxHoYwj00Cayv5o=",
+        "lastModified": 1780243769,
+        "narHash": "sha256-x5UQuRsH3MqI0U9afaXSNqzTPSeZlRLvFAav2Ux1pNw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "64c08a7ca051951c8eae34e3e3cb1e202fe36786",
+        "rev": "331800de5053fcebacf6813adb5db9c9dca22a0c",
         "type": "github"
       },
       "original": {
@@ -876,12 +876,12 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1780051219,
-        "narHash": "sha256-WnxzG4x47uCgjz+uD+vOzbF+Qid+hKyYdJWbduA9w7g=",
-        "rev": "e8e446a361172fe838243958325845d0b845c5e5",
-        "revCount": 1004943,
+        "lastModified": 1780203844,
+        "narHash": "sha256-K5sT4jTpGs15ADhviMKNBH38REpPf5Q6mM1+N6cArVE=",
+        "rev": "b51242d7d43689db2f3be91bd05d5b24fbb469c4",
+        "revCount": 1005180,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2605.1004943%2Brev-e8e446a361172fe838243958325845d0b845c5e5/019e7f2a-4016-7f91-b703-b3568c6fbd62/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/NixOS/nixpkgs/0.2605.1005180%2Brev-b51242d7d43689db2f3be91bd05d5b24fbb469c4/019e820b-3e9f-7ad0-acdd-dab08fdf665f/source.tar.gz"
       },
       "original": {
         "type": "tarball",
