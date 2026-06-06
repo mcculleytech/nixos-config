@@ -71,5 +71,47 @@ in
         ReadWritePaths = [ cfg.vaultPath cfg.configDir ];
       };
     };
+
+    # Watchdog. obsidian-headless can hang in a half-open reconnect state
+    # after a brief network drop — the process stays alive (so Restart=
+    # never fires) but stops syncing entirely. Seen 2026-06-04: a ~20s WAN
+    # blip wedged it for 2.5 days, silently, until a manual restart. A
+    # healthy daemon logs ("Fully synced" / "Downloading…" / etc.) roughly
+    # every 30s; a wedged one goes completely silent. So: if the unit is
+    # active but has produced no journal output for 10 minutes, it's stuck —
+    # bounce it. Restarting re-establishes the connection and flushes the
+    # backlog.
+    systemd.services.obsidian-headless-watchdog = {
+      description = "Restart obsidian-headless if it has stopped syncing";
+      path = [ pkgs.systemd ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "root";
+      };
+      script = ''
+        if ! systemctl is-active --quiet obsidian-headless.service; then
+          # Not running — its own Restart=/ConditionPathExists govern this.
+          exit 0
+        fi
+        recent=$(journalctl -u obsidian-headless.service --since "10 min ago" \
+                   --no-pager -o cat -q || true)
+        if [ -z "$recent" ]; then
+          echo "obsidian-headless: no log output in 10m while active — wedged, restarting"
+          systemctl restart obsidian-headless.service
+        else
+          echo "obsidian-headless: healthy (logged within last 10m)"
+        fi
+      '';
+    };
+
+    systemd.timers.obsidian-headless-watchdog = {
+      description = "Periodic liveness check for obsidian-headless sync";
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "10min";
+        OnUnitActiveSec = "5min";
+        RandomizedDelaySec = "30s";
+      };
+    };
   };
 }
