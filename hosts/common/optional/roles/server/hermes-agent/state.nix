@@ -48,5 +48,45 @@ in
           /var/lib/hermes/.hermes/scripts/morning-today.py
       '';
     };
+
+    # Re-register the morning-brief cron job on every boot. hermes stores
+    # cron jobs in $HERMES_HOME/cron/jobs.json — runtime state under
+    # /var/lib/hermes, which has NO impermanence persistence, so a reboot
+    # wipes it and the daily brief silently stops (it did, 2026-06-06, after
+    # the Jun 3 reboot — `hermes cron list` came back empty). Rather than
+    # persist opaque runtime state, this oneshot is the single Nix-owned
+    # source of truth for the brief schedule, alongside the morning-today.py
+    # copy above. Idempotent (creates only if absent); ordered before the
+    # daemon so it loads a populated jobs.json at start; best-effort (never
+    # fails the boot). Must run as alex with HERMES_HOME set, or the job
+    # lands in the wrong store and the daemon never sees it.
+    systemd.services.hermes-seed-cron = {
+      description = "Register the morning-today daily-brief cron job if absent";
+      after = [ "systemd-tmpfiles-setup.service" ];
+      before = [ "hermes-agent.service" ];
+      wantedBy = [ "multi-user.target" ];
+      environment.HERMES_HOME = "/var/lib/hermes/.hermes";
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "alex";
+        Group = "hermes";
+        TimeoutStartSec = 90;
+      };
+      script = ''
+        hermes=${config.services.hermes-agent.package}/bin/hermes
+        if "$hermes" cron list 2>/dev/null | ${pkgs.gnugrep}/bin/grep -q morning-today; then
+          echo "morning-today cron job already registered — nothing to do"
+        else
+          echo "morning-today cron job missing — registering"
+          "$hermes" cron create '0 6 * * *' \
+            --name morning-today \
+            --script morning-today.py \
+            --no-agent \
+            --deliver signal \
+            || echo "WARNING: failed to register morning-today cron job (non-fatal)"
+        fi
+      '';
+    };
   };
 }
