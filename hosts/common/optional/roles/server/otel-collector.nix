@@ -58,8 +58,13 @@
             tls.insecure = true;
           };
 
-          loki = {
-            endpoint = "http://localhost:3100/loki/api/v1/push";
+          # The dedicated `loki` exporter was removed from otelcol-contrib in
+          # 0.151.0. Push logs to Loki's native OTLP endpoint instead (Loki
+          # ≥3.x serves /otlp/v1/logs; otlphttp appends /v1/logs to the
+          # endpoint). allow_structured_metadata is already enabled in loki.nix.
+          "otlphttp/loki" = {
+            endpoint = "http://localhost:3100/otlp";
+            tls.insecure = true;
           };
 
           "otlp/tempo" = {
@@ -93,7 +98,7 @@
             logs = {
               receivers = [ "otlp" ];
               processors = [ "batch" "resource" ];
-              exporters = [ "loki" ];
+              exporters = [ "otlphttp/loki" ];
             };
             traces = {
               receivers = [ "otlp" ];
