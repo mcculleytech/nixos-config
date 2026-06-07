@@ -71,16 +71,38 @@ COMMIT_MSG=$(git log -1 --pretty=%s)
 logger -t "$LOG_TAG" "New commit detected: $SHORT_REV — $COMMIT_MSG"
 
 # 2. Deploy VMs first (canaries)
-if colmena apply --on @vm 2>&1 | logger -t "$LOG_TAG"; then
-  logger -t "$LOG_TAG" "VM deploy succeeded"
-else
+#
+# colmena exits non-zero (commonly 4) when a unit is failed at the activation
+# *snapshot* — including the benign root dbus-broker user-unit reload — even
+# when every node activated cleanly. Don't roll back on the exit code alone
+# (the saruman step has the same guard): capture it, and only hard-fail if
+# activation never completed (no "Activation successful" — i.e. an eval/build
+# error). Otherwise defer to the per-VM `systemctl --failed` health check in
+# step 3, which is the real arbiter and catches genuinely-broken units.
+VM_LOG=$(mktemp)
+set +e
+colmena apply --on @vm 2>&1 | tee "$VM_LOG" | logger -t "$LOG_TAG"
+VM_RC=${PIPESTATUS[0]}
+set -e
+if [ "$VM_RC" -ne 0 ] && ! grep -q "Activation successful" "$VM_LOG"; then
+  rm -f "$VM_LOG"
+  logger -t "$LOG_TAG" "VM deploy FAILED: activation did not complete (colmena rc=$VM_RC)"
   ROLLED=$(rollback "@vm")
   if [ -n "$ROLLED" ]; then
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV: $COMMIT_MSG. Rolled back to $ROLLED." "$NTFY_URL" || true
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): activation did not complete (rc=$VM_RC). Rolled back to $ROLLED." "$NTFY_URL" || true
   else
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV: $COMMIT_MSG. No known-good revision to roll back to." "$NTFY_URL" || true
+    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): activation did not complete (rc=$VM_RC). No known-good revision to roll back to." "$NTFY_URL" || true
   fi
   exit 1
+fi
+rm -f "$VM_LOG"
+if [ "$VM_RC" -ne 0 ]; then
+  logger -t "$LOG_TAG" "colmena rc=$VM_RC on @vm but activation completed — deferring to health check"
+  # Let Restart= settle any transient activation-snapshot failures before the
+  # health check renders a verdict.
+  sleep 20
+else
+  logger -t "$LOG_TAG" "VM deploy succeeded"
 fi
 
 # 3. Health check VMs
