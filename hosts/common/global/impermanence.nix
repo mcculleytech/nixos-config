@@ -27,6 +27,34 @@
   };
   programs.fuse.userAllowOther = true;
 
+  # systemd ≥256 refuses to set up a DynamicUser StateDirectory if
+  # /var/lib/private is more permissive than 0700 ("Directory /var/lib/private
+  # ... has mode 0755 that is too permissive (0700 was requested), refusing"
+  # → status=238/STATE_DIRECTORY). Under impermanence /var/lib/private is
+  # created as the mount-point parent for the per-service persisted state dirs
+  # (var-lib-private-*.mount) at 0755, and the per-service
+  # `d /var/lib/private 0700` tmpfiles rules don't reliably override it across
+  # the mount boundary. A systemd bump (flake.lock update, 2026-06-07) made
+  # the check strict and silently broke every DynamicUser service on atreides
+  # (otelcol, ntfy, alertmanager, alloy, tempo, …) on next restart. Force the
+  # mode in early boot — after the bind mounts land, before any service
+  # starts. No-op where /var/lib/private doesn't exist.
+  systemd.services.fix-var-lib-private-perms = {
+    description = "Force /var/lib/private to 0700 (systemd DynamicUser requirement)";
+    wantedBy = [ "sysinit.target" ];
+    before = [ "sysinit.target" ];
+    after = [ "local-fs.target" ];
+    unitConfig = {
+      ConditionPathExists = "/var/lib/private";
+      DefaultDependencies = false;
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.coreutils}/bin/chmod 0700 /var/lib/private";
+    };
+  };
+
   security.sudo.extraConfig = ''
     # rollback results in sudo lectures after each reboot
     Defaults lecture = never
