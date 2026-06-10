@@ -300,11 +300,11 @@
         "uv2nix": "uv2nix_2"
       },
       "locked": {
-        "lastModified": 1781026971,
-        "narHash": "sha256-3MCklzE3H2DEmAKf/jYNCbaBjMD3wXfCzgY0FkPTN98=",
+        "lastModified": 1781057697,
+        "narHash": "sha256-2DB9uaf/ujxqiuv9XzUMbVO8GDTtcBny4vedPdkaGwk=",
         "owner": "NousResearch",
         "repo": "hermes-agent",
-        "rev": "f6f573ebaa6351b5b3146b186696b5a179acafd1",
+        "rev": "7df3aa34b17819c790098c391a88ea0ab0827f4d",
         "type": "github"
       },
       "original": {
@@ -430,11 +430,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1781024171,
-        "narHash": "sha256-d8tJJeZfaSy29nYYd+GQ8MBGsmrY1/OS6qyJVOF75oE=",
+        "lastModified": 1781028094,
+        "narHash": "sha256-f7SynCpJBgE2O5TJZch3wfCAH10ubk12/MwBDI9M/r4=",
         "ref": "refs/heads/main",
-        "rev": "4cbb7dedcb5c6d022e509800208334a601274738",
-        "revCount": 7439,
+        "rev": "b6633c4120a3f9607d6af719ceb6b0cbaa4605f9",
+        "revCount": 7441,
         "submodules": true,
         "type": "git",
         "url": "https://github.com/hyprwm/Hyprland"
