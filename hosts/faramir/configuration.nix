@@ -158,5 +158,15 @@
     "wispr-flow"
   ];
 
+  # Mac App Store apps. nix-darwin drives these via the `mas` CLI; faramir
+  # must be signed into the App Store with the Apple ID that originally
+  # acquired each app, or `mas install` fails with "not purchased".
+  # GarageBand intentionally omitted.
+  homebrew.masApps = {
+    WireGuard = 1451685025;
+    CrystalFetch = 6454431289;
+    Tailscale = 1475387142;
+  };
+
   time.timeZone = "America/Chicago";
 }
