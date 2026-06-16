@@ -62,12 +62,13 @@ in
 
     localModel = lib.mkOption {
       type = lib.types.str;
-      default = "gemma4-8b-16k";
+      default = "qwen3:4b-instruct-28k";
       description = ''
-        Ollama tag for the local Gemma model accessible via the
-        `/model local` alias. Modelfile-wrapped from gemma4:latest
-        with num_ctx=16384 baked in (32K spilled to CPU and tanked
-        latency).
+        Ollama tag for the local model accessible via the `/model local`
+        alias, served on saruman's GTX 1080 Ti. Qwen3 4B Instruct
+        (28K ctx, tool-use, non-thinking) — fits comfortably in VRAM and
+        is well-suited to fast tool-calling agent turns. Replaced the
+        retired gemma4-8b-16k wrapper 2026-06-16.
       '';
     };
 
@@ -81,6 +82,31 @@ in
       type = lib.types.str;
       default = "ollama";
       description = "API key for local Ollama (Ollama doesn't validate; sentinel).";
+    };
+
+    # ── Mac (faramir) LM Studio — `/model maccoder` ──
+    macCoderModel = lib.mkOption {
+      type = lib.types.str;
+      default = "qwen3-coder-30b-a3b-instruct-mlx";
+      description = ''
+        LM Studio model identifier served on faramir (the Mac) via the
+        `/model maccoder` alias. Qwen3-Coder-30B-A3B-Instruct (MLX 4-bit) —
+        a coding/agentic model far beyond what the 1080 Ti can host.
+        Requires LM Studio on faramir to be serving on the local network
+        (not loopback-only) and the Mac to be awake.
+      '';
+    };
+
+    macCoderBaseUrl = lib.mkOption {
+      type = lib.types.str;
+      default = "http://${config.lab.hosts.faramir.tailnetIp}:1234/v1";
+      description = "Base URL of faramir's LM Studio OpenAI-compatible endpoint over the tailnet.";
+    };
+
+    macCoderApiKey = lib.mkOption {
+      type = lib.types.str;
+      default = "lm-studio";
+      description = "API key for faramir's LM Studio (not validated; sentinel).";
     };
 
     sessionIdleMinutes = lib.mkOption {

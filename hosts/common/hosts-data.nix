@@ -7,6 +7,11 @@
   saruman  = { ip = "10.1.8.6";   role = "server"; tailnetIp = "100.104.242.112"; };
   vader    = { ip = "10.2.1.245"; role = "server"; };
 
+  # Darwin (nix-darwin-managed, not colmena) — roaming laptop, so its only
+  # stable address is the tailnet IP; `ip` mirrors it (no managed LAN IP).
+  # Referenced by hermes-agent for the `/model maccoder` LM Studio alias.
+  faramir  = { ip = "100.90.82.127"; role = "workstation"; tailnetIp = "100.90.82.127"; };
+
   # Infrastructure (not NixOS-managed)
   unifi          = { ip = "10.1.8.1";   role = "infrastructure"; };
   truenas        = { ip = "10.1.8.4";   role = "infrastructure"; };
