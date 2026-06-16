@@ -57,7 +57,7 @@
       unstable.devenv
       # Unstable pkgs
       inputs.claude-code.packages.x86_64-linux.default
-      antigravity-cli
+      unstable.antigravity-cli
       unstable.beeper
       unstable.bitwarden-desktop
       unstable.awscli2

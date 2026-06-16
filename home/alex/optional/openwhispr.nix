@@ -24,8 +24,9 @@
     #    on saruman.
     #
     # Recommended endpoint config:
-    #   STT URL     = https://stt.home.mcculley.tech/v1
-    #   Cleanup URL = https://ollama.home.mcculley.tech/v1
+    #   STT URL     = https://stt.<homelab-domain>/v1
+    #   Cleanup URL = https://ollama.<homelab-domain>/v1
+    # (substitute config.lab.homelabDomain — see hosts/common/global/homelab-domain.nix)
     #   Cleanup model = gemma4:latest
     #   API keys    = blank (tailnet is the trust boundary)
   };

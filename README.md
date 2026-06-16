@@ -53,6 +53,9 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] install `wakeonlan` ✅ 2024-02-20
 - [x] Steam ✅ 2024-07-12
 - [x] Standalone home manager config for wsl2 or Mac ✅ 2026-05-07
+- [x] opencode config in home-manager (`home/alex/global/opencode.nix`) — saruman-ollama provider on every host, LM Studio gated to Darwin. ✅ 2026-06-16. Follow-ups:
+  - [x] Centralize the homelab domain: extract a `config.lab.homelabDomain` option backed by `secrets/git_crypt_traefik.json`, refactor `acme.nix`, `claude-code-telemetry.nix` (server + darwin), `openwhispr.nix` (comment), and `opencode.nix` to read it from one place. (Git history still leaks the domain — this is fix-forward only.) ✅ 2026-06-16
+  - [ ] Wire OpenRouter API key via `sops-nix` home-manager module so secrets live encrypted in the repo.
 - [x] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern) ✅ 2026-04-04
 
 ### Servers

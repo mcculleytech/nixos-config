@@ -12,6 +12,7 @@ in
   imports = [
     ./git.nix
     ./vim.nix
+    ./opencode.nix
   ];
 
   home = {
@@ -29,7 +30,13 @@ in
   # same hosts — the systemd service uses its own wrapped venv at
   # /nix/store/...-hermes-agent-env/bin/hermes, but that's not on user
   # PATH. Without this, the `coder` wrapper can't find `hermes` to exec.
-  home.sessionPath = lib.optionals hermesAgentEnabled [ "$HOME/.local/bin" ];
+  # Keep Go's GOPATH out of $HOME (default would be ~/go). Same place go
+  # actually writes to once the env var is set — `go install` lands binaries
+  # in $GOPATH/bin, which is added to PATH below.
+  home.sessionVariables.GOPATH = "$HOME/.local/share/go";
+  home.sessionPath =
+    [ "$HOME/.local/share/go/bin" ]
+    ++ lib.optionals hermesAgentEnabled [ "$HOME/.local/bin" ];
   home.packages =
     (lib.optionals hermesAgentEnabled [
       inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default

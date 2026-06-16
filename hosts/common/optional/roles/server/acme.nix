@@ -28,10 +28,10 @@
     			};
     		};
     		certs = {
-    			"home.mcculley.tech" = {
+    			"${config.lab.homelabDomain}" = {
     			  inheritDefaults = true;
-    			  domain = "*.home.mcculley.tech";
-    			  extraDomainNames = ["home.mcculley.tech"];
+    			  domain = "*.${config.lab.homelabDomain}";
+    			  extraDomainNames = [config.lab.homelabDomain];
     			};
     		};
     	};

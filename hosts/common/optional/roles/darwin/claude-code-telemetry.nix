@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  otelEndpoint = "https://otel.home.mcculley.tech";
+  otelEndpoint = "https://otel.${config.lab.homelabDomain}";
 in
 {
   options.lab.claude-code-telemetry.enable = lib.mkOption {

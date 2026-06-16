@@ -15,6 +15,14 @@
 
   zsh.enable = true;
 
+  # Spotlight + Launchpad only index real .app directories (not symlinks
+  # or aliases), so we copy nix-installed apps into ~/Applications.
+  # enableChecks=false avoids a sudo .DS_Store probe that can leave
+  # root-owned files blocking future rsync updates (home-manager #8067).
+  targets.darwin.linkApps.enable = false;
+  targets.darwin.copyApps.enable = true;
+  targets.darwin.copyApps.enableChecks = false;
+
   home.packages = with pkgs; [
     direnv
     starship
@@ -23,7 +31,9 @@
     tmux
     jq
     yq
-    antigravity-cli
+    unstable.antigravity-cli
+    transmission_4
+    unstable.lmstudio
   ];
 
   programs.direnv = {

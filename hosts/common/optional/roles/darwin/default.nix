@@ -2,6 +2,7 @@
 {
   imports = [
     ./claude-code-telemetry.nix
+    ../../../global/homelab-domain.nix
   ];
 
   options.lab.lmStudio = {

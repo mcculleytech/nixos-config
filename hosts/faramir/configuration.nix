@@ -8,7 +8,7 @@
   networking.computerName = "faramir";
 
   lab.lmStudio.autoStart = true;
-  lab.lmStudio.autoLoadModel = "qwen/qwen3.6-27b";
+  lab.lmStudio.autoLoadModel = "qwen3-coder-30b-a3b-instruct-mlx";
 
   # Homebrew declaration for faramir. The darwin role pins
   # `homebrew.onActivation.cleanup = "none"`, so this list is treated as
@@ -38,7 +38,6 @@
     "beads"
     "bitwarden-cli"
     "cask"
-    "cava"
     "cdrtools"
     "cmatrix"
     "container"
@@ -49,7 +48,6 @@
     "gastown"
     "gawk"
     "gh"
-    "ghidra"
     "git"
     "git-crypt"
     "glab"
@@ -60,7 +58,6 @@
     "go"
     "gradle"
     "hashcat"
-    "htop"
     "hugo"
     "isl"
     "john"
@@ -73,7 +70,6 @@
     "neovim"
     "nmap"
     "node"
-    "ollama"
     "anomalyco/tap/opencode"
     "openvpn"
     "p7zip"
@@ -94,18 +90,12 @@
     "hudochenkov/sshpass/sshpass"
     "tailscale"
     "hashicorp/tap/terraform"
-    "tmux"
-    "transmission-cli"
     "tree"
     "wget"
     "wireshark"
     "zlib"
   ];
 
-  # `antigravity` is deliberately omitted — that cask is the legacy
-  # Antigravity Desktop App with a broken `agy` shim; the real CLI is
-  # the `antigravity-cli` Nix derivation in home-manager. Run
-  # `brew uninstall --cask antigravity` once manually to clear it.
   homebrew.casks = [
     "arduino-ide"
     "balenaetcher"
@@ -122,13 +112,10 @@
     "firefox"
     "flameshot"
     "font-0xproto-nerd-font"
-    "ghidra"
     "ghostty"
     "gimp"
-    "google-gemini"
     "inkscape"
     "iterm2"
-    "lm-studio"
     "microsoft-auto-update"
     "microsoft-excel"
     "microsoft-outlook"
@@ -137,14 +124,12 @@
     "microsoft-word"
     "miniconda"
     "obsidian"
-    "ollama-app"
     "onedrive"
     "opencode-desktop"
     "postman"
     "proton-drive"
     "proton-mail"
     "protonvpn"
-    "raindropio"
     "raspberry-pi-imager"
     "rectangle"
     "signal"
@@ -152,10 +137,8 @@
     "sublime-text"
     "transmission"
     "ultimaker-cura"
-    "utm"
     "vmware-fusion"
     "windows-app"
-    "wispr-flow"
   ];
 
   # Mac App Store apps. nix-darwin drives these via the `mas` CLI; faramir
@@ -164,7 +147,6 @@
   # GarageBand intentionally omitted.
   homebrew.masApps = {
     WireGuard = 1451685025;
-    CrystalFetch = 6454431289;
     Tailscale = 1475387142;
   };
 

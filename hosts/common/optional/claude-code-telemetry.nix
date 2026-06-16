@@ -2,7 +2,7 @@
 let
   # Public OTLP/HTTP entrypoint terminated by Traefik on atreides; routes
   # to the collector at :4318 which fans out to Prometheus, Loki, Tempo.
-  otelEndpoint = "https://otel.home.mcculley.tech";
+  otelEndpoint = "https://otel.${config.lab.homelabDomain}";
 in
 {
   options.lab.claude-code-telemetry.enable = lib.mkOption {

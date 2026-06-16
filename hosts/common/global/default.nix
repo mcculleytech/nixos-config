@@ -1,6 +1,7 @@
 {
   imports = [
     ./hosts.nix
+    ./homelab-domain.nix
     ./env-vars.nix
     ./ephemeral-btrfs.nix
     ./node-exporter.nix
