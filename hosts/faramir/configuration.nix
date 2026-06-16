@@ -9,6 +9,11 @@
 
   lab.lmStudio.autoStart = true;
   lab.lmStudio.autoLoadModel = "qwen3-coder-30b-a3b-instruct-mlx";
+  # Serve the LM Studio API on faramir's tailnet IP (not 0.0.0.0) so Hermes
+  # on saruman can reach Qwen3-Coder via `/model maccoder`, without exposing
+  # the unauthenticated endpoint on untrusted networks the laptop roams onto.
+  # Mirrors faramir's tailnetIp in hosts-data.nix (darwin lacks lab.hosts).
+  lab.lmStudio.serveHost = "100.90.82.127";
 
   # Homebrew declaration for faramir. The darwin role pins
   # `homebrew.onActivation.cleanup = "none"`, so this list is treated as

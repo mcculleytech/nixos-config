@@ -185,16 +185,28 @@ in
           };
 
           # ── Local Ollama alias ──
-          # `/model local` swaps to Gemma 4 8B on saruman's GTX 1080
-          # Ti. Free, private (prompts never leave the box). Useful
-          # for low-stakes chitchat or when you want to keep tokens
-          # out of OR. Capabilities are limited at 8B — don't expect
-          # the depth of V4 Pro.
+          # `/model local` swaps to Qwen3 4B Instruct on saruman's GTX
+          # 1080 Ti. Free, private (prompts never leave the box), and
+          # tool-use capable. Useful for low-stakes turns or to keep
+          # tokens out of OR. Limited depth at 4B — don't expect V4 Pro.
           local = {
             model = cfg.localModel;
             provider = "custom";
             base_url = cfg.localBaseUrl;
             api_key = cfg.localApiKey;
+          };
+
+          # ── Mac LM Studio alias ──
+          # `/model maccoder` routes to Qwen3-Coder-30B (MLX) on faramir
+          # over the tailnet. Far more capable than the 1080 Ti's local
+          # model for coding/agentic work, still private to the tailnet.
+          # Inert unless faramir is awake AND LM Studio is serving on the
+          # network (not loopback) — see macCoder* options in default.nix.
+          maccoder = {
+            model = cfg.macCoderModel;
+            provider = "custom";
+            base_url = cfg.macCoderBaseUrl;
+            api_key = cfg.macCoderApiKey;
           };
 
         };
