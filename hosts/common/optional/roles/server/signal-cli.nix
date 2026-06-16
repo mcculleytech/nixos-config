@@ -1,14 +1,15 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.signal-cli;
-  # Track signal-cli from unstable (0.14.3) rather than the pinned nixpkgs
-  # (0.14.2): 0.14.2 throws `getServerGuid(...) must not be null`
-  # (NullPointerException) decoding some sealed-sender envelopes ("unknown
-  # source") and drops them before they reach Hermes — so inbound messages
-  # silently vanish. First seen 2026-06-10. 0.14.3 is the cheap first attempt;
-  # the symptom most closely matches 0.14.4's "fixing receiving messages from
-  # new contacts", so if this doesn't clear it, bump to a 0.14.4.x override.
-  signalCli = pkgs.unstable.signal-cli;
+  # signal-cli 0.14.5 via the prebuilt GraalVM native release (pkgs.signal-cli-bin).
+  # A Signal server-side change (~2026-06-10) broke sealed-sender receive in
+  # every signal-cli < 0.14.5 with `getServerGuid(...) must not be null`
+  # (NullPointerException, upstream #2059) — inbound messages silently vanished
+  # before reaching Hermes. nixpkgs lags at 0.14.3 (source build), and 0.14.3
+  # was confirmed still broken, so we run the upstream 0.14.5 binary as a
+  # stopgap. REVERT to pkgs.signal-cli (or pkgs.unstable.signal-cli) once
+  # nixpkgs ships >= 0.14.5; see pkgs/signal-cli-bin for the full rationale.
+  signalCli = pkgs.signal-cli-bin;
   # Wrapper that locks in the same data directory the daemon uses.
   # Without this, ad-hoc `sudo -u hermes signal-cli ...` invocations fall back
   # to the user-default `~/.local/share/signal-cli/`, which diverges from the

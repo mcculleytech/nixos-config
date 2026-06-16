@@ -22,4 +22,5 @@
   hermes-skill-obsidian = pkgs.callPackage ./hermes-skill-obsidian { };
   openwhispr = pkgs.callPackage ./openwhispr { };
   wait-tailnet-ip = pkgs.callPackage ./wait-tailnet-ip { };
+  signal-cli-bin = pkgs.callPackage ./signal-cli-bin { };
 }
