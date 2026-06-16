@@ -1,13 +1,21 @@
 { lib, pkgs, config, ... }:
 let
   cfg = config.signal-cli;
+  # Track signal-cli from unstable (0.14.3) rather than the pinned nixpkgs
+  # (0.14.2): 0.14.2 throws `getServerGuid(...) must not be null`
+  # (NullPointerException) decoding some sealed-sender envelopes ("unknown
+  # source") and drops them before they reach Hermes — so inbound messages
+  # silently vanish. First seen 2026-06-10. 0.14.3 is the cheap first attempt;
+  # the symptom most closely matches 0.14.4's "fixing receiving messages from
+  # new contacts", so if this doesn't clear it, bump to a 0.14.4.x override.
+  signalCli = pkgs.unstable.signal-cli;
   # Wrapper that locks in the same data directory the daemon uses.
   # Without this, ad-hoc `sudo -u hermes signal-cli ...` invocations fall back
   # to the user-default `~/.local/share/signal-cli/`, which diverges from the
   # daemon's path and means newly-registered accounts don't show up over the
   # HTTP RPC. The wrapper makes the operator command path-agnostic.
   signal-cli-hermes = pkgs.writeShellScriptBin "signal-cli-hermes" ''
-    exec ${pkgs.signal-cli}/bin/signal-cli --config ${cfg.dataDir} "$@"
+    exec ${signalCli}/bin/signal-cli --config ${cfg.dataDir} "$@"
   '';
 in
 {
@@ -60,7 +68,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ pkgs.signal-cli signal-cli-hermes ];
+    environment.systemPackages = [ signalCli signal-cli-hermes ];
 
     # Persist the entire signal-cli state dir across reboots — losing it
     # would mean re-linking the device.
@@ -90,7 +98,7 @@ in
       # for any interactive admin commands.
 
       serviceConfig = {
-        ExecStart = "${pkgs.signal-cli}/bin/signal-cli --config ${cfg.dataDir} daemon --http=127.0.0.1:${toString cfg.httpPort}";
+        ExecStart = "${signalCli}/bin/signal-cli --config ${cfg.dataDir} daemon --http=127.0.0.1:${toString cfg.httpPort}";
         User = cfg.user;
         Group = cfg.group;
         Restart = "always";
