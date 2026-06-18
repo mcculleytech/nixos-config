@@ -119,6 +119,7 @@
     "font-0xproto-nerd-font"
     "ghostty"
     "gimp"
+    "godot"
     "inkscape"
     "iterm2"
     "microsoft-auto-update"
