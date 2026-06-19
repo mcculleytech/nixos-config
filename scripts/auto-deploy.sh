@@ -42,6 +42,25 @@ rollback() {
   fi
 }
 
+# Helper: did $host actually activate the config we just built? Compares the
+# host's running system to the toplevel we build here — a version-independent
+# proof the switch took effect. Replaces the old `grep "Activation successful"`
+# guard, which silently broke when a colmena bump changed its log output and
+# caused false-failure rollbacks of healthy deploys. $2 = host IP, or "" for
+# the local host (saruman).
+host_activated() {
+  local host="$1" ip="$2" target running
+  target=$(nix build --no-link --print-out-paths \
+    ".#nixosConfigurations.${host}.config.system.build.toplevel" 2>/dev/null) || return 1
+  [ -z "$target" ] && return 1
+  if [ -z "$ip" ]; then
+    running=$(readlink -f /run/current-system 2>/dev/null)
+  else
+    running=$(ssh -o ConnectTimeout=10 -o BatchMode=yes "root@${ip}" 'readlink -f /run/current-system' 2>/dev/null)
+  fi
+  [ -n "$running" ] && [ "$running" = "$target" ]
+}
+
 # 1. Pull latest — exit if nothing new since last successful deploy
 git fetch origin
 git checkout master
@@ -75,18 +94,26 @@ logger -t "$LOG_TAG" "New commit detected: $SHORT_REV — $COMMIT_MSG"
 # colmena exits non-zero (commonly 4) when a unit is failed at the activation
 # *snapshot* — including the benign root dbus-broker user-unit reload — even
 # when every node activated cleanly. Don't roll back on the exit code alone
-# (the saruman step has the same guard): capture it, and only hard-fail if
-# activation never completed (no "Activation successful" — i.e. an eval/build
-# error). Otherwise defer to the per-VM `systemctl --failed` health check in
-# step 3, which is the real arbiter and catches genuinely-broken units.
+# (the saruman step has the same guard): capture it, and only hard-fail if a
+# host's running system != the toplevel we built (host_activated) — i.e. the
+# switch never took effect (an eval/build error). Otherwise defer to the per-VM
+# `systemctl --failed` health check in step 3, the real arbiter for live units.
 VM_LOG=$(mktemp)
 set +e
 colmena apply --on @vm 2>&1 | tee "$VM_LOG" | logger -t "$LOG_TAG"
 VM_RC=${PIPESTATUS[0]}
 set -e
-if [ "$VM_RC" -ne 0 ] && ! grep -q "Activation successful" "$VM_LOG"; then
+VM_BAD=""
+if [ "$VM_RC" -ne 0 ]; then
+  for h in vader phantom atreides; do
+    HIP=$(nix eval --raw ".#nixosConfigurations.$h.config.lab.hosts.$h.ip" 2>/dev/null || echo "")
+    [ -z "$HIP" ] && continue
+    host_activated "$h" "$HIP" || VM_BAD="${VM_BAD} $h"
+  done
+fi
+if [ "$VM_RC" -ne 0 ] && [ -n "$VM_BAD" ]; then
   rm -f "$VM_LOG"
-  logger -t "$LOG_TAG" "VM deploy FAILED: activation did not complete (colmena rc=$VM_RC)"
+  logger -t "$LOG_TAG" "VM deploy FAILED: activation did not complete on:${VM_BAD} (colmena rc=$VM_RC)"
   ROLLED=$(rollback "@vm")
   if [ -n "$ROLLED" ]; then
     curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): activation did not complete (rc=$VM_RC). Rolled back to $ROLLED." "$NTFY_URL" || true
@@ -140,8 +167,8 @@ fi
 # is a false negative. Judge saruman on the SETTLED state instead: capture the
 # real exit code, and if it's non-zero, distinguish a genuine failure
 # (activation never completed) from a transient flap (activation completed,
-# units heal) by checking for "Activation successful" and then re-running a
-# `systemctl --failed` health check after a grace period.
+# units heal) by checking the running system equals the built toplevel
+# (host_activated) and then re-running a `systemctl --failed` check after a grace period.
 SARUMAN_LOG=$(mktemp)
 set +e
 colmena apply --on saruman 2>&1 | tee "$SARUMAN_LOG" | logger -t "$LOG_TAG"
@@ -151,7 +178,7 @@ set -e
 SARUMAN_OK=1
 SARUMAN_REASON=""
 if [ "$SARUMAN_RC" -ne 0 ]; then
-  if ! grep -q "Activation successful" "$SARUMAN_LOG"; then
+  if ! host_activated saruman ""; then
     SARUMAN_OK=0
     SARUMAN_REASON="activation did not complete (colmena rc=$SARUMAN_RC)"
   else
