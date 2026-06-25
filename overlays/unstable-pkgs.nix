@@ -33,9 +33,11 @@ in
   # You can change versions, add patches, set compilation flags, anything really.
   # https://nixos.wiki/wiki/Overlays
   modifications = final: prev: {
-    # example = prev.example.overrideAttrs (oldAttrs: rec {
-    # ...
-    # });
+    # openblas: when built from source (cache miss after a nixpkgs bump), its
+    # BLAS test suite (`zblat3`) hangs indefinitely at 100% CPU on this
+    # hardware, holding the build lock and deadlocking every host deploy.
+    # Skip the self-test so it always builds cleanly.
+    openblas = prev.openblas.overrideAttrs (_: { doCheck = false; });
   };
 
   # When applied, the unstable nixpkgs set (declared in the flake inputs) will
