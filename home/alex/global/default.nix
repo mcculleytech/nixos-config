@@ -13,6 +13,7 @@ in
     ./git.nix
     ./vim.nix
     ./opencode.nix
+    ./tmux.nix
   ];
 
   home = {

@@ -28,7 +28,6 @@
     starship
     fzf
     htop
-    tmux
     jq
     yq
     unstable.antigravity-cli
