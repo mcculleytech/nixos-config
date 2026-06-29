@@ -10,6 +10,11 @@ jobs:
       uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
     - name: Install Nix
       uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+      with:
+        # Authenticate nix's GitHub API calls so flake-input resolution isn't
+        # subject to the 60 req/hr unauthenticated rate limit (HTTP 429).
+        extra_nix_config: |
+          access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - name: Decrypt git-crypt secrets
       run: |
         nix profile install nixpkgs#git-crypt
