@@ -15,15 +15,15 @@ jobs:
       with:
         token: ${{ secrets.PAT_TOKEN }}
     - name: Install Nix
-      uses: cachix/install-nix-action@ba0dd844c9180cbf77aa72a116d6fbc515d0e87b # v27
+      # Determinate Nix (3.x) — the older cachix/install-nix-action@v27 nix did
+      # not reliably attach the access-token to the GitHub HEAD-resolution call,
+      # so `nix flake update` re-resolved every github: input (80+ transitively)
+      # UNAUTHENTICATED — 60 req/hr per IP — and shared runners hit HTTP 429
+      # (gzipped body that nix chokes on: "parse error ... '<U+001F>'").
+      uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
       with:
-        # Authenticate nix's GitHub API calls. `nix flake update` re-resolves
-        # every github: input (80+ transitively) via api.github.com, which is
-        # capped at 60 req/hr for UNAUTHENTICATED callers — and shared-runner
-        # IPs burn through that, returning HTTP 429 with a gzipped body that
-        # nix then chokes on ("parse error ... invalid literal '<U+001F>'").
-        # The built-in GITHUB_TOKEN raises this to 5000 req/hr.
-        extra_nix_config: |
+        # access-tokens raises the GitHub API limit to 5000 req/hr.
+        extra-conf: |
           access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
     - name: Update flake.lock
       id: update
