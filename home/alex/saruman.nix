@@ -23,6 +23,8 @@
     game-devices-udev-rules
     firefox
     obsidian
+    proton-vpn-cli         # official Proton VPN CLI (`protonvpn` binary, NM backend):
+                           # `protonvpn login <user>` then `protonvpn connect --cc IT`
     inputs.claude-code.packages.x86_64-linux.default
     unstable.antigravity-cli
     unstable.ollama
