@@ -39,6 +39,10 @@ appimageTools.wrapType2 {
       --replace-quiet 'Exec=AppRun %U' "Exec=${pname} %U" \
       --replace-quiet 'Exec=AppRun' "Exec=${pname}" \
       --replace-quiet 'Icon=open-whispr' "Icon=${pname}"
+    # Without this, Electron runs via XWayland and its clipboard is not
+    # synced with native Wayland apps (breaks paste on COSMIC/Wayland).
+    wrapProgram $out/bin/${pname} \
+      --set ELECTRON_OZONE_PLATFORM_HINT auto
   '';
 
   meta = with lib; {
