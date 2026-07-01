@@ -50,6 +50,12 @@ in
           "electron-25.9.0"
           "electron-39.8.10" # unstable obsidian/signal/bitwarden/beeper bundle this
         ];
+        # Newer nixpkgs marks sublimetext4 broken (its plugin host needs
+        # insecure OpenSSL). We knowingly keep it; downgrade the hard error to
+        # a warning so eval/flake-check passes. See sublime/4/common.nix.
+        problems.handlers = {
+          sublimetext4.broken = "warn";
+        };
       };
       overlays = [];
     };
