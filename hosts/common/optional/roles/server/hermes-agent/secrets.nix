@@ -59,6 +59,15 @@ in
         mode = "0440";
         path = "/var/lib/hermes/.hermes/google_client_secret.json";
       };
+      # hermes-agent 0.17.0 removed the dashboard's `--insecure` unauthenticated
+      # bind. A non-loopback bind (required — Traefik on atreides fronts it)
+      # now needs a registered auth provider. We use the stdlib-scrypt basic
+      # auth: username `alex`, precomputed password_hash below (reuses the same
+      # plaintext as the Traefik htpasswd cred). `_secret` signs session cookies
+      # so logins survive dashboard restarts. Read by the plugin from the
+      # HERMES_DASHBOARD_BASIC_AUTH_* env vars in the template below.
+      hermes_dashboard_basic_auth_password_hash = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      hermes_dashboard_basic_auth_secret = { owner = "alex"; group = "hermes"; mode = "0400"; };
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
@@ -73,7 +82,7 @@ in
       # and we want the agent to pick up the new values. The per-secret
       # entries above feed only this template, so restartUnits on the
       # template covers them all without per-secret duplication.
-      restartUnits = [ "hermes-agent.service" ];
+      restartUnits = [ "hermes-agent.service" "hermes-dashboard.service" ];
       content = ''
         OPENROUTER_API_KEY=${config.sops.placeholder.openrouter_api_key}
         OPENROUTER_PROVISIONING_KEY=${config.sops.placeholder.openrouter_provisioning_key}
@@ -104,6 +113,13 @@ in
         # sops secret itself is owned by alex:hermes mode 0440 — see
         # miniflux-mcp module.
         MINIFLUX_API_TOKEN=${config.sops.placeholder.miniflux_api_token}
+        # Dashboard basic-auth (hermes-agent 0.17.0 auth gate). The dashboard
+        # service loads this same env file; the dashboard_auth/basic plugin
+        # reads these (env wins over config.yaml) and registers the provider,
+        # letting it bind the tailnet interface for Traefik.
+        HERMES_DASHBOARD_BASIC_AUTH_USERNAME=alex
+        HERMES_DASHBOARD_BASIC_AUTH_PASSWORD_HASH=${config.sops.placeholder.hermes_dashboard_basic_auth_password_hash}
+        HERMES_DASHBOARD_BASIC_AUTH_SECRET=${config.sops.placeholder.hermes_dashboard_basic_auth_secret}
       '';
     };
   };
