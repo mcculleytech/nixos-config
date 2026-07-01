@@ -45,7 +45,9 @@ in
     # AI coding agents alex uses interactively. claude-code is already on
     # PATH (via the systemPackages route on saruman / hermes' extraPackages),
     # but opencode lives only in nixpkgs and isn't installed anywhere else.
-    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.unstable.opencode ]);
+    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.unstable.opencode ])
+    # superfile: TUI file manager. Cross-platform (Linux + macOS), stable nixpkgs.
+    ++ [ pkgs.superfile ];
   home.file = lib.optionalAttrs hermesAgentEnabled {
     ".local/bin/coder" = {
       executable = true;
