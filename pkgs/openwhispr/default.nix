@@ -28,6 +28,11 @@ in
 appimageTools.wrapType2 {
   inherit pname version src;
 
+  # `wrapProgram` (used below) comes from makeWrapper's setup hook — it must
+  # be in nativeBuildInputs or the install phase fails with
+  # "wrapProgram: command not found" (exit 127). wrapType2 forwards this.
+  nativeBuildInputs = [ makeWrapper ];
+
   extraInstallCommands = ''
     # Upstream uses hyphenated names (open-whispr.{desktop,png}).
     install -Dm444 ${appimageContents}/open-whispr.desktop \
