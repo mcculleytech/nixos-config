@@ -31,7 +31,7 @@
       watchmate
       unstable.luanti-client
       gparted
-      contact # meshtastic console UI
+      # contact # meshtastic console UI — disabled with meshtastic (below)
       # rpi-imager
       ollama
       arduino-ide
@@ -46,7 +46,11 @@
       protonmail-desktop
       ghidra
       unstable.vmware-workstation
-      python312Packages.meshtastic
+      # python312Packages.meshtastic
+      #   Disabled: not needed on the endpoint right now, and it was the sole
+      #   thing dragging in a 40-min PyTorch build — its dep chain is
+      #   meshtastic → pandas-stubs → tables → blosc2 → torch. Re-enable when
+      #   the mesh radio is back in use.
       # software dev packages
       python3
       gnumake
