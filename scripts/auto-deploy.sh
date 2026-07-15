@@ -5,6 +5,11 @@ REPO="/home/alex/Repositories/nixos-config"
 NTFY_TOPIC="deploy"
 LOG_TAG="auto-deploy"
 GOOD_TAG="deploy/last-known-good"
+# Hosts deployed manually (laptops etc.) whose closures we prebuild after a
+# successful fleet deploy, so the eventual `colmena apply --on <host>` skips
+# straight to copy + activate.
+PREBUILD_HOSTS="aeneas"
+PREBUILD_ROOT="/home/alex/.local/state/auto-deploy"
 
 cd "$REPO"
 
@@ -270,3 +275,22 @@ if [ -n "$REBOOT_HOSTS" ]; then
 else
   curl -s -H "Title: Deploy SUCCESS" -d "$SHORT_REV — $COMMIT_MSG" "$NTFY_URL" || true
 fi
+
+# 8. Prebuild manual-deploy hosts (laptops etc.) so their closures are already
+# in saruman's store — the eventual `colmena apply --on <host>` then skips the
+# build and goes straight to copy + activate. Runs last so a slow build (flake
+# bumps can take an hour) never delays the fleet deploy or health checks.
+# --out-link creates a GC root: without one, the daily nix-collect-garbage
+# would collect the unrooted closure before it's ever deployed. Each build
+# replaces the link, so only the newest prebuilt closure stays rooted.
+mkdir -p "$PREBUILD_ROOT"
+for host in $PREBUILD_HOSTS; do
+  logger -t "$LOG_TAG" "Prebuilding $host toplevel"
+  if nix build --out-link "$PREBUILD_ROOT/$host" \
+      ".#nixosConfigurations.${host}.config.system.build.toplevel" 2>&1 | logger -t "$LOG_TAG"; then
+    logger -t "$LOG_TAG" "Prebuild OK: $host"
+  else
+    logger -t "$LOG_TAG" "Prebuild FAILED: $host"
+    curl -s -H "Title: Prebuild failed" -d "Prebuild of $host failed at $SHORT_REV — next manual deploy will build from scratch." "$NTFY_URL" || true
+  fi
+done

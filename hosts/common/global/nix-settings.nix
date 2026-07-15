@@ -14,13 +14,26 @@
       # 13.7GB Kokoro) saturated /nix on saruman's 233GB system disk.
       min-free = toString (10 * 1024 * 1024 * 1024);   # 10 GB
       max-free = toString (50 * 1024 * 1024 * 1024);   # 50 GB
-      substituters = [
+      substituters =
+        # Harmonia on saruman — first-choice cache of everything saruman
+        # has built (it builds the whole fleet via colmena). Uses the
+        # tailnet IP, not the LAN IP: roaming laptops (aeneas) and the DMZ
+        # (vader) can't reach 10.1.8.x, while tailscale gives everyone a
+        # route and negotiates direct peer-to-peer (~LAN speed) for hosts
+        # on the same network. Raw IP:port so substitution never depends
+        # on blocky/traefik being up. Saruman skips itself: querying your
+        # own store over HTTP is a wasted round-trip.
+        lib.optionals (config.networking.hostName != "saruman") [
+          "http://${config.lab.hosts.saruman.tailnetIp}:5001"
+        ]
+        ++ [
         "https://cosmic.cachix.org/"
         "https://nix-community.cachix.org"
         "https://install.determinate.systems"
         "https://claude-code.cachix.org"
        ];
       trusted-public-keys = [
+        "saruman-cache-1:zemxHp2WafWZoT+oL93fBrOFuc5Y83ZDxiQ5vAJGPzU="
         "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="

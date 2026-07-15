@@ -73,7 +73,8 @@ Deploy a GitHub Actions self-hosted runner on **saruman** (Ryzen 5, Nvidia 1080 
 
 Builds on the shared [Auto-Update Pipeline](#phase-0-shared-foundation-both-tracks) from Phase 0. The staged deploy workflow and auto-merge logic live there — this section covers the additional CI/CD pieces.
 
-- [ ] Cachix binary cache integration to avoid redundant builds across PR checks and deploys
+- [x] Binary cache to avoid redundant builds across deploys — solved self-hosted instead of Cachix: Harmonia on saruman serves its `/nix/store` (which already contains every fleet closure) at `tailnet:5001`, first substituter on all hosts; plus auto-deploy prebuilds manual-host closures (aeneas) so laptop deploys are copy-only. See README Servers section. ✅ 2026-07-15
+	- [ ] CI-side cache reuse (PR checks rebuild from scratch on GitHub runners) — would need the runner to reach the tailnet cache (`tailscale/github-action`) or a hosted cache; revisit if `nix flake check` times become a problem
 - [ ] Manual workflow dispatch for deploying a single host on demand (`colmena apply --on hostname`)
 - [ ] Extend the staged deploy workflow to also support ad-hoc deploys (not just flake.lock updates)
 
