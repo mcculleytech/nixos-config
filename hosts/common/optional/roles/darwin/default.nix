@@ -70,6 +70,21 @@
       mac-rebuild = "sudo darwin-rebuild switch --flake '/Users/alex/Repositories/personal/nixos-config/#'$(hostname -s)";
     };
 
+    # cmux (0.64.19) bundles its own Ghostty shell integration, which
+    # defines a `ssh` shell function that re-execs through
+    # `$GHOSTTY_BIN_DIR/ghostty +ssh`. cmux's spawned process env sets
+    # GHOSTTY_BIN_DIR=/Applications/cmux.app/Contents/MacOS, but that
+    # bundle actually ships the ghostty binary under
+    # Contents/Resources/bin/ghostty — so every `ssh` in a cmux shell
+    # fails with "no such file or directory". Override it here: like the
+    # telemetry vars in claude-code-telemetry.nix, environment.variables
+    # lands in /etc/zshenv, which zsh sources before cmux points ZDOTDIR
+    # at its own integration scripts, so this sticks for the rest of
+    # shell startup.
+    environment.variables = {
+      GHOSTTY_BIN_DIR = "/Applications/cmux.app/Contents/Resources/bin";
+    };
+
     environment.systemPackages = with pkgs; [
       curl
       git
