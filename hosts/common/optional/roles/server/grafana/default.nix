@@ -1,6 +1,6 @@
 { config, lib, ... }:
 let
-  tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../secrets/git_crypt_traefik.json);
+  tr_secrets = builtins.fromJSON (builtins.readFile ../../../../../../secrets/git_crypt_traefik.json);
 in
 {
 
@@ -15,7 +15,7 @@ in
     # `head -c 32 /dev/urandom | base64 | tr -d '/+=' | head -c 32`
     # and add it to atreides's secrets.yaml under `grafana_secret_key`.
     sops.secrets.grafana_secret_key = {
-      sopsFile = ../../../../../hosts/atreides/secrets.yaml;
+      sopsFile = ../../../../../../hosts/atreides/secrets.yaml;
       owner = "grafana";
       group = "grafana";
       mode = "0400";
