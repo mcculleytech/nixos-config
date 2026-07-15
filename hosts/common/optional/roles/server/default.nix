@@ -21,7 +21,7 @@
     ./miniflux.nix
     ./paperless.nix
     ./prometheus
-    ./grafana.nix
+    ./grafana
     ./loki.nix
     ./tempo.nix
     ./otel-collector.nix

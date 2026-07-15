@@ -93,7 +93,7 @@ in
             {
               name = "homelab";
               type = "file";
-              options.path = ../../../../../dashboards;
+              options.path = ./dashboards;
             }
           ];
         };
