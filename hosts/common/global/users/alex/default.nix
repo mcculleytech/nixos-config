@@ -22,6 +22,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAEGkHcMirY9luPZudrCkXEL9EDnnrRGKPv8uEqChtdl alex@terminus"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPXQH5gI49qNuwiTigLDbZJ8l0NNl4OksmIXV/TRyGi6 alex@saruman"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAD/cB01DFcbp6ZwCPdYw8Ayc0Vd1TOCiuVlWdpMsLBW alex@phone"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKTFEGZs5zK8hle4cjKKhnaZ0ISaHDsoIS+rymzMt8nH alex@debian"
       ];
       extraGroups = [ "wheel" "audio" "video" "plugdev" "dialout" "docker" "networkmanager" "adm" ];
     };
@@ -30,6 +31,7 @@
     users.users.root.openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5/rm0SfHY4XP/yDT43MTPfCYmsoui53YvawXovlMDF alex@aeneas"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPXQH5gI49qNuwiTigLDbZJ8l0NNl4OksmIXV/TRyGi6 alex@saruman"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKTFEGZs5zK8hle4cjKKhnaZ0ISaHDsoIS+rymzMt8nH alex@debian"
     ];
 
   }
