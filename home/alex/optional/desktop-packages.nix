@@ -66,7 +66,6 @@
       unstable.bitwarden-desktop
       unstable.awscli2
       unstable.terraform
-      unstable.hexchat
       unstable.cura-appimage
       unstable.quickemu
       unstable.signal-desktop
