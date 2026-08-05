@@ -12,7 +12,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 
 | **Name** | Purpose                  											  							| Hardware                    |
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
-| aeneas   | Personal Laptop  						| AMD Framework 13in          |
+| aeneas   | Personal Laptop — **decommissioned from NixOS 2026-08-05** (Debian 13 + standalone HM; config kept commented in flake.nix) | AMD Framework 13in          |
 | saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
@@ -125,6 +125,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Decommission maul — removed host config, colmena entry, sops keys, syncthing refs, and Systems table entry ✅ 2026-04-03
 - [x] Decommission achilles — removed host config, sops keys, syncthing refs, SSH keys, and Systems table entry ✅ 2026-04-04
 - [ ] Migrate aeneas (Framework 13 AMD) from NixOS to Debian 13 — decided 2026-08-04 after leaf desktop packages on the laptop repeatedly blocked fleet-wide flake updates (hexchat removal broke `nix flake check` for 4 days). Plan: Debian 13 + standalone home-manager (reuse the WSL2/Mac standalone HM pattern) so the user env stays declarative; GNOME/KDE instead of COSMIC (poorly packaged on Debian). Keep node_exporter + alloy + tailscale, hand-installed. New `alex@debian` SSH key already deployed fleet-wide. Decom like maul/achilles once migrated: flake.nix hostDefs entry, `PREBUILD_HOSTS` in auto-deploy.sh, sops keys, old `alex@aeneas` SSH keys, hosts-data + Systems table entries.
+	- [x] Soft-decom 2026-08-05 — hostDefs entry commented out in flake.nix (config files kept, not purged), `PREBUILD_HOSTS` emptied in auto-deploy.sh, Systems table annotated. Still pending for full decom: sops keys, old `alex@aeneas` SSH keys, syncthing device entries, delete `hosts/aeneas` + `disko/aeneas.nix` + `home/alex/aeneas.nix`.
 
 
 ### Other

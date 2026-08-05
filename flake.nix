@@ -78,25 +78,27 @@
       # Single host definition map — both nixosConfigurations and colmena are
       # generated from this, so there is only one place to add or change a host.
       hostDefs = {
-        # Framework 13 AMD Laptop
-        aeneas = {
-          modules = defaultModules ++ [
-            hardware.nixosModules.framework-13-7040-amd
-            home-manager.nixosModules.home-manager
-            ./hosts/aeneas/configuration.nix
-            {
-              home-manager.useUserPackages = true;
-              home-manager.extraSpecialArgs = { inherit inputs outputs; };
-              home-manager.users.alex.imports = [ ./home/alex/aeneas.nix ];
-              home-manager.backupFileExtension = "bak";
-            }
-          ];
-          deployment = {
-            targetHost = "aeneas";
-            targetUser = "root";
-            tags = [ "workstation" ];
-          };
-        };
+        # Framework 13 AMD Laptop — decommissioned from NixOS 2026-08-05,
+        # now runs Debian 13 + standalone home-manager. Config kept for
+        # reference; uncomment to re-adopt.
+        # aeneas = {
+        #   modules = defaultModules ++ [
+        #     hardware.nixosModules.framework-13-7040-amd
+        #     home-manager.nixosModules.home-manager
+        #     ./hosts/aeneas/configuration.nix
+        #     {
+        #       home-manager.useUserPackages = true;
+        #       home-manager.extraSpecialArgs = { inherit inputs outputs; };
+        #       home-manager.users.alex.imports = [ ./home/alex/aeneas.nix ];
+        #       home-manager.backupFileExtension = "bak";
+        #     }
+        #   ];
+        #   deployment = {
+        #     targetHost = "aeneas";
+        #     targetUser = "root";
+        #     tags = [ "workstation" ];
+        #   };
+        # };
 
         # Dedicated GPU Server
         saruman = {

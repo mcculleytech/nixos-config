@@ -8,7 +8,9 @@ GOOD_TAG="deploy/last-known-good"
 # Hosts deployed manually (laptops etc.) whose closures we prebuild after a
 # successful fleet deploy, so the eventual `colmena apply --on <host>` skips
 # straight to copy + activate.
-PREBUILD_HOSTS="aeneas"
+# aeneas removed 2026-08-05 — decommissioned from NixOS (Debian 13 now);
+# its hostDefs entry in flake.nix is commented out, so prebuilding would fail.
+PREBUILD_HOSTS=""
 PREBUILD_ROOT="/home/alex/.local/state/auto-deploy"
 
 cd "$REPO"
