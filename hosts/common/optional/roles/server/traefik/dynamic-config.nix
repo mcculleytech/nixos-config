@@ -275,6 +275,15 @@ in
 	   				};
 	   				service = "otel";
 	   			};
+	   			borg = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`borg.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "borg";
+	   			};
 	   			hermes-dashboard = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`hermes.${tr_secrets.traefik.homelab_domain}`)";
@@ -502,6 +511,15 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.atreides.ip}:4318";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			borg = {
+	   				# BorgWarehouse web UI — TrueNAS app (SCALE allocates the 3040x ports)
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.truenas.ip}:30406";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

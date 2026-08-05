@@ -75,6 +75,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [x] Radicale CardDav and CalDav Server ✅ 2024-03-23
 - [x] Gitea server fix ✅ 2024-10-04
 - [ ] Mirror nixos-config to Gitea — GitHub remains primary, Gitea pulls as a read-only mirror
+- [x] BorgWarehouse (TrueNAS app, `truenas:30406`) behind Traefik + blocky DNS as `borg.<homelab_domain>` ✅ 2026-08-05
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
 - [ ] Arion for docker compose configurations
 - [x] RSS feed server (Miniflux on phantom) ✅ 2026-03-12
