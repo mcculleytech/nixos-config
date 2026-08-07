@@ -57,6 +57,8 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
   - [x] Centralize the homelab domain: extract a `config.lab.homelabDomain` option backed by `secrets/git_crypt_traefik.json`, refactor `acme.nix`, `claude-code-telemetry.nix` (server + darwin), `openwhispr.nix` (comment), and `opencode.nix` to read it from one place. (Git history still leaks the domain — this is fix-forward only.) ✅ 2026-06-16
   - [ ] Wire OpenRouter API key via `sops-nix` home-manager module so secrets live encrypted in the repo.
 - [x] Add `mkEnableOption` modularity to desktop/workstation configs (matching server pattern) ✅ 2026-04-04
+- [x] Drop the `tailscale` brew formula from faramir — it shipped a root `tailscaled` LaunchDaemon that grabbed `/var/run/tailscaled.socket` and fought the MAS app's network extension (CLI saw a logged-out daemon, node never got a tailnet IP). MAS app (`masApps.Tailscale`) is now the only install. ✅ 2026-08-07. Follow-ups:
+  - [ ] Declare the Tailscale CLI shim in home-manager for Darwin. The MAS app's CLI only exists at `/Applications/Tailscale.app/Contents/MacOS/Tailscale`, and a bare symlink to it breaks the app's bundle-identifier lookup — it needs a wrapper that `exec`s the real bundle path. Currently hand-placed at `/opt/homebrew/bin/tailscale`, so it's imperative and won't survive a rebuild on a fresh Mac.
 
 ### Servers
 - [x] Colmena setup

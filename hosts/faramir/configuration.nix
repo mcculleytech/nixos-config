@@ -93,7 +93,6 @@
     "sevenzip"
     "sops"
     "hudochenkov/sshpass/sshpass"
-    "tailscale"
     "hashicorp/tap/terraform"
     "tree"
     "wget"
@@ -151,6 +150,12 @@
   # must be signed into the App Store with the Apple ID that originally
   # acquired each app, or `mas install` fails with "not purchased".
   # GarageBand intentionally omitted.
+  #
+  # Tailscale is MAS-only here — do NOT also add the `tailscale` brew formula.
+  # The formula ships its own root tailscaled (via a LaunchDaemon) which grabs
+  # /var/run/tailscaled.socket and fights the MAS app's network extension: the
+  # CLI then talks to the formula's logged-out daemon while the app can't start
+  # its CLI bridge, and the node never gets a tailnet IP. Removed 2026-08-07.
   homebrew.masApps = {
     WireGuard = 1451685025;
     Tailscale = 1475387142;
