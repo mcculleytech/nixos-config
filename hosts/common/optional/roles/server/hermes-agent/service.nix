@@ -196,19 +196,6 @@ in
             api_key = cfg.localApiKey;
           };
 
-          # ── Mac LM Studio alias ──
-          # `/model maccoder` routes to Qwen3-Coder-30B (MLX) on faramir
-          # over the tailnet. Far more capable than the 1080 Ti's local
-          # model for coding/agentic work, still private to the tailnet.
-          # Inert unless faramir is awake AND LM Studio is serving on the
-          # network (not loopback) — see macCoder* options in default.nix.
-          maccoder = {
-            model = cfg.macCoderModel;
-            provider = "custom";
-            base_url = cfg.macCoderBaseUrl;
-            api_key = cfg.macCoderApiKey;
-          };
-
         };
 
         # ─── Fallback model ─────────────────────────────────────────

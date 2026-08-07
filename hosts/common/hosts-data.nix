@@ -9,7 +9,6 @@
 
   # Darwin (nix-darwin-managed, not colmena) — roaming laptop, so its only
   # stable address is the tailnet IP; `ip` mirrors it (no managed LAN IP).
-  # Referenced by hermes-agent for the `/model maccoder` LM Studio alias.
   faramir  = { ip = "100.90.82.127"; role = "workstation"; tailnetIp = "100.90.82.127"; };
 
   # Infrastructure (not NixOS-managed)

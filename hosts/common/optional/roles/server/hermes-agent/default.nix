@@ -84,31 +84,6 @@ in
       description = "API key for local Ollama (Ollama doesn't validate; sentinel).";
     };
 
-    # ── Mac (faramir) LM Studio — `/model maccoder` ──
-    macCoderModel = lib.mkOption {
-      type = lib.types.str;
-      default = "qwen3-coder-30b-a3b-instruct-mlx";
-      description = ''
-        LM Studio model identifier served on faramir (the Mac) via the
-        `/model maccoder` alias. Qwen3-Coder-30B-A3B-Instruct (MLX 4-bit) —
-        a coding/agentic model far beyond what the 1080 Ti can host.
-        Requires LM Studio on faramir to be serving on the local network
-        (not loopback-only) and the Mac to be awake.
-      '';
-    };
-
-    macCoderBaseUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://${config.lab.hosts.faramir.tailnetIp}:1234/v1";
-      description = "Base URL of faramir's LM Studio OpenAI-compatible endpoint over the tailnet.";
-    };
-
-    macCoderApiKey = lib.mkOption {
-      type = lib.types.str;
-      default = "lm-studio";
-      description = "API key for faramir's LM Studio (not validated; sentinel).";
-    };
-
     sessionIdleMinutes = lib.mkOption {
       type = lib.types.int;
       default = 120;

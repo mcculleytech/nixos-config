@@ -7,13 +7,12 @@
   networking.hostName = "faramir";
   networking.computerName = "faramir";
 
-  lab.lmStudio.autoStart = true;
-  lab.lmStudio.autoLoadModel = "qwen3-coder-30b-a3b-instruct-mlx";
-  # Serve the LM Studio API on faramir's tailnet IP (not 0.0.0.0) so Hermes
-  # on saruman can reach Qwen3-Coder via `/model maccoder`, without exposing
-  # the unauthenticated endpoint on untrusted networks the laptop roams onto.
-  # Mirrors faramir's tailnetIp in hosts-data.nix (darwin lacks lab.hosts).
-  lab.lmStudio.serveHost = "100.90.82.127";
+  # LM Studio runs here as a GUI app only, serving loopback 127.0.0.1:1234 for
+  # opencode (see home/alex/global/opencode.nix). The old `lab.lmStudio` module
+  # tried to headlessly bind it to the tailnet for Hermes — removed 2026-08-07,
+  # it never worked: `lms` 0.4.19 has no `--host` flag, RunAtLoad raced ahead of
+  # the tailnet interface (EADDRNOTAVAIL), and `lms load` hung on an interactive
+  # picker under launchd. Re-exposing it needs a reverse proxy, not a flag.
 
   # Homebrew declaration for faramir. The darwin role pins
   # `homebrew.onActivation.cleanup = "none"`, so this list is treated as
