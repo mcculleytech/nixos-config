@@ -3,9 +3,11 @@ let
   # Hermes-agent runs on a single host today (saruman). When that's true,
   # `hermes profile create coder` puts a launcher at ~/.local/bin/coder
   # that exec's the local hermes binary. On hosts without hermes-agent
-  # the launcher would resolve to nothing, so gate the wrapper + PATH
-  # entry on the host actually running it. Falls open (=false) for
-  # standalone home-manager invocations where osConfig isn't passed in.
+  # the launcher would resolve to nothing, so gate the wrapper on the
+  # host actually running it. Falls open (=false) for standalone
+  # home-manager invocations where osConfig isn't passed in.
+  # NOTE: only the wrapper is gated — ~/.local/bin itself is on PATH
+  # unconditionally (see home.sessionPath below).
   hermesAgentEnabled = (osConfig.hermes-agent.enable or false);
 in
 {
@@ -35,9 +37,16 @@ in
   # actually writes to once the env var is set — `go install` lands binaries
   # in $GOPATH/bin, which is added to PATH below.
   home.sessionVariables.GOPATH = "$HOME/.local/share/go";
-  home.sessionPath =
-    [ "$HOME/.local/share/go/bin" ]
-    ++ lib.optionals hermesAgentEnabled [ "$HOME/.local/bin" ];
+  # ~/.local/bin is the standard user bindir and is populated on every host
+  # regardless of hermes: pipx shims (impacket, bbot, bofhound, ...) and
+  # self-updating agent installers like cursor-agent both drop launchers
+  # there. Its being on PATH is independent of the coder wrapper existing,
+  # so it is unconditional — and it has to live here rather than in
+  # ~/.zshrc, which home-manager owns as a read-only nix store symlink.
+  home.sessionPath = [
+    "$HOME/.local/share/go/bin"
+    "$HOME/.local/bin"
+  ];
   home.packages =
     (lib.optionals hermesAgentEnabled [
       inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default
