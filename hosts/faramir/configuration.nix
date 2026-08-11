@@ -94,6 +94,11 @@
     "hudochenkov/sshpass/sshpass"
     "hashicorp/tap/terraform"
     "tree"
+    # nvim-treesitter's `main` branch compiles parsers with the tree-sitter
+    # CLI, which the `tree-sitter` formula no longer ships (it is now just
+    # libtree-sitter). Without this, every `:TSUpdate` fails silently and
+    # parsers drift out of sync with Neovim's bundled queries.
+    "tree-sitter-cli"
     "wget"
     "wireshark"
     "zlib"
