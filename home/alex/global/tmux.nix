@@ -14,6 +14,10 @@
       # Distinguish Shift+Enter etc. and advertise extended keys to xterm-likes.
       set -s extended-keys on
       set -as terminal-features 'xterm*:extkeys'
+      # Encode extended keys as CSI-u rather than tmux's default xterm style.
+      # Agentic TUIs (pi, claude-code) parse csi-u; with the xterm format they
+      # mis-read modified keys — pi warns about this explicitly at startup.
+      set -g extended-keys-format csi-u
     '';
   };
 }

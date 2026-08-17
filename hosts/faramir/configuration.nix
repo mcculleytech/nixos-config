@@ -39,16 +39,21 @@
     "awscli"
     "azure-cli"
     "azure/functions/azure-functions-core-tools@4"
+    "bat"
     "beads"
     "bitwarden-cli"
     "cask"
     "cdrtools"
     "cmatrix"
     "container"
+    "curl"
+    "direnv"
     "doctl"
     "exif"
     "expat"
+    "fd"
     "ffmpeg"
+    "fzf"
     "gastown"
     "gawk"
     "gh"
@@ -62,9 +67,11 @@
     "go"
     "gradle"
     "hashcat"
+    "htop"
     "hugo"
     "isl"
     "john"
+    "jq"
     "libmpc"
     "libtool"
     "make"
@@ -79,6 +86,7 @@
     "p7zip"
     "hashicorp/tap/packer"
     "pgvector"
+    "pi-coding-agent"
     "pipx"
     "postgresql@15"
     "postgresql@18"
@@ -92,7 +100,16 @@
     "sevenzip"
     "sops"
     "hudochenkov/sshpass/sshpass"
+    "starship"
+    # superfile installs its binary as `spf`, not `superfile` (the nixpkgs
+    # build used the long name).
+    "superfile"
     "hashicorp/tap/terraform"
+    # tmux came from home-manager's `programs.tmux` module until Phase 2 of the
+    # Mac/Nix decouple. Unlike zsh, vim and bash there is no macOS-shipped
+    # fallback, so dropping the module took tmux off PATH entirely — it has to
+    # be declared here. Config lives in ~/.tmux.conf.
+    "tmux"
     "tree"
     # nvim-treesitter's `main` branch compiles parsers with the tree-sitter
     # CLI, which the `tree-sitter` formula no longer ships (it is now just
@@ -101,7 +118,13 @@
     "tree-sitter-cli"
     "wget"
     "wireshark"
+    "yq"
     "zlib"
+    # Sourced by ~/.zshrc from
+    # /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh.
+    # oh-my-zsh itself is NOT a brew formula — it stays as the ~/.oh-my-zsh
+    # checkout that predates the decouple.
+    "zsh-autosuggestions"
   ];
 
   homebrew.casks = [

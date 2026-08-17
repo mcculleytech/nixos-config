@@ -55,8 +55,10 @@ in
     # PATH (via the systemPackages route on saruman / hermes' extraPackages),
     # but opencode lives only in nixpkgs and isn't installed anywhere else.
     ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.unstable.opencode ])
-    # superfile: TUI file manager. Cross-platform (Linux + macOS), stable nixpkgs.
-    ++ [ pkgs.superfile ];
+    # superfile: TUI file manager. Linux-only here — faramir takes it from
+    # homebrew instead (Phase 1 of the Mac/Nix decouple, see README). Gated
+    # rather than deleted because saruman and the servers still want it.
+    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.superfile ]);
   home.file = lib.optionalAttrs hermesAgentEnabled {
     ".local/bin/coder" = {
       executable = true;

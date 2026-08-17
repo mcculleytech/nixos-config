@@ -67,6 +67,7 @@ in
   xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/config.json";
     theme = "nord";
+    plugin = [ "@slkiser/opencode-quota" ];
     provider = { saruman-ollama = sarumanOllama; } // lmStudio;
   };
 }

@@ -1,4 +1,4 @@
-{ lib, config, pkgs, outputs, ... }:
+{ lib, config, outputs, ... }:
 {
   imports = [
     ./claude-code-telemetry.nix
@@ -56,20 +56,18 @@
       GHOSTTY_BIN_DIR = "/Applications/cmux.app/Contents/Resources/bin";
     };
 
-    environment.systemPackages = with pkgs; [
-      curl
-      git
-      jq
-      ripgrep
-      fd
-      bat
-      # Secrets toolchain — lets alex@faramir edit sops files and unlock the
-      # git-crypt symmetric key on this repo. age is sops' encryption backend
-      # and is needed for `age-keygen` if a fresh key is ever required.
-      sops
-      age
-      git-crypt
-    ];
+    # Phase 1 of the Mac/Nix decouple (see README): these all moved to
+    # homebrew, declared in hosts/faramir/configuration.nix. git, git-crypt,
+    # sops, age and ripgrep were already installed via brew before the move
+    # (verified with `brew list --formula`), so nothing needed bootstrapping;
+    # curl/jq/fd/bat were added to the brews list at the same time.
+    #
+    # The secrets toolchain (sops + age + git-crypt) is what lets alex@faramir
+    # edit sops files and unlock this repo's git-crypt symmetric key — age is
+    # sops' encryption backend, needed for `age-keygen` if a fresh key is ever
+    # required. Keep all three declared in brew for as long as faramir edits
+    # secrets, regardless of how far the decouple goes.
+    environment.systemPackages = [ ];
 
     homebrew = {
       enable = true;
