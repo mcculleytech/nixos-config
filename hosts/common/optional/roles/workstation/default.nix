@@ -11,6 +11,7 @@
       ./custom-udev-wakeup.nix
       ./framework-tweaks.nix
       ./game-controllers.nix
+      ./gamescope.nix
       ./gnome.nix
       ./kde.nix
       ./localsend.nix

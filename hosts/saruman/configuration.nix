@@ -23,6 +23,7 @@
   octoprint.enable = true;
   ollama.enable = true;
   steam.enable = true;
+  gamescope.enable = true;  # GPU-side compositor; host is headless on xorgxrdp
   immich.enable = true;
   open-webui.enable = true;
   n8n.enable = true;
@@ -56,6 +57,46 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.interfaces.enp5s0.wakeOnLan.enable = true;
+
+  # ─── Headless gaming session ──────────────────────────────────────────────
+  # saruman has no monitor, so SDDM parks at the greeter forever and nothing
+  # ever renders on the 1080 Ti — games land on the xorgxrdp software
+  # framebuffer via the :10 RDP session (~160ms/frame, GPU at 1%). Paired with
+  # the synthetic EDID in nvidia.nix (DFP-0 forced "connected"), autologin
+  # brings up a real plasmax11 session on seat0 so Steam Remote Play captures
+  # a GPU-backed display.
+  # Tradeoff: console/IPMI access lands in an unlocked desktop as alex.
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "alex";
+  };
+
+  # SDDM defaults to a Wayland greeter, which only searches wayland-sessions/
+  # (plasma.desktop). defaultSession is plasmax11, which lives in xsessions/,
+  # so autologin silently fails and drops back to the greeter. Force the X11
+  # greeter so SDDM reads xsessions/ — and so it starts an Xorg on the GPU.
+  services.displayManager.sddm.wayland.enable = false;
+
+  # Autologin fires once when display-manager starts and never again, because
+  # SDDM writes Relogin=false by default. Any time the seat0 session ends the
+  # box drops to a greeter — and being headless, nobody is there to answer it,
+  # so :0 stays dead until someone restarts display-manager over SSH.
+  services.displayManager.sddm.settings.Autologin.Relogin = true;
+
+  # No sleep, ever. Giving seat0 a real Plasma session (above) also started KDE
+  # PowerDevil, which suspended the box after ~65 min idle on 2026-08-20 at
+  # 12:50:59 — it vanished from the network for seven hours while still "up"
+  # (25d uptime, no reboot), and only came back via a Wake-on-LAN packet sent
+  # from phantom on the same L2 segment. saruman hosts Jellyfin, Immich,
+  # Paperless, Gitea, ollama and the tailnet dashboard; it must never suspend.
+  # Masking the targets blocks every path — PowerDevil, logind idle, and a
+  # stray `systemctl suspend` alike — rather than trusting one desktop setting.
+  systemd.targets = {
+    sleep.enable = false;
+    suspend.enable = false;
+    hibernate.enable = false;
+    hybrid-sleep.enable = false;
+  };
 
   environment.systemPackages = with pkgs; [
     unstable.nvidia-docker
