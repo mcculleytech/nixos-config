@@ -3,6 +3,13 @@
 
   inputs = {
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/*";
+    # TODO(2026-10-01): flake.lock holds this back at e158d9e (2026-09-26).
+    # b4fd65b (PR #143) broke every CUDA redist package: buildRedistHook's
+    # `export propagatedBuildOutputs="${propagatedBuildOutputs[@]}"` only
+    # overwrites element 0 of the structuredAttrs array, so multiple-outputs.sh
+    # fails with "include lib: invalid variable name" (cuda_nvrtc -> ollama-cuda
+    # on saruman). The next update-flake.yml run re-bumps this input; check
+    # that saruman builds before merging, and delete this note once it does.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
