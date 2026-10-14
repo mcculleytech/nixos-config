@@ -24,8 +24,13 @@
     users.groups.ollama = { };
 
     services.ollama = {
+      # Pinned to CUDA 12: nixpkgs-unstable's default cudaPackages moved to
+      # 13.x, whose nvcc dropped Pascal ("Unsupported gpu architecture
+      # 'compute_61'"), and saruman's GTX 1080 Ti is CC 6.1. CUDA 12 is the
+      # last major that can target it — don't un-pin while that card is in use.
       package = pkgs.unstable.ollama-cuda.override {
         cudaArches = [ "61" ];
+        cudaPackages = pkgs.unstable.cudaPackages_12;
       };
       enable = true;
       # `acceleration` was removed upstream — the choice is now made
