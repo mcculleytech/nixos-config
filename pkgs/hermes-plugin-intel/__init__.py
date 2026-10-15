@@ -184,19 +184,10 @@ async def _call_chat(
     system: str,
     user: str,
 ) -> str:
-    """Dispatch a chat-completion call to the right provider. Supports the
-    same provider shapes as hermes' `/model` aliases: `openrouter`
-    (default, uses OPENROUTER_API_KEY) and `custom` (uses the alias's own
-    `base_url` + `api_key`, e.g. local ollama / LM Studio)."""
-    provider = model_cfg.get("provider", "openrouter")
-    if provider == "custom":
-        base = model_cfg["base_url"].rstrip("/") + "/chat/completions"
-        api_key = model_cfg.get("api_key", "")
-    else:
-        base = OPENROUTER_URL
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    """Chat-completion call via OpenRouter (all `/model` aliases are OR)."""
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     r = await client.post(
-        base,
+        OPENROUTER_URL,
         headers={
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",

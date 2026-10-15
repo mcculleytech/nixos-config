@@ -56,13 +56,9 @@ def _render_alias_block() -> str:
     for name in sorted(aliases):
         entry = aliases[name] or {}
         model = entry.get("model", "?")
-        provider = entry.get("provider", "")
         tags = []
         if model == default_model:
             tags.append("default")
-        if provider == "custom":
-            base = entry.get("base_url", "")
-            tags.append(f"custom: {base}")
         tail = f"  _({', '.join(tags)})_" if tags else ""
         lines.append(f"  `{name.ljust(width)}` → `{model}`{tail}")
     return "\n".join(lines)

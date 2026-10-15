@@ -32,7 +32,7 @@ in
     # DeepSeek V4 Pro on OpenRouter (ZDR US-HQ providers) is the default for
     # every Signal turn. Alex switches models per-conversation by sending
     # slash commands in Signal: `/model <alias>` (see model_aliases in
-    # service.nix for the curated short names — opus, gemini, local, etc.).
+    # service.nix for the curated short names — opus, gemini, pro, etc.).
     # Sessions reset after `sessionIdleMinutes` of inactivity, snapping back
     # to default. Summary plugins (/intel, /today) pin their own Gemini Flash
     # Lite model and are unaffected by this knob.
@@ -56,30 +56,6 @@ in
         2026-10-15, then back to V4 Pro. Flash remains available via
         `/model gemini` and is the fallback model.
       '';
-    };
-
-    localModel = lib.mkOption {
-      type = lib.types.str;
-      default = "qwen3:4b-instruct-28k";
-      description = ''
-        Ollama tag for the local model accessible via the `/model local`
-        alias, served on saruman's GTX 1080 Ti. Qwen3 4B Instruct
-        (28K ctx, tool-use, non-thinking) — fits comfortably in VRAM and
-        is well-suited to fast tool-calling agent turns. Replaced the
-        retired gemma4-8b-16k wrapper 2026-06-16.
-      '';
-    };
-
-    localBaseUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:11434/v1";
-      description = "Base URL of the local Ollama OpenAI-compatible endpoint.";
-    };
-
-    localApiKey = lib.mkOption {
-      type = lib.types.str;
-      default = "ollama";
-      description = "API key for local Ollama (Ollama doesn't validate; sentinel).";
     };
 
     sessionIdleMinutes = lib.mkOption {
