@@ -182,5 +182,12 @@ in
     users.users.alex.extraGroups = [ "hermes" ];
 
     networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ cfg.apiServerPort ];
+
+    # Point every alex session (interactive shells AND non-interactive SSH
+    # commands, e.g. the Hermes app's SSH mode — sessionVariables go through
+    # pam_env) at the service's HERMES_HOME. Without it `hermes` falls back
+    # to ~/.hermes, a stale near-empty profile with none of the sessions,
+    # memories, MCPs or cron jobs.
+    environment.sessionVariables.HERMES_HOME = "/var/lib/hermes/.hermes";
   };
 }
