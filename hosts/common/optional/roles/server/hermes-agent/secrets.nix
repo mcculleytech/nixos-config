@@ -68,6 +68,7 @@ in
       # HERMES_DASHBOARD_BASIC_AUTH_* env vars in the template below.
       hermes_dashboard_basic_auth_password_hash = { owner = "alex"; group = "hermes"; mode = "0400"; };
       hermes_dashboard_basic_auth_secret = { owner = "alex"; group = "hermes"; mode = "0400"; };
+      hermes_api_server_key = { owner = "alex"; group = "hermes"; mode = "0400"; };
     };
 
     # ─── EnvironmentFile rendered from sops at boot ────────────────────────
@@ -120,6 +121,10 @@ in
         HERMES_DASHBOARD_BASIC_AUTH_USERNAME=alex
         HERMES_DASHBOARD_BASIC_AUTH_PASSWORD_HASH=${config.sops.placeholder.hermes_dashboard_basic_auth_password_hash}
         HERMES_DASHBOARD_BASIC_AUTH_SECRET=${config.sops.placeholder.hermes_dashboard_basic_auth_secret}
+        API_SERVER_ENABLED=true
+        API_SERVER_HOST=0.0.0.0
+        API_SERVER_PORT=${toString cfg.apiServerPort}
+        API_SERVER_KEY=${config.sops.placeholder.hermes_api_server_key}
       '';
     };
   };
