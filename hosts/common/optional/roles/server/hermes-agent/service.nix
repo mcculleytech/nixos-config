@@ -182,19 +182,6 @@ in
             model = "deepseek/deepseek-v4-pro";
             provider = "openrouter";
           };
-
-          # ── Local Ollama alias ──
-          # `/model local` swaps to Qwen3 4B Instruct on saruman's GTX
-          # 1080 Ti. Free, private (prompts never leave the box), and
-          # tool-use capable. Useful for low-stakes turns or to keep
-          # tokens out of OR. Limited depth at 4B — don't expect V4 Pro.
-          local = {
-            model = cfg.localModel;
-            provider = "custom";
-            base_url = cfg.localBaseUrl;
-            api_key = cfg.localApiKey;
-          };
-
         };
 
         # ─── Fallback model ─────────────────────────────────────────
@@ -280,18 +267,6 @@ in
           "google_chat-platform"
           "platforms/google_chat"
         ];
-
-        # The `custom` provider handles the local-Ollama `/model local`
-        # alias. Cold start (Gemma 4 loading 9.4 GB onto the GPU) can
-        # take 10+ seconds, so widen the request timeout to 5 min and
-        # re-enable the stale-call detector on a 15 min leash. OR
-        # provider paths keep their snappier defaults.
-        providers = {
-          custom = {
-            request_timeout_seconds = 300;
-            stale_timeout_seconds = 900;
-          };
-        };
       };
 
       mcpServers = {

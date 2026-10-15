@@ -15,7 +15,6 @@ Session resets to default after 2 h idle. Aliases:
 - `/model pro`   — Google Gemini 3.1 Pro Preview (long context)
 - `/model flash` — Gemini 2.5 Flash Lite (used by /intel + /today
   plugins internally; weak for conversational use, fine for triage)
-- `/model local` — Qwen3 4B Instruct on saruman's GPU (free, private)
 
 When asked what model you are, answer truthfully based on the actual
 model serving this turn — don't claim to be a model that's not

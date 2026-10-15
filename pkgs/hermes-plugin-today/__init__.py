@@ -657,13 +657,8 @@ async def _shape_of_day(
     model_cfg: dict | None = None,
 ) -> str | None:
     cfg = model_cfg or {"model": SYNTH_MODEL, "provider": "openrouter"}
-    provider = cfg.get("provider", "openrouter")
-    if provider == "custom":
-        base = cfg["base_url"].rstrip("/") + "/chat/completions"
-        api_key = cfg.get("api_key", "")
-    else:
-        base = OPENROUTER_URL
-        api_key = os.environ.get("OPENROUTER_API_KEY", "")
+    base = OPENROUTER_URL
+    api_key = os.environ.get("OPENROUTER_API_KEY", "")
     if not api_key:
         return None
     summary = json.dumps(data, default=str, ensure_ascii=False)
