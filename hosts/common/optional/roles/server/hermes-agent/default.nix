@@ -58,6 +58,18 @@ in
       '';
     };
 
+    apiServerPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8642;
+      description = ''
+        Port for hermes' OpenAI-compatible API server (`/v1/chat/completions`,
+        `/v1/models`). Binds 0.0.0.0 but the firewall only opens it on
+        tailscale0 (same pattern as hermes-dashboard — binding the tailnet IP
+        directly races tailscaled at boot). Bearer auth via `API_SERVER_KEY`
+        (sops: hermes_api_server_key); upstream refuses to start without it.
+      '';
+    };
+
     sessionIdleMinutes = lib.mkOption {
       type = lib.types.int;
       default = 120;
@@ -168,5 +180,7 @@ in
     # read its own sops-rendered EnvironmentFile (mode 0400 owner=alex)
     # AND the shared mode-0440 group=hermes secrets the MCPs depend on.
     users.users.alex.extraGroups = [ "hermes" ];
+
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ cfg.apiServerPort ];
   };
 }
