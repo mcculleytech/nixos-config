@@ -118,27 +118,21 @@ in
         # configs stay in lockstep.
         terminal.cwd = config.services.hermes-agent.workingDirectory;
 
-        # ─── Default model: Gemini 2.5 Flash via OR BYOK ──────────────
+        # ─── Default model: DeepSeek V4 Pro on ZDR US-HQ providers ────
         model = {
           provider = "openrouter";
           default = cfg.defaultModel;
-          # 64K is hermes' floor; Gemini Flash supports 1M context but we
-          # cap so compression math stays sane on Signal chats.
+          # 64K is hermes' floor; cap so compression math stays sane on
+          # Signal chats.
           context_length = 64000;
-          # Pin OR to the google-ai-studio provider so BYOK fires
-          # (otherwise OR could route via google-vertex which doesn't
-          # use alex's Google AI Studio key). data_collection=deny is a
-          # belt-and-suspenders ZDR check — the actual retention
-          # guarantee comes from alex's Google paid tier. allow_fallbacks
-          # off → if Google errors, we deliberately fall through to
-          # `fallback_model` below (deepseek-v4-flash on ZDR US-HQ
-          # providers) rather than silently routing to a non-BYOK
-          # Google path that would bill OR credit.
+          # Restrict OR to `delegateProviders` (US-HQ, zero-retention).
+          # allow_fallbacks lets OR hop between those providers when one
+          # 429s; `only` keeps it inside the list.
           extra_body = {
             provider = {
               data_collection = "deny";
-              only = [ "google-ai-studio" ];
-              allow_fallbacks = false;
+              only = cfg.delegateProviders;
+              allow_fallbacks = true;
             };
           };
         };
@@ -176,10 +170,15 @@ in
             model = "google/gemini-3.1-pro-preview";
             provider = "openrouter";
           };
+          gemini = {
+            # Gemini 2.5 Flash via BYOK — the default until 2026-10-15.
+            # Cheap, 1M context; good for long-document turns.
+            model = "google/gemini-2.5-flash";
+            provider = "openrouter";
+          };
           deep = {
-            # Tool-heavy / agentic work — better recovery from transient
-            # errors than Flash. Switch with `/model deep`, return with
-            # `/model default`.
+            # Same as default now; kept so `/model deep` muscle memory
+            # still works.
             model = "deepseek/deepseek-v4-pro";
             provider = "openrouter";
           };
@@ -200,18 +199,20 @@ in
 
         # ─── Fallback model ─────────────────────────────────────────
         # If the default V4 Pro call errors (rate-limit, provider
-        # outage, transient 5xx), hermes auto-switches to V4 Flash on
-        # OpenRouter. Different model so a model-level issue doesn't
-        # cascade. Same US-HQ + ZDR pinning.
+        # outage, transient 5xx), hermes auto-switches to Gemini 2.5
+        # Flash via BYOK. Different vendor AND provider pool on purpose:
+        # 2026-10-15 a DeepSeek-wide 429 hit V4 Pro and the old V4 Flash
+        # fallback at the same time. Pinned to google-ai-studio so BYOK
+        # fires (vertex would bill OR credit); ZDR via alex's Google
+        # paid tier.
         fallback_model = {
           provider = "openrouter";
-          model = "deepseek/deepseek-v4-flash";
+          model = "google/gemini-2.5-flash";
           extra_body = {
             provider = {
               data_collection = "deny";
-              only = cfg.delegateProviders;
-              allow_fallbacks = true;
-              sort = { by = "price"; };
+              only = [ "google-ai-studio" ];
+              allow_fallbacks = false;
             };
           };
         };

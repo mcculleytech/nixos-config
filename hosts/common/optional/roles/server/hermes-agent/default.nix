@@ -29,11 +29,13 @@ in
     enable = lib.mkEnableOption "Hermes (NousResearch/hermes-agent) Signal bot wired to our MCP services";
 
     # ─── Single-model setup with /model overrides ──────────────────────────
-    # Gemini 2.5 Flash on OpenRouter is the default for every Signal turn.
-    # Alex switches models per-conversation by sending slash commands in
-    # Signal: `/model <alias>` (see model_aliases in service.nix for the
-    # curated short names — opus, local, flash, etc.). Sessions reset after
-    # `sessionIdleMinutes` of inactivity, snapping back to default.
+    # DeepSeek V4 Pro on OpenRouter (ZDR US-HQ providers) is the default for
+    # every Signal turn. Alex switches models per-conversation by sending
+    # slash commands in Signal: `/model <alias>` (see model_aliases in
+    # service.nix for the curated short names — opus, gemini, local, etc.).
+    # Sessions reset after `sessionIdleMinutes` of inactivity, snapping back
+    # to default. Summary plugins (/intel, /today) pin their own Gemini Flash
+    # Lite model and are unaffected by this knob.
     #
     # Why not orchestrator + delegate? We tried it (Gemma 8B and Flash
     # Lite tier-1, V4 Pro tier-2). hermes-agent enforces subagent
@@ -44,19 +46,15 @@ in
 
     defaultModel = lib.mkOption {
       type = lib.types.str;
-      default = "google/gemini-2.5-flash";
+      default = "deepseek/deepseek-v4-pro";
       description = ''
         The model that handles every Signal turn unless alex has
-        sent `/model <slug>` to override for the session. Gemini 2.5
-        Flash via OpenRouter's BYOK routing — billed against alex's
-        Google AI Studio account where the $10/mo Pro-subscription
-        credit covers normal use-it-or-lose-it. ZDR comes from his
-        Google paid tier; the provider pin below restricts OR to the
-        google-ai-studio route so BYOK actually fires.
+        sent `/model <slug>` to override for the session. Routed only
+        to `delegateProviders` (US-HQ, zero-retention).
 
-        Was deepseek/deepseek-v4-pro pre-2026-05-14 — V4 Pro remains
-        available via `/model deep` for tool-heavy or harder
-        reasoning turns where Flash falls short.
+        History: V4 Pro until 2026-05-14, Gemini 2.5 Flash (BYOK) until
+        2026-10-15, then back to V4 Pro. Flash remains available via
+        `/model gemini` and is the fallback model.
       '';
     };
 

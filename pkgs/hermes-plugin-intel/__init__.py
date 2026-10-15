@@ -135,9 +135,11 @@ def _openrouter_headers() -> dict:
     }
 
 
-async def _fetch_recent_entries(client: httpx.AsyncClient) -> list[dict]:
-    """Pull all entries published in the last 24 h, unread only."""
-    after = int(datetime.now(timezone.utc).timestamp()) - WINDOW_SECONDS
+async def _fetch_recent_entries(
+    client: httpx.AsyncClient, window_seconds: int = WINDOW_SECONDS
+) -> list[dict]:
+    """Pull all unread entries published within the window (default 24 h)."""
+    after = int(datetime.now(timezone.utc).timestamp()) - window_seconds
     # limit=500 — miniflux caps at this. If alex ever produces >500
     # entries/day we'll need pagination; today's volume is ~110.
     r = await client.get(
@@ -352,13 +354,18 @@ def _build_synth_payload(survivors: list[dict]) -> str:
     return "\n".join(lines)
 
 
-async def _run_intel(preview: bool, model_override: dict | None = None) -> str:
+async def _run_intel(
+    preview: bool,
+    model_override: dict | None = None,
+    window_seconds: int = WINDOW_SECONDS,
+) -> str:
+    window_h = window_seconds // 3600
     triage_cfg = model_override or {"model": TRIAGE_MODEL, "provider": "openrouter"}
     synth_cfg = model_override or {"model": SYNTH_MODEL, "provider": "openrouter"}
     async with httpx.AsyncClient() as client:
-        entries = await _fetch_recent_entries(client)
+        entries = await _fetch_recent_entries(client, window_seconds)
         if not entries:
-            return "No new entries in the last 24h."
+            return f"No new entries in the last {window_h}h."
 
         log.info(
             "intel: fetched %d entries (triage=%s, synth=%s)",
@@ -390,7 +397,7 @@ async def _run_intel(preview: bool, model_override: dict | None = None) -> str:
         # Header line is for alex's situational awareness; the model's
         # output starts on the next line.
         header = (
-            f"📡 *Intel — last 24h* — "
+            f"📡 *Intel — last {window_h}h* — "
             f"{len(entries)} entries → {len(survivors)} kept → top {len(top)} below"
             + ("  _(preview, none marked read)_" if preview else "")
             + (f"  _(model: {synth_cfg['model']})_" if model_override else "")
