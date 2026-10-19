@@ -128,6 +128,8 @@ in
     systemd.services.signal-cli-backup = {
       description = "Weekly tarball of signal-cli state directory";
       after = [ "signal-cli.service" ];
+      # tar -z shells out to gzip, which isn't on a unit's default PATH.
+      path = [ pkgs.gzip ];
       serviceConfig = {
         Type = "oneshot";
         User = "root";

@@ -48,6 +48,14 @@
   systemd.services.hermes-agent.enable = false;
   signal-cli.enable = lib.mkForce false;
   signal-mcp.enable = false;   # needs saruman's signal-cli; off with the Hermes move
+  # Keep the old signal-cli / signal-mcp state bind-mounted from /persist even
+  # though the services are off: dropping the impermanence entries made
+  # switch-to-configuration fail to unmount them (rc 4), and the old linked-device
+  # data stays on hand as a backup.
+  environment.persistence."/persist".directories = [
+    { directory = "/var/lib/hermes/signal-cli"; user = "alex"; group = "users"; mode = "0700"; }
+    { directory = "/var/lib/signal-mcp"; user = "root"; group = "root"; mode = "0750"; }
+  ];
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
   gcal-mcp.enable = true;      # Google Calendar MCP (reuses hermes's google-workspace OAuth)

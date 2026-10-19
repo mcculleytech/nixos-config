@@ -55,10 +55,17 @@ rollback() {
 # guard, which silently broke when a colmena bump changed its log output and
 # caused false-failure rollbacks of healthy deploys. $2 = host IP, or "" for
 # the local host (saruman).
+#
+# The target must come from the colmena hive, not .#nixosConfigurations: the
+# two evaluate nixpkgs differently (colmena.nix imports it directly, so the
+# system is labelled "26.05pre-git"; nixosSystem stamps the flake's date/rev),
+# which makes their toplevels different store paths that never compare equal.
+# colmena prints the path as a JSON string, hence the tr.
 host_activated() {
   local host="$1" ip="$2" target running
-  target=$(nix build --no-link --print-out-paths \
-    ".#nixosConfigurations.${host}.config.system.build.toplevel" 2>/dev/null) || return 1
+  target=$(colmena eval -E \
+    "{ nodes, ... }: nodes.\"${host}\".config.system.build.toplevel.outPath" 2>/dev/null \
+    | tr -d '"') || return 1
   [ -z "$target" ] && return 1
   if [ -z "$ip" ]; then
     running=$(readlink -f /run/current-system 2>/dev/null)
