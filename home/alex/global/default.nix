@@ -9,7 +9,7 @@
 
   home = {
     username = "alex";
-    homeDirectory = if pkgs.stdenv.isDarwin then "/Users/alex" else "/home/alex";
+    homeDirectory = "/home/alex";
   };
 
   # Keep Go's GOPATH out of $HOME (default would be ~/go). Same place go
@@ -25,15 +25,14 @@
     "$HOME/.local/share/go/bin"
     "$HOME/.local/bin"
   ];
-  home.packages =
+  home.packages = [
     # AI coding agents alex uses interactively. claude-code comes from
     # home/alex/saruman.nix and desktop-packages.nix; opencode lives only in
     # nixpkgs and isn't installed anywhere else.
-    (lib.optionals pkgs.stdenv.isLinux [ pkgs.unstable.opencode ])
-    # superfile: TUI file manager. Linux-only here — faramir takes it from
-    # homebrew instead (Phase 1 of the Mac/Nix decouple, see README). Gated
-    # rather than deleted because saruman and the servers still want it.
-    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.superfile ]);
+    pkgs.unstable.opencode
+    # superfile: TUI file manager.
+    pkgs.superfile
+  ];
 
   # Enable home-manager's bash integration so `home.sessionPath` actually
   # lands in alex's interactive PATH. Without this, hm-session-vars.sh
@@ -61,7 +60,7 @@
   programs.home-manager.enable = true;
 
   # Nicely reload system units when changing configs (Linux/systemd only)
-  systemd.user.startServices = lib.mkIf pkgs.stdenv.isLinux "sd-switch";
+  systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.11";

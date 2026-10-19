@@ -9,10 +9,6 @@
     hardware.url = "github:nixos/nixos-hardware/master";
     sops-nix.url = "github:Mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # cosmic-nightly = {
     #   url = "github:busyboredom/cosmic-nightly-flake";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -41,12 +37,6 @@
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
         inputs.determinate.nixosModules.default
-      ];
-
-      darwinDefaultModules = [
-        { nixpkgs.hostPlatform = "aarch64-darwin"; }
-        inputs.determinate.darwinModules.default
-        home-manager.darwinModules.home-manager
       ];
 
       homeManagerServerModule = [
@@ -166,18 +156,5 @@
           modules = def.modules;
         }
       ) hostDefs;
-
-      darwinConfigurations.faramir = inputs.nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs outputs; };
-        modules = darwinDefaultModules ++ [
-          ./hosts/faramir/configuration.nix
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex.imports = [ ./home/alex/faramir.nix ];
-            home-manager.backupFileExtension = "bak";
-          }
-        ];
-      };
     };
 }
