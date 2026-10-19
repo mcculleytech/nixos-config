@@ -118,23 +118,30 @@ in
         # configs stay in lockstep.
         terminal.cwd = config.services.hermes-agent.workingDirectory;
 
-        # ─── Default model: DeepSeek V4 Pro on ZDR US-HQ providers ────
+        # ─── Default model: DeepSeek V4.1 Flash ──────────────────────
         model = {
           provider = "openrouter";
           default = cfg.defaultModel;
           # 64K is hermes' floor; cap so compression math stays sane on
           # Signal chats.
           context_length = 64000;
-          # Restrict OR to `delegateProviders` (US-HQ, zero-retention).
-          # allow_fallbacks lets OR hop between those providers when one
-          # 429s; `only` keeps it inside the list.
-          extra_body = {
-            provider = {
-              data_collection = "deny";
-              only = cfg.delegateProviders;
-              allow_fallbacks = true;
-            };
-          };
+        };
+
+        # ─── OpenRouter provider routing (applies to EVERY model) ────
+        # This top-level key is the only provider-preference config
+        # hermes 0.18 sends: gateway, cron and TUI all build the request's
+        # `provider` object from it. The `model.extra_body.provider` /
+        # `fallback_model.extra_body.provider` blocks we used before were
+        # silently dropped — the 2026-10-15 request dumps carry no
+        # `provider` field at all, which is why that 429 landed on
+        # DeepInfra's shared pool. Because it's global, no `only` list:
+        # it would block /model opus, gemini and auto.
+        provider_routing = {
+          # Exclude providers that retain/train on prompts.
+          data_collection = "deny";
+          # Only route to endpoints that support every request param
+          # (tools, tool_choice) — matters for Flash/auto tool turns.
+          require_parameters = true;
         };
 
         # ─── /model aliases — what alex types in Signal ───────────────
@@ -175,36 +182,34 @@ in
             provider = "openrouter";
           };
           deep = {
-            # Same as default now; kept so `/model deep` muscle memory
-            # still works.
+            # Harder multi-step reasoning when Flash falls short.
+            # Switch with `/model deep`, return with `/model default`.
             model = "deepseek/deepseek-v4-pro";
+            provider = "openrouter";
+          };
+          auto = {
+            # OpenRouter Auto Router — picks a model per prompt, billed at
+            # the chosen model's rate. Hermes can't send the router's
+            # `plugins` options, so restrict candidates / cost tier on
+            # OR's workspace Routing settings page instead.
+            model = "openrouter/auto";
             provider = "openrouter";
           };
         };
 
         # ─── Fallback model ─────────────────────────────────────────
-        # If the default V4 Pro call errors (rate-limit, provider
+        # If the default DeepSeek call errors (rate-limit, provider
         # outage, transient 5xx), hermes auto-switches to Gemini 2.5
-        # Flash via BYOK. Different vendor AND provider pool on purpose:
-        # 2026-10-15 a DeepSeek-wide 429 hit V4 Pro and the old V4 Flash
-        # fallback at the same time. Pinned to google-ai-studio so BYOK
-        # fires (vertex would bill OR credit); ZDR via alex's Google
-        # paid tier.
+        # Flash. Different vendor on purpose: 2026-10-15 a DeepSeek-wide
+        # 429 hit V4 Pro and the old V4 Flash fallback at the same time.
         fallback_model = {
           provider = "openrouter";
           model = "google/gemini-2.5-flash";
-          extra_body = {
-            provider = {
-              data_collection = "deny";
-              only = [ "google-ai-studio" ];
-              allow_fallbacks = false;
-            };
-          };
         };
 
         # ─── Session reset ──────────────────────────────────────────
         # Signal sessions reset after `sessionIdleMinutes` of inactivity
-        # — any `/model` override snaps back to the default V4 Pro at
+        # — any `/model` override snaps back to the default at
         # that point. Hermes-agent also has a built-in 4 AM daily reset
         # that fires regardless of activity.
         reset_by_platform = {

@@ -29,8 +29,8 @@ in
     enable = lib.mkEnableOption "Hermes (NousResearch/hermes-agent) Signal bot wired to our MCP services";
 
     # ─── Single-model setup with /model overrides ──────────────────────────
-    # DeepSeek V4 Pro on OpenRouter (ZDR US-HQ providers) is the default for
-    # every Signal turn. Alex switches models per-conversation by sending
+    # DeepSeek V4.1 Flash on OpenRouter is the default for every Signal
+    # turn. Alex switches models per-conversation by sending
     # slash commands in Signal: `/model <alias>` (see model_aliases in
     # service.nix for the curated short names — opus, gemini, pro, etc.).
     # Sessions reset after `sessionIdleMinutes` of inactivity, snapping back
@@ -46,15 +46,17 @@ in
 
     defaultModel = lib.mkOption {
       type = lib.types.str;
-      default = "deepseek/deepseek-v4-pro";
+      default = "deepseek/deepseek-v4.1-flash";
       description = ''
         The model that handles every Signal turn unless alex has
-        sent `/model <slug>` to override for the session. Routed only
-        to `delegateProviders` (US-HQ, zero-retention).
+        sent `/model <slug>` to override for the session. V4.1 Flash:
+        cheap, 1M context, solid tool calling (~76-78% TAU-Bench on
+        OR) — most turns are MCP tool calls. V4 Pro stays on
+        `/model deep` for harder reasoning.
 
         History: V4 Pro until 2026-05-14, Gemini 2.5 Flash (BYOK) until
-        2026-10-15, then back to V4 Pro. Flash remains available via
-        `/model gemini` and is the fallback model.
+        2026-10-15, V4 Pro until 2026-10-19, then V4.1 Flash. Gemini 2.5
+        Flash remains available via `/model gemini` and is the fallback.
       '';
     };
 
@@ -79,17 +81,6 @@ in
         long enough to span a normal back-and-forth conversation but
         short enough that ad-hoc overrides don't linger overnight.
         Daily 4am reset (hermes-agent built-in) still fires too.
-      '';
-    };
-
-    delegateProviders = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ "parasail" "atlas-cloud" "deepinfra" "novita" "venice" ];
-      description = ''
-        OpenRouter provider slugs allowed to serve DeepSeek traffic.
-        All must be US-HQ'd and honor zero-retention. Together is
-        omitted despite being US-HQ'd because its DeepSeek-V4-Pro
-        endpoint has been flapping (~65%% uptime when last checked).
       '';
     };
 
