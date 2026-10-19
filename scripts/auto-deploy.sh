@@ -176,8 +176,8 @@ fi
 #
 # colmena exits non-zero (commonly 4) when ANY unit is failed at the
 # activation *snapshot* — even one that systemd's Restart= heals seconds
-# later. saruman runs the MCP/hermes cluster, which briefly fails on a deploy
-# that also restarts tailscaled (see mcp/default.nix), so the bare exit code
+# later (e.g. services that briefly fail on a deploy
+# that also restarts tailscaled), so the bare exit code
 # is a false negative. Judge saruman on the SETTLED state instead: capture the
 # real exit code, and if it's non-zero, distinguish a genuine failure
 # (activation never completed) from a transient flap (activation completed,

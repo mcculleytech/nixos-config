@@ -29,16 +29,6 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    # Upstream agent runtime: ships its own flake + nixosModules.default and
-    # a uv2nix-built sealed venv. Do NOT set inputs.nixpkgs.follows here —
-    # the venv's lockfile is tied to nixos-unstable's Python toolchain;
-    # forcing it onto our nixpkgs (26.05) breaks the build.
-    # Pinned by rev, not just in the lock: upstream's module after aaf5691
-    # references its JS frontend source store path without fetch context
-    # ("path '…-source' is not valid" on a clean store), breaking
-    # `nix flake check`. A lock-only pin (e74ebe2) gets clobbered by every
-    # scheduled `nix flake update`. Bump only after upstream fixes the module.
-    hermes-agent.url = "github:NousResearch/hermes-agent/aaf5691261f12601db845386d650dce1cdfa30f9";
   };
 
   outputs = { self, nixpkgs, home-manager, hardware, ... } @ inputs:
@@ -105,7 +95,6 @@
           modules = defaultModules ++ [
             hardware.nixosModules.common-gpu-nvidia-nonprime
             home-manager.nixosModules.home-manager
-            inputs.hermes-agent.nixosModules.default
             ./hosts/saruman/configuration.nix
             {
               home-manager.useUserPackages = true;

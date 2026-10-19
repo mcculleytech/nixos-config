@@ -19,8 +19,8 @@ in
       type = lib.types.str;
       default = "*-*-* 04:00:00";
       description = ''
-        systemd OnCalendar spec. Default 04:00 UTC, after agent-memory (03:00)
-        and immich (03:30) backups so the NAS doesn't see three concurrent jobs.
+        systemd OnCalendar spec. Default 04:00 UTC, after the immich (03:30)
+        backup so the NAS doesn't see concurrent jobs.
       '';
     };
   };

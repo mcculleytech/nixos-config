@@ -284,23 +284,6 @@ in
 	   				};
 	   				service = "borg";
 	   			};
-	   			hermes-dashboard = {
-	   				entryPoints = [ "websecure" ];
-	   				rule = "Host(`hermes.${tr_secrets.traefik.homelab_domain}`)";
-	   				service = "hermes-dashboard";
-	   				tls = {
-	   					certResolver = "cloudflare";
-	   				};
-	   				# Three layers of access control before this reaches the
-	   				# unauthenticated dashboard backend:
-	   				#   hermes-allowed-nets — source IP in tailnet (100.64.0.0/10)
-	   				#                         OR homelab LAN (10.1.8.0/24). The phone
-	   				#                         takes the LAN route when on home WiFi,
-	   				#                         so tailnet-only would reject normal use.
-	   				#   auth                — htpasswd basic auth (shared with other secured services)
-	   				#   default-headers     — security headers (frame-deny, XSS, CSP, etc.)
-	   				middlewares = [ "hermes-allowed-nets" "auth" "default-headers" "https-redirectscheme" ];
-	   			};
 	   		};
 	   		services = {
 	   			# begin Services
@@ -497,16 +480,6 @@ in
 	   					passHostHeader = "true";
 	   				};
 	   			};
-	   			hermes-dashboard = {
-	   				loadBalancer = {
-	   					# Saruman's tailnet IP — dashboard binds to tailnet only,
-	   					# atreides reaches via tailscale0 from its own tailnet IP.
-	   					servers = [
-	   						{url = "http://${hosts.saruman.tailnetIp}:9119";}
-	   					];
-	   					passHostHeader = "true";
-	   				};
-	   			};
 	   			otel = {
 	   				loadBalancer = {
 	   					servers = [
@@ -571,20 +544,6 @@ in
 	   						"10.0.0.0/8"
 	   						"192.168.0.0/16"
 	   						"172.16.0.0/12"
-	   					];
-	   				};
-	   			};
-	   			# Source IP allowlist for the Hermes dashboard router. Combined
-	   			# with basicAuth this gives two-layer access control before the
-	   			# unauthenticated Hermes dashboard backend ever sees the request.
-	   			# Includes the homelab LAN because phones on home WiFi route via
-	   			# LAN, not via tailnet — strict tailnet-only would block the
-	   			# common case.
-	   			hermes-allowed-nets = {
-	   				ipWhiteList = {
-	   					sourceRange = [
-	   						"100.64.0.0/10"  # Tailscale CGNAT
-	   						"10.1.8.0/24"    # homelab LAN (saruman/atreides/phantom)
 	   					];
 	   				};
 	   			};

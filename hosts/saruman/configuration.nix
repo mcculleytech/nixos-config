@@ -5,12 +5,6 @@
       ../common/global
       ../common/optional
       ../common/optional/roles/server
-      ../common/optional/roles/server/hermes-agent  # saruman-only — depends on
-                                                    # upstream services.hermes-agent
-                                                    # option from the flake input
-      ../common/optional/roles/server/hermes-dashboard  # saruman-only — pulls
-                                                        # the upstream hermes-agent
-                                                        # package out of the input
       ../common/optional/roles/workstation
       ../../disko/saruman.nix
     ];
@@ -32,37 +26,12 @@
   bluetooth.enable = true;
   kokoro.enable = true;
   speaches.enable = true;  # GPU-accelerated Whisper STT (OpenAI-compatible) on tailnet :8000
-  lab.protonmail-bridge.enable = true;  # headless Bridge for hermes email integration
   auto-deploy.enable = true;
   tailscale-server.enable = true;
-  agent-memory.enable = true;
   lab.nas-backups.enable = true;  # NFS-mounted /mnt/nas-backups for off-host backups
   harmonia.enable = true;  # LAN binary cache serving saruman's /nix/store on :5000
   obsidian-backup.enable = true;   # daily rsync of /home/alex/obsidian → NAS
   obsidian-headless.enable = true;
-  vault-mcp.enable = true;
-  hermes-agent.enable = true;  # keeps secrets, hermes group and HERMES_HOME for gcal-mcp/dashboard
-  # Hermes moved to the Debian box (hermes, 10.1.8.186) with its own Signal
-  # number (+19312290041) on 2026-10-19. The gateway and signal-cli stay off
-  # here; the MCPs below keep serving it over the tailnet.
-  systemd.services.hermes-agent.enable = false;
-  signal-cli.enable = lib.mkForce false;
-  signal-mcp.enable = false;   # needs saruman's signal-cli; off with the Hermes move
-  # Keep the old signal-cli / signal-mcp state bind-mounted from /persist even
-  # though the services are off: dropping the impermanence entries made
-  # switch-to-configuration fail to unmount them (rc 4), and the old linked-device
-  # data stays on hand as a backup.
-  environment.persistence."/persist".directories = [
-    { directory = "/var/lib/hermes/signal-cli"; user = "alex"; group = "users"; mode = "0700"; }
-    { directory = "/var/lib/signal-mcp"; user = "root"; group = "root"; mode = "0750"; }
-  ];
-  radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
-  miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
-  gcal-mcp.enable = true;      # Google Calendar MCP (reuses hermes's google-workspace OAuth)
-  prometheus-mcp.enable = true; # read-only Prometheus + Alertmanager queries (talks to atreides:9090)
-  email-mcp.enable = true;     # IMAP/SMTP via Proton Bridge (read + approval-gated send)
-  hermes-dashboard.enable = true;  # web UI behind traefik (auth + tailnet allowlist)
-  vault-indexer.enable = true;  # hourly: chunk vault → embed → agent_memory
 
 
   boot.loader.systemd-boot.enable = true;
