@@ -41,8 +41,13 @@
   obsidian-backup.enable = true;   # daily rsync of /home/alex/obsidian → NAS
   obsidian-headless.enable = true;
   vault-mcp.enable = true;
-  hermes-agent.enable = true;  # transitively enables signal-cli
-  signal-mcp.enable = true;    # outbound Signal MCP with approval gate
+  hermes-agent.enable = true;  # keeps secrets, hermes group and HERMES_HOME for gcal-mcp/dashboard
+  # Hermes moved to the Debian box (hermes, 10.1.8.186) with its own Signal
+  # number (+19312290041) on 2026-10-19. The gateway and signal-cli stay off
+  # here; the MCPs below keep serving it over the tailnet.
+  systemd.services.hermes-agent.enable = false;
+  signal-cli.enable = lib.mkForce false;
+  signal-mcp.enable = false;   # needs saruman's signal-cli; off with the Hermes move
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
   gcal-mcp.enable = true;      # Google Calendar MCP (reuses hermes's google-workspace OAuth)
