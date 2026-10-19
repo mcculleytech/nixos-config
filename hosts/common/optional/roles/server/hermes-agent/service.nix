@@ -141,9 +141,8 @@ in
         # `/model <alias>` switches the active model for the rest of
         # the session (until idle reset, daily reset, or another /model).
         # Aliases override hermes-agent's built-in MODEL_ALIASES table
-        # to pin specific whitelisted slugs (the built-in "opus" alias
-        # would resolve to claude-opus-4.7 which isn't on alex's OR
-        # allow-list — only the -fast variant is).
+        # to pin specific slugs. Refreshed 2026-10-19 against OR's
+        # /api/v1/models (claude-opus-4.7-fast had been retired).
         model_aliases = {
           # ── OpenRouter cloud aliases ──
           # Tracks `cfg.defaultModel` so `/model default` always returns to
@@ -154,20 +153,19 @@ in
             provider = "openrouter";
           };
           opus = {
-            model = "anthropic/claude-opus-4.7-fast";
+            model = "anthropic/claude-opus-5.5";
             provider = "openrouter";
           };
           flash = {
-            # Cheapest cloud option ($0.10 in / $0.40 out per Mtok).
-            # BYOK Gemini key in OR means inference bills against
-            # alex's Google quota, not OR credit.
-            model = "google/gemini-2.5-flash-lite";
+            # Current-gen cheap/fast Google. BYOK Gemini key in OR means
+            # inference bills against alex's Google quota, not OR credit.
+            model = "google/gemini-3.8-flash";
             provider = "openrouter";
           };
           pro = {
-            # Frontier Google when you need long-context (1M) or
-            # complex multi-step reasoning without Opus pricing.
-            model = "google/gemini-3.1-pro-preview";
+            # Frontier Google when you need long-context or complex
+            # multi-step reasoning without Opus pricing.
+            model = "google/gemini-4-argon";
             provider = "openrouter";
           };
           gemini = {
