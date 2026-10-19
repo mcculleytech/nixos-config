@@ -15,7 +15,6 @@ let
   tailnetMcpUnits = {
     agent-memory-mcp = config.agent-memory.enable;
     email-mcp        = config.email-mcp.enable;
-    escalator-mcp    = config.escalator-mcp.enable;
     gcal-mcp         = config.gcal-mcp.enable;
     miniflux-mcp     = config.miniflux-mcp.enable;
     prometheus-mcp   = config.prometheus-mcp.enable;
@@ -38,7 +37,6 @@ in
   imports = [
     ./agent-memory
     ./email
-    ./escalator
     ./gcal
     ./miniflux
     ./prometheus

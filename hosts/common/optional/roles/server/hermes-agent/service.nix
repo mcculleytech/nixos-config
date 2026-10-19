@@ -310,11 +310,6 @@ in
           headers.Authorization = "Bearer \${HERMES_GCAL_MCP_TOKEN}";
           # Read-only MCP today (no event_create) — nothing to exclude.
         };
-        escalator = {
-          url = cfg.escalatorMcpUrl;
-          headers.Authorization = "Bearer \${HERMES_ESCALATOR_MCP_TOKEN}";
-          # Single-tool MCP — nothing to exclude.
-        };
         prometheus = {
           url = cfg.prometheusMcpUrl;
           headers.Authorization = "Bearer \${HERMES_PROMETHEUS_MCP_TOKEN}";

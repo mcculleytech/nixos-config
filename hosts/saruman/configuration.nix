@@ -46,7 +46,6 @@
   radicale-mcp.enable = true;  # CalDAV/CardDAV MCP (talks to phantom's Radicale)
   miniflux-mcp.enable = true;  # Miniflux RSS reader MCP (talks to phantom's Miniflux)
   gcal-mcp.enable = true;      # Google Calendar MCP (reuses hermes's google-workspace OAuth)
-  escalator-mcp.enable = true; # one-shot consult_expert tool (Anthropic Opus via OR)
   prometheus-mcp.enable = true; # read-only Prometheus + Alertmanager queries (talks to atreides:9090)
   email-mcp.enable = true;     # IMAP/SMTP via Proton Bridge (read + approval-gated send)
   hermes-dashboard.enable = true;  # web UI behind traefik (auth + tailnet allowlist)

@@ -123,12 +123,6 @@ in
       description = "Streamable-HTTP URL for the Miniflux RSS MCP.";
     };
 
-    escalatorMcpUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://${mcpHost}:4285/mcp";
-      description = "Streamable-HTTP URL for the escalator MCP (consult_expert tool).";
-    };
-
     gcalMcpUrl = lib.mkOption {
       type = lib.types.str;
       default = "http://${mcpHost}:4286/mcp";
@@ -169,11 +163,10 @@ in
     # createUser = false stops the upstream module from declaring the
     # hermes user (alex is declared elsewhere in our config); we still
     # need to ensure the `hermes` GROUP exists because we keep using it
-    # to share secrets with sibling MCP service users (gcal-mcp,
-    # escalator-mcp).
+    # to share secrets with sibling MCP service users (gcal-mcp).
 
     # The `hermes` group survives the user removal — it stays as a
-    # shared-secret group: alex + escalator_mcp + gcal_mcp users are
+    # shared-secret group: alex + gcal_mcp users are
     # all members, secrets are mode 0440 group=hermes.
     users.groups.hermes = { };
     # Add alex to the hermes group so the service (running as alex) can

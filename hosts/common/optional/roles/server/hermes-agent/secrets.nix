@@ -11,9 +11,7 @@ in
       # provisioning key (which is never stored). Sub-key carries a hard
       # monthly credit cap. The user's Gemini key is registered in OR
       # as BYOK so tier-1 inference still bills against the Google quota.
-      # Shared with escalator-mcp (which also needs to make OR calls).
-      # mode 0440 so anyone in the hermes group can read; escalator-mcp's
-      # service user joins the hermes group via its module.
+      # mode 0440 so anyone in the hermes group can read it.
       openrouter_api_key = { owner = "alex"; group = "hermes"; mode = "0440"; };
       # Management key for OR — different from the inference sub-key
       # above. /credits accepts the inference key, but /activity (the
@@ -44,7 +42,6 @@ in
       future_hermes_radicale = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_miniflux = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_gcal = { owner = "alex"; group = "hermes"; mode = "0400"; };
-      future_hermes_escalator = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_prometheus = { owner = "alex"; group = "hermes"; mode = "0400"; };
       future_hermes_email = { owner = "alex"; group = "hermes"; mode = "0400"; };
       hermes_github_pat = { owner = "alex"; group = "hermes"; mode = "0400"; };
@@ -103,7 +100,6 @@ in
         HERMES_RADICALE_MCP_TOKEN=${config.sops.placeholder.future_hermes_radicale}
         HERMES_MINIFLUX_MCP_TOKEN=${config.sops.placeholder.future_hermes_miniflux}
         HERMES_GCAL_MCP_TOKEN=${config.sops.placeholder.future_hermes_gcal}
-        HERMES_ESCALATOR_MCP_TOKEN=${config.sops.placeholder.future_hermes_escalator}
         HERMES_PROMETHEUS_MCP_TOKEN=${config.sops.placeholder.future_hermes_prometheus}
         HERMES_EMAIL_MCP_TOKEN=${config.sops.placeholder.future_hermes_email}
         GH_TOKEN=${config.sops.placeholder.hermes_github_pat}
