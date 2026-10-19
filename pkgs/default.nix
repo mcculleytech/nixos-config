@@ -9,7 +9,6 @@
   gcal-mcp = pkgs.callPackage ./gcal-mcp { inherit version; };
   email-mcp = pkgs.callPackage ./email-mcp { inherit version; };
   vault-indexer = pkgs.callPackage ./vault-indexer { python3 = pkgs.python3; inherit version; };
-  escalator-mcp = pkgs.callPackage ./escalator-mcp { inherit version; };
   prometheus-mcp = pkgs.callPackage ./prometheus-mcp { inherit version; };
   hermes-plugin-common = pkgs.callPackage ./hermes-plugin-common { };
   hermes-plugin-intel = pkgs.callPackage ./hermes-plugin-intel {

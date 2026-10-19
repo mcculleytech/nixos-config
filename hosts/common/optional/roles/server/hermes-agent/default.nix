@@ -29,11 +29,13 @@ in
     enable = lib.mkEnableOption "Hermes (NousResearch/hermes-agent) Signal bot wired to our MCP services";
 
     # ─── Single-model setup with /model overrides ──────────────────────────
-    # Gemini 2.5 Flash on OpenRouter is the default for every Signal turn.
-    # Alex switches models per-conversation by sending slash commands in
-    # Signal: `/model <alias>` (see model_aliases in service.nix for the
-    # curated short names — opus, local, flash, etc.). Sessions reset after
-    # `sessionIdleMinutes` of inactivity, snapping back to default.
+    # DeepSeek V4.1 Flash on OpenRouter is the default for every Signal
+    # turn. Alex switches models per-conversation by sending
+    # slash commands in Signal: `/model <alias>` (see model_aliases in
+    # service.nix for the curated short names — opus, gemini, pro, etc.).
+    # Sessions reset after `sessionIdleMinutes` of inactivity, snapping back
+    # to default. Summary plugins (/intel, /today) pin their own Gemini Flash
+    # Lite model and are unaffected by this knob.
     #
     # Why not orchestrator + delegate? We tried it (Gemma 8B and Flash
     # Lite tier-1, V4 Pro tier-2). hermes-agent enforces subagent
@@ -44,44 +46,30 @@ in
 
     defaultModel = lib.mkOption {
       type = lib.types.str;
-      default = "google/gemini-2.5-flash";
+      default = "deepseek/deepseek-v4.1-flash";
       description = ''
         The model that handles every Signal turn unless alex has
-        sent `/model <slug>` to override for the session. Gemini 2.5
-        Flash via OpenRouter's BYOK routing — billed against alex's
-        Google AI Studio account where the $10/mo Pro-subscription
-        credit covers normal use-it-or-lose-it. ZDR comes from his
-        Google paid tier; the provider pin below restricts OR to the
-        google-ai-studio route so BYOK actually fires.
+        sent `/model <slug>` to override for the session. V4.1 Flash:
+        cheap, 1M context, solid tool calling (~76-78% TAU-Bench on
+        OR) — most turns are MCP tool calls. V4 Pro stays on
+        `/model deep` for harder reasoning.
 
-        Was deepseek/deepseek-v4-pro pre-2026-05-14 — V4 Pro remains
-        available via `/model deep` for tool-heavy or harder
-        reasoning turns where Flash falls short.
+        History: V4 Pro until 2026-05-14, Gemini 2.5 Flash (BYOK) until
+        2026-10-15, V4 Pro until 2026-10-19, then V4.1 Flash. Gemini 2.5
+        Flash remains available via `/model gemini` and is the fallback.
       '';
     };
 
-    localModel = lib.mkOption {
-      type = lib.types.str;
-      default = "qwen3:4b-instruct-28k";
+    apiServerPort = lib.mkOption {
+      type = lib.types.port;
+      default = 8642;
       description = ''
-        Ollama tag for the local model accessible via the `/model local`
-        alias, served on saruman's GTX 1080 Ti. Qwen3 4B Instruct
-        (28K ctx, tool-use, non-thinking) — fits comfortably in VRAM and
-        is well-suited to fast tool-calling agent turns. Replaced the
-        retired gemma4-8b-16k wrapper 2026-06-16.
+        Port for hermes' OpenAI-compatible API server (`/v1/chat/completions`,
+        `/v1/models`). Binds 0.0.0.0 but the firewall only opens it on
+        tailscale0 (same pattern as hermes-dashboard — binding the tailnet IP
+        directly races tailscaled at boot). Bearer auth via `API_SERVER_KEY`
+        (sops: hermes_api_server_key); upstream refuses to start without it.
       '';
-    };
-
-    localBaseUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://127.0.0.1:11434/v1";
-      description = "Base URL of the local Ollama OpenAI-compatible endpoint.";
-    };
-
-    localApiKey = lib.mkOption {
-      type = lib.types.str;
-      default = "ollama";
-      description = "API key for local Ollama (Ollama doesn't validate; sentinel).";
     };
 
     sessionIdleMinutes = lib.mkOption {
@@ -93,17 +81,6 @@ in
         long enough to span a normal back-and-forth conversation but
         short enough that ad-hoc overrides don't linger overnight.
         Daily 4am reset (hermes-agent built-in) still fires too.
-      '';
-    };
-
-    delegateProviders = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ "parasail" "atlas-cloud" "deepinfra" "novita" "venice" ];
-      description = ''
-        OpenRouter provider slugs allowed to serve DeepSeek traffic.
-        All must be US-HQ'd and honor zero-retention. Together is
-        omitted despite being US-HQ'd because its DeepSeek-V4-Pro
-        endpoint has been flapping (~65%% uptime when last checked).
       '';
     };
 
@@ -135,12 +112,6 @@ in
       type = lib.types.str;
       default = "http://${mcpHost}:4284/mcp";
       description = "Streamable-HTTP URL for the Miniflux RSS MCP.";
-    };
-
-    escalatorMcpUrl = lib.mkOption {
-      type = lib.types.str;
-      default = "http://${mcpHost}:4285/mcp";
-      description = "Streamable-HTTP URL for the escalator MCP (consult_expert tool).";
     };
 
     gcalMcpUrl = lib.mkOption {
@@ -183,16 +154,24 @@ in
     # createUser = false stops the upstream module from declaring the
     # hermes user (alex is declared elsewhere in our config); we still
     # need to ensure the `hermes` GROUP exists because we keep using it
-    # to share secrets with sibling MCP service users (gcal-mcp,
-    # escalator-mcp).
+    # to share secrets with sibling MCP service users (gcal-mcp).
 
     # The `hermes` group survives the user removal — it stays as a
-    # shared-secret group: alex + escalator_mcp + gcal_mcp users are
+    # shared-secret group: alex + gcal_mcp users are
     # all members, secrets are mode 0440 group=hermes.
     users.groups.hermes = { };
     # Add alex to the hermes group so the service (running as alex) can
     # read its own sops-rendered EnvironmentFile (mode 0400 owner=alex)
     # AND the shared mode-0440 group=hermes secrets the MCPs depend on.
     users.users.alex.extraGroups = [ "hermes" ];
+
+    networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ cfg.apiServerPort ];
+
+    # Point every alex session (interactive shells AND non-interactive SSH
+    # commands, e.g. the Hermes app's SSH mode — sessionVariables go through
+    # pam_env) at the service's HERMES_HOME. Without it `hermes` falls back
+    # to ~/.hermes, a stale near-empty profile with none of the sessions,
+    # memories, MCPs or cron jobs.
+    environment.sessionVariables.HERMES_HOME = "/var/lib/hermes/.hermes";
   };
 }

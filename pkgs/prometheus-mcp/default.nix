@@ -9,7 +9,7 @@ buildGoModule {
 
   src = ./.;
 
-  # Shared mark3labs/mcp-go dep tree with miniflux-mcp / escalator-mcp.
+  # Shared mark3labs/mcp-go dep tree with miniflux-mcp.
   vendorHash = "sha256-Nhj/P8IqRqkX3DiPz58H5Q/iTRIyRM45kg/DCtbM+ME=";
 
   ldflags = [ "-s" "-w" ];

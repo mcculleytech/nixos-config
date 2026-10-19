@@ -118,38 +118,38 @@ in
         # configs stay in lockstep.
         terminal.cwd = config.services.hermes-agent.workingDirectory;
 
-        # ─── Default model: Gemini 2.5 Flash via OR BYOK ──────────────
+        # ─── Default model: DeepSeek V4.1 Flash ──────────────────────
         model = {
           provider = "openrouter";
           default = cfg.defaultModel;
-          # 64K is hermes' floor; Gemini Flash supports 1M context but we
-          # cap so compression math stays sane on Signal chats.
+          # 64K is hermes' floor; cap so compression math stays sane on
+          # Signal chats.
           context_length = 64000;
-          # Pin OR to the google-ai-studio provider so BYOK fires
-          # (otherwise OR could route via google-vertex which doesn't
-          # use alex's Google AI Studio key). data_collection=deny is a
-          # belt-and-suspenders ZDR check — the actual retention
-          # guarantee comes from alex's Google paid tier. allow_fallbacks
-          # off → if Google errors, we deliberately fall through to
-          # `fallback_model` below (deepseek-v4-flash on ZDR US-HQ
-          # providers) rather than silently routing to a non-BYOK
-          # Google path that would bill OR credit.
-          extra_body = {
-            provider = {
-              data_collection = "deny";
-              only = [ "google-ai-studio" ];
-              allow_fallbacks = false;
-            };
-          };
+        };
+
+        # ─── OpenRouter provider routing (applies to EVERY model) ────
+        # This top-level key is the only provider-preference config
+        # hermes 0.18 sends: gateway, cron and TUI all build the request's
+        # `provider` object from it. The `model.extra_body.provider` /
+        # `fallback_model.extra_body.provider` blocks we used before were
+        # silently dropped — the 2026-10-15 request dumps carry no
+        # `provider` field at all, which is why that 429 landed on
+        # DeepInfra's shared pool. Because it's global, no `only` list:
+        # it would block /model opus, gemini and auto.
+        provider_routing = {
+          # Exclude providers that retain/train on prompts.
+          data_collection = "deny";
+          # Only route to endpoints that support every request param
+          # (tools, tool_choice) — matters for Flash/auto tool turns.
+          require_parameters = true;
         };
 
         # ─── /model aliases — what alex types in Signal ───────────────
         # `/model <alias>` switches the active model for the rest of
         # the session (until idle reset, daily reset, or another /model).
         # Aliases override hermes-agent's built-in MODEL_ALIASES table
-        # to pin specific whitelisted slugs (the built-in "opus" alias
-        # would resolve to claude-opus-4.7 which isn't on alex's OR
-        # allow-list — only the -fast variant is).
+        # to pin specific slugs. Refreshed 2026-10-19 against OR's
+        # /api/v1/models (claude-opus-4.7-fast had been retired).
         model_aliases = {
           # ── OpenRouter cloud aliases ──
           # Tracks `cfg.defaultModel` so `/model default` always returns to
@@ -160,65 +160,56 @@ in
             provider = "openrouter";
           };
           opus = {
-            model = "anthropic/claude-opus-4.7-fast";
+            model = "anthropic/claude-opus-5.5";
             provider = "openrouter";
           };
           flash = {
-            # Cheapest cloud option ($0.10 in / $0.40 out per Mtok).
-            # BYOK Gemini key in OR means inference bills against
-            # alex's Google quota, not OR credit.
-            model = "google/gemini-2.5-flash-lite";
+            # Current-gen cheap/fast Google. BYOK Gemini key in OR means
+            # inference bills against alex's Google quota, not OR credit.
+            model = "google/gemini-3.8-flash";
             provider = "openrouter";
           };
           pro = {
-            # Frontier Google when you need long-context (1M) or
-            # complex multi-step reasoning without Opus pricing.
-            model = "google/gemini-3.1-pro-preview";
+            # Frontier Google when you need long-context or complex
+            # multi-step reasoning without Opus pricing.
+            model = "google/gemini-4-argon";
+            provider = "openrouter";
+          };
+          gemini = {
+            # Gemini 2.5 Flash via BYOK — the default until 2026-10-15.
+            # Cheap, 1M context; good for long-document turns.
+            model = "google/gemini-2.5-flash";
             provider = "openrouter";
           };
           deep = {
-            # Tool-heavy / agentic work — better recovery from transient
-            # errors than Flash. Switch with `/model deep`, return with
-            # `/model default`.
+            # Harder multi-step reasoning when Flash falls short.
+            # Switch with `/model deep`, return with `/model default`.
             model = "deepseek/deepseek-v4-pro";
             provider = "openrouter";
           };
-
-          # ── Local Ollama alias ──
-          # `/model local` swaps to Qwen3 4B Instruct on saruman's GTX
-          # 1080 Ti. Free, private (prompts never leave the box), and
-          # tool-use capable. Useful for low-stakes turns or to keep
-          # tokens out of OR. Limited depth at 4B — don't expect V4 Pro.
-          local = {
-            model = cfg.localModel;
-            provider = "custom";
-            base_url = cfg.localBaseUrl;
-            api_key = cfg.localApiKey;
+          auto = {
+            # OpenRouter Auto Router — picks a model per prompt, billed at
+            # the chosen model's rate. Hermes can't send the router's
+            # `plugins` options, so restrict candidates / cost tier on
+            # OR's workspace Routing settings page instead.
+            model = "openrouter/auto";
+            provider = "openrouter";
           };
-
         };
 
         # ─── Fallback model ─────────────────────────────────────────
-        # If the default V4 Pro call errors (rate-limit, provider
-        # outage, transient 5xx), hermes auto-switches to V4 Flash on
-        # OpenRouter. Different model so a model-level issue doesn't
-        # cascade. Same US-HQ + ZDR pinning.
+        # If the default DeepSeek call errors (rate-limit, provider
+        # outage, transient 5xx), hermes auto-switches to Gemini 2.5
+        # Flash. Different vendor on purpose: 2026-10-15 a DeepSeek-wide
+        # 429 hit V4 Pro and the old V4 Flash fallback at the same time.
         fallback_model = {
           provider = "openrouter";
-          model = "deepseek/deepseek-v4-flash";
-          extra_body = {
-            provider = {
-              data_collection = "deny";
-              only = cfg.delegateProviders;
-              allow_fallbacks = true;
-              sort = { by = "price"; };
-            };
-          };
+          model = "google/gemini-2.5-flash";
         };
 
         # ─── Session reset ──────────────────────────────────────────
         # Signal sessions reset after `sessionIdleMinutes` of inactivity
-        # — any `/model` override snaps back to the default V4 Pro at
+        # — any `/model` override snaps back to the default at
         # that point. Hermes-agent also has a built-in 4 AM daily reset
         # that fires regardless of activity.
         reset_by_platform = {
@@ -279,18 +270,6 @@ in
           "google_chat-platform"
           "platforms/google_chat"
         ];
-
-        # The `custom` provider handles the local-Ollama `/model local`
-        # alias. Cold start (Gemma 4 loading 9.4 GB onto the GPU) can
-        # take 10+ seconds, so widen the request timeout to 5 min and
-        # re-enable the stale-call detector on a 15 min leash. OR
-        # provider paths keep their snappier defaults.
-        providers = {
-          custom = {
-            request_timeout_seconds = 300;
-            stale_timeout_seconds = 900;
-          };
-        };
       };
 
       mcpServers = {
@@ -335,11 +314,6 @@ in
           url = cfg.gcalMcpUrl;
           headers.Authorization = "Bearer \${HERMES_GCAL_MCP_TOKEN}";
           # Read-only MCP today (no event_create) — nothing to exclude.
-        };
-        escalator = {
-          url = cfg.escalatorMcpUrl;
-          headers.Authorization = "Bearer \${HERMES_ESCALATOR_MCP_TOKEN}";
-          # Single-tool MCP — nothing to exclude.
         };
         prometheus = {
           url = cfg.prometheusMcpUrl;
