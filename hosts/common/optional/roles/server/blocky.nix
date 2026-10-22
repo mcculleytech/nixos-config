@@ -57,7 +57,6 @@ in
       				"stt.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ollama.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ntfy.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
-      				"hermes.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"otel.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"borg.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       			};

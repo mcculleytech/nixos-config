@@ -46,28 +46,12 @@ let
     };
   };
 
-  lmStudio = lib.optionalAttrs pkgs.stdenv.isDarwin {
-    lmstudio = {
-      npm = "@ai-sdk/openai-compatible";
-      name = "LM Studio (local)";
-      options.baseURL = "http://127.0.0.1:1234/v1";
-      models = {
-        "qwen3-coder-30b-a3b-instruct-mlx".name = "Qwen3 Coder 30B A3B (MLX)";
-        "gemma-4-31b-it-mlx".name = "Gemma 4 31B IT (MLX)";
-        "gemma-4-26b-a4b-it".name = "Gemma 4 26B A4B IT";
-        "supergemma4-26b-abliterated-multimodal-mlx".name =
-          "SuperGemma4 26B Abliterated Multimodal (MLX)";
-        "gemma-4-26b-a4b-it-uncensored-abliterix-mlx-int2-affine".name =
-          "Gemma 4 26B A4B IT Uncensored Abliterix (MLX int2)";
-      };
-    };
-  };
 in
 {
   xdg.configFile."opencode/opencode.json".text = builtins.toJSON {
     "$schema" = "https://opencode.ai/config.json";
     theme = "nord";
     plugin = [ "@slkiser/opencode-quota" ];
-    provider = { saruman-ollama = sarumanOllama; } // lmStudio;
+    provider = { saruman-ollama = sarumanOllama; };
   };
 }

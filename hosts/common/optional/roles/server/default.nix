@@ -29,17 +29,10 @@
     ./ntfy.nix
     ./kokoro.nix
     ./speaches.nix
-    ./protonmail-bridge.nix
     ./auto-deploy.nix
     ./obsidian-headless
-    ./signal-cli.nix
-    ./mcp
-    ./vault-indexer
     ./nas-backups
     ./obsidian-backup
     ./harmonia.nix
-    # ./hermes-agent  — imported on saruman only (hosts/saruman/configuration.nix)
-    # because it sets services.hermes-agent.* which only exists where the
-    # upstream NousResearch/hermes-agent NixOS module is loaded.
   ];
 }

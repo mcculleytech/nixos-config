@@ -9,10 +9,6 @@
     hardware.url = "github:nixos/nixos-hardware/master";
     sops-nix.url = "github:Mic92/sops-nix";
     impermanence.url = "github:nix-community/impermanence";
-    nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # cosmic-nightly = {
     #   url = "github:busyboredom/cosmic-nightly-flake";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -29,16 +25,6 @@
       url = "github:sadjow/claude-code-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    # Upstream agent runtime: ships its own flake + nixosModules.default and
-    # a uv2nix-built sealed venv. Do NOT set inputs.nixpkgs.follows here —
-    # the venv's lockfile is tied to nixos-unstable's Python toolchain;
-    # forcing it onto our nixpkgs (26.05) breaks the build.
-    # Pinned by rev, not just in the lock: upstream's module after aaf5691
-    # references its JS frontend source store path without fetch context
-    # ("path '…-source' is not valid" on a clean store), breaking
-    # `nix flake check`. A lock-only pin (e74ebe2) gets clobbered by every
-    # scheduled `nix flake update`. Bump only after upstream fixes the module.
-    hermes-agent.url = "github:NousResearch/hermes-agent/aaf5691261f12601db845386d650dce1cdfa30f9";
   };
 
   outputs = { self, nixpkgs, home-manager, hardware, ... } @ inputs:
@@ -51,12 +37,6 @@
         inputs.impermanence.nixosModules.impermanence
         inputs.sops-nix.nixosModules.sops
         inputs.determinate.nixosModules.default
-      ];
-
-      darwinDefaultModules = [
-        { nixpkgs.hostPlatform = "aarch64-darwin"; }
-        inputs.determinate.darwinModules.default
-        home-manager.darwinModules.home-manager
       ];
 
       homeManagerServerModule = [
@@ -105,7 +85,6 @@
           modules = defaultModules ++ [
             hardware.nixosModules.common-gpu-nvidia-nonprime
             home-manager.nixosModules.home-manager
-            inputs.hermes-agent.nixosModules.default
             ./hosts/saruman/configuration.nix
             {
               home-manager.useUserPackages = true;
@@ -177,18 +156,5 @@
           modules = def.modules;
         }
       ) hostDefs;
-
-      darwinConfigurations.faramir = inputs.nix-darwin.lib.darwinSystem {
-        specialArgs = { inherit inputs outputs; };
-        modules = darwinDefaultModules ++ [
-          ./hosts/faramir/configuration.nix
-          {
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs outputs; };
-            home-manager.users.alex.imports = [ ./home/alex/faramir.nix ];
-            home-manager.backupFileExtension = "bak";
-          }
-        ];
-      };
     };
 }

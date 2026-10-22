@@ -132,8 +132,8 @@
       description = "Daily timer for immich pg_dump → NAS";
       wantedBy = [ "timers.target" ];
       timerConfig = {
-        # 30min offset from agent-memory's 03:00 daily backup so the two
-        # don't slam Postgres at the same instant.
+        # 03:30, ahead of obsidian-backup at 04:00 so the NAS doesn't see
+        # concurrent backup jobs.
         OnCalendar = "*-*-* 03:30:00";
         Persistent = true;
         RandomizedDelaySec = "5m";

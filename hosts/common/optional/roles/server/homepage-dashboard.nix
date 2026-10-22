@@ -85,13 +85,6 @@ in
                   };
                 }
                 {
-                  "Hermes" = {
-                    icon = "si-anthropic";
-                    href = "https://hermes.${tr_secrets.traefik.homelab_domain}";
-                    description = "AI Agent (Signal bot + dashboard)";
-                  };
-                }
-                {
                   "Kokoro TTS" = {
                     icon = "si-chatbot";
                     href = "https://tts.${tr_secrets.traefik.homelab_domain}/web/";

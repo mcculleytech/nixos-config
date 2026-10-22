@@ -1,15 +1,4 @@
 { inputs, lib, config, pkgs, outputs, osConfig ? null, ... }:
-let
-  # Hermes-agent runs on a single host today (saruman). When that's true,
-  # `hermes profile create coder` puts a launcher at ~/.local/bin/coder
-  # that exec's the local hermes binary. On hosts without hermes-agent
-  # the launcher would resolve to nothing, so gate the wrapper on the
-  # host actually running it. Falls open (=false) for standalone
-  # home-manager invocations where osConfig isn't passed in.
-  # NOTE: only the wrapper is gated — ~/.local/bin itself is on PATH
-  # unconditionally (see home.sessionPath below).
-  hermesAgentEnabled = (osConfig.hermes-agent.enable or false);
-in
 {
   imports = [
     ./git.nix
@@ -20,60 +9,36 @@ in
 
   home = {
     username = "alex";
-    homeDirectory = if pkgs.stdenv.isDarwin then "/Users/alex" else "/home/alex";
+    homeDirectory = "/home/alex";
   };
 
-  # Hermes `coder` profile launcher. The 1-line wrapper goes into the
-  # nix store via home.file (symlinked into ~/.local/bin); the profile
-  # state (SOUL.md, config.yaml, memory, sessions, learned skills)
-  # stays user-mutable under ~/.hermes/profiles/coder/ because it's
-  # runtime-accumulated, not declarative.
-  #
-  # We also install `hermes` itself into alex's user packages on the
-  # same hosts — the systemd service uses its own wrapped venv at
-  # /nix/store/...-hermes-agent-env/bin/hermes, but that's not on user
-  # PATH. Without this, the `coder` wrapper can't find `hermes` to exec.
   # Keep Go's GOPATH out of $HOME (default would be ~/go). Same place go
   # actually writes to once the env var is set — `go install` lands binaries
   # in $GOPATH/bin, which is added to PATH below.
   home.sessionVariables.GOPATH = "$HOME/.local/share/go";
-  # ~/.local/bin is the standard user bindir and is populated on every host
-  # regardless of hermes: pipx shims (impacket, bbot, bofhound, ...) and
-  # self-updating agent installers like cursor-agent both drop launchers
-  # there. Its being on PATH is independent of the coder wrapper existing,
-  # so it is unconditional — and it has to live here rather than in
-  # ~/.zshrc, which home-manager owns as a read-only nix store symlink.
+  # ~/.local/bin is the standard user bindir and is populated on every host:
+  # pipx shims (impacket, bbot, bofhound, ...) and self-updating agent
+  # installers like cursor-agent both drop launchers there. It has to live
+  # here rather than in ~/.zshrc, which home-manager owns as a read-only nix
+  # store symlink.
   home.sessionPath = [
     "$HOME/.local/share/go/bin"
     "$HOME/.local/bin"
   ];
-  home.packages =
-    (lib.optionals hermesAgentEnabled [
-      inputs.hermes-agent.packages.${pkgs.stdenv.hostPlatform.system}.default
-    ])
-    # AI coding agents alex uses interactively. claude-code is already on
-    # PATH (via the systemPackages route on saruman / hermes' extraPackages),
-    # but opencode lives only in nixpkgs and isn't installed anywhere else.
-    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.unstable.opencode ])
-    # superfile: TUI file manager. Linux-only here — faramir takes it from
-    # homebrew instead (Phase 1 of the Mac/Nix decouple, see README). Gated
-    # rather than deleted because saruman and the servers still want it.
-    ++ (lib.optionals pkgs.stdenv.isLinux [ pkgs.superfile ]);
-  home.file = lib.optionalAttrs hermesAgentEnabled {
-    ".local/bin/coder" = {
-      executable = true;
-      text = ''
-        #!/bin/sh
-        exec hermes -p coder "$@"
-      '';
-    };
-  };
+  home.packages = [
+    # AI coding agents alex uses interactively. claude-code comes from
+    # home/alex/saruman.nix and desktop-packages.nix; opencode lives only in
+    # nixpkgs and isn't installed anywhere else.
+    pkgs.unstable.opencode
+    # superfile: TUI file manager.
+    pkgs.superfile
+  ];
 
   # Enable home-manager's bash integration so `home.sessionPath` actually
   # lands in alex's interactive PATH. Without this, hm-session-vars.sh
-  # exists but nothing sources it on bash login → ~/.local/bin (where
-  # the coder wrapper lives) stays invisible. Pairs with the zsh
-  # integration that's already on via optional/zsh.nix.
+  # exists but nothing sources it on bash login → ~/.local/bin stays
+  # invisible. Pairs with the zsh integration that's already on via
+  # optional/zsh.nix.
   programs.bash.enable = true;
 
   nixpkgs = {
@@ -95,7 +60,7 @@ in
   programs.home-manager.enable = true;
 
   # Nicely reload system units when changing configs (Linux/systemd only)
-  systemd.user.startServices = lib.mkIf pkgs.stdenv.isLinux "sd-switch";
+  systemd.user.startServices = "sd-switch";
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.11";
