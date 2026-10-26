@@ -47,6 +47,8 @@
     # `switch`, `:U` doesn't re-apply, so transcriptions then fail with EACCES
     # reading the cache (the container can't even traverse a 0700 ollama-owned
     # dir). Mode 0755 is harmless to re-assert; ownership is the part that bites.
+    # The same goes for any recursive `Z` rule on a parent dir — ollama.nix's Z
+    # is deliberately scoped to /home/ollama/models for this reason.
     systemd.tmpfiles.rules = [
       "d /home/ollama/whisper-models 0755 - - -"
       "d /home/ollama/whisper-models/hub 0755 - - -"
