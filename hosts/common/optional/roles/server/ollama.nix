@@ -55,8 +55,12 @@
       "d /home/ollama/models 0700 ollama ollama -"
       # Z = recursive chown — fixes ownership on first activation (rsync'd
       # files inherit old DynamicUser uid which doesn't exist anymore).
-      # Subsequent runs are no-ops once ownership matches.
-      "Z /home/ollama 0700 ollama ollama -"
+      # Scoped to models/, NOT /home/ollama: speaches's whisper cache lives
+      # at /home/ollama/whisper-models and is owned by the container's uid
+      # (podman `:U`). A recursive Z on the parent re-chowns it to ollama
+      # 0700 on every activation and speaches fails with EACCES reading its
+      # HF cache (see speaches.nix).
+      "Z /home/ollama/models 0700 ollama ollama -"
     ];
 
     # The upstream ollama module sets `ProtectHome=true` to deny any access
