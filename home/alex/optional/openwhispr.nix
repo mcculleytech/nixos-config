@@ -27,7 +27,7 @@
     #   STT URL     = https://stt.<homelab-domain>/v1
     #   Cleanup URL = https://ollama.<homelab-domain>/v1
     # (substitute config.lab.homelabDomain — see hosts/common/global/homelab-domain.nix)
-    #   Cleanup model = gemma4:latest
+    #   Cleanup model = ornith-1.5:9b  (gemma4:latest removed 2026-10-28)
     #   API keys    = blank (tailnet is the trust boundary)
   };
 }

@@ -25,27 +25,6 @@ let
         tools = true;
         reasoning = true;
       };
-      "qwen3-coder:30b" = {
-        name = "Qwen3 Coder 30B (MoE, partial CPU offload)";
-        limit = { context = 32768; output = 8192; };
-        tools = true;
-        reasoning = false;
-      };
-      "gemma4:12b" = {
-        name = "Gemma 4 12B";
-        limit = { context = 32768; output = 8192; };
-        tools = true;
-        reasoning = false;
-      };
-      "huihui_ai/gemma-4-abliterated:12b" = {
-        name = "Gemma 4 12B Abliterated (huihui, vision)";
-        limit = { context = 32768; output = 8192; };
-        tools = true;
-        reasoning = false;
-      };
-      "gemma4:latest" = {
-        name = "Gemma 4 8B";
-      };
     };
   };
 
