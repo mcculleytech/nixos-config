@@ -99,6 +99,13 @@ in
                   };
                 }
                 {
+                  "Firecrawl" = {
+                    icon = "mdi-spider-web";
+                    href = "https://firecrawl.${tr_secrets.traefik.homelab_domain}/";
+                    description = "Web scrape/crawl API (no UI)";
+                  };
+                }
+                {
                   "Ollama" = {
                     icon = "ollama.png";
                     href = "https://ollama.${tr_secrets.traefik.homelab_domain}/";

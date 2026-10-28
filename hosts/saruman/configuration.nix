@@ -25,6 +25,7 @@
   kde.enable = true;
   bluetooth.enable = true;
   kokoro.enable = true;
+  firecrawl.enable = true;  # self-hosted scrape/crawl API on :3002 (podman stack)
   speaches.enable = true;  # GPU-accelerated Whisper STT (OpenAI-compatible) on tailnet :8000
   auto-deploy.enable = true;
   tailscale-server.enable = true;
