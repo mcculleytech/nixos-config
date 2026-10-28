@@ -47,6 +47,12 @@
         # different origins. Wildcard is safe here because the endpoint
         # is behind Traefik on the home LAN/tailnet — no internet exposure.
         OLLAMA_ORIGINS = "*";
+        # Server-wide default context. OpenAI-compatible clients (Open WebUI,
+        # opencode) can't pass num_ctx, and web-search/tool context blows past
+        # the small built-in default. Measured 2026-10-28 on the 1080 Ti at
+        # 32k: ornith-1.5:9b 8.7 GB, gemma4:12b-it-qat 9.7 GB total VRAM
+        # (incl. kokoro + speaches) — both stay 100% on GPU.
+        OLLAMA_CONTEXT_LENGTH = "32768";
       };
     };
 

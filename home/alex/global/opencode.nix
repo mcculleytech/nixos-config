@@ -2,6 +2,8 @@
 let
   homelabDomain = osConfig.lab.homelabDomain;
 
+  # Contexts match OLLAMA_CONTEXT_LENGTH (32k) set server-side in
+  # hosts/common/optional/roles/server/ollama.nix.
   sarumanOllama = {
     npm = "@ai-sdk/openai-compatible";
     name = "Saruman Ollama (homelab)";
@@ -10,33 +12,34 @@ let
       apiKey = "dummy";
     };
     models = {
-      "qwen3:4b-instruct-28k" = {
-        name = "Qwen3 4B Instruct (28k ctx, tool use, no thinking)";
-        limit = { context = 28672; output = 4096; };
+      # Picked by the 2026-10-28 tool-call eval (27/27 on both).
+      "ornith-1.5:9b" = {
+        name = "Ornith 1.5 9B (tool use, fastest)";
+        limit = { context = 32768; output = 8192; };
         tools = true;
-        reasoning = false;
+        reasoning = true;
       };
-      "qwen3:14b-16k" = {
-        name = "Qwen3 14B (16k ctx, chat)";
-        limit = { context = 16384; output = 4096; };
+      "gemma4:12b-it-qat" = {
+        name = "Gemma 4 12B QAT (general chat)";
+        limit = { context = 32768; output = 8192; };
         tools = true;
-        reasoning = false;
+        reasoning = true;
       };
-      "phi4:14b-16k" = {
-        name = "Phi-4 14B (16k ctx, chat/reasoning)";
-        limit = { context = 16384; output = 4096; };
-        tools = false;
+      "qwen3-coder:30b" = {
+        name = "Qwen3 Coder 30B (MoE, partial CPU offload)";
+        limit = { context = 32768; output = 8192; };
+        tools = true;
         reasoning = false;
       };
       "gemma4:12b" = {
-        name = "Gemma 4 12B (4k ctx — Ollama default, not bumped)";
-        limit = { context = 4096; output = 8192; };
+        name = "Gemma 4 12B";
+        limit = { context = 32768; output = 8192; };
         tools = true;
         reasoning = false;
       };
       "huihui_ai/gemma-4-abliterated:12b" = {
         name = "Gemma 4 12B Abliterated (huihui, vision)";
-        limit = { context = 4096; output = 8192; };
+        limit = { context = 32768; output = 8192; };
         tools = true;
         reasoning = false;
       };
