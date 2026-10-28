@@ -248,6 +248,15 @@ in
 	   				};
 	   				service = "stt";
 	   			};
+	   			firecrawl = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`firecrawl.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "firecrawl";
+	   			};
 	   			ollama = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`ollama.${tr_secrets.traefik.homelab_domain}`)";
@@ -468,6 +477,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.saruman.ip}:8000";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			firecrawl = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:3002";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
