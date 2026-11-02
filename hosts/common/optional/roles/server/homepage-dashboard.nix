@@ -85,34 +85,6 @@ in
                   };
                 }
                 {
-                  "Kokoro TTS" = {
-                    icon = "si-chatbot";
-                    href = "https://tts.${tr_secrets.traefik.homelab_domain}/web/";
-                    description = "Text-to-Speech API";
-                  };
-                }
-                {
-                  "Speaches STT" = {
-                    icon = "mdi-microphone";
-                    href = "https://stt.${tr_secrets.traefik.homelab_domain}/";
-                    description = "Speech-to-Text (Whisper)";
-                  };
-                }
-                {
-                  "Firecrawl" = {
-                    icon = "mdi-spider-web";
-                    href = "https://firecrawl.${tr_secrets.traefik.homelab_domain}/";
-                    description = "Web scrape/crawl API (no UI)";
-                  };
-                }
-                {
-                  "Ollama" = {
-                    icon = "ollama.png";
-                    href = "https://ollama.${tr_secrets.traefik.homelab_domain}/";
-                    description = "Local LLM API (raw OpenAI-compat)";
-                  };
-                }
-                {
                   "Octoprint" = {
                     icon = "octoprint.png";
                     href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
