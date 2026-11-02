@@ -1,6 +1,5 @@
 keys:
-  - &aeneas_alex age1udcr323x2wxg0ywcy3avq4q7gv9qvxrsuvpen6yve5zh9xaa3s0sfmxvcu 
-  - &aeneas_workstation age1rsp4hq8qk6qphujv5hksw7wrvh76g4qsyjcukw7x0ux98w6vgpeqle4dmp
+  - &debian_alex age1jppe9eh80q9ms26n90qvzzd75a0h9seyy3tqgctw8gxdkzfa0g2qhnlc3h  # alex@debian ~/.ssh/id_ed25519 (ssh-to-age); offline backup recipient
   - &vader_server age1mk4xprmdy8qljakkxt9p6pdwu8349ng72w9knkprnwy0mdfaeucqzs9dls
   - &phantom_server age1thr6ugzx83lz5r5gwazt05wgudx32xkgm76vdu8d98neg6sxu3xqh2nzkw
   - &atreides_server age15kz7au85c7dyneyz7qlyhxk2cr0m29us9uhprn9fspnc9pe5ga7sp5vq2v
@@ -9,8 +8,7 @@ creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-        - *aeneas_alex
-        - *aeneas_workstation
+        - *debian_alex
         - *vader_server
         - *phantom_server
         - *atreides_server
@@ -18,29 +16,23 @@ creation_rules:
   - path_regex: hosts/vader/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-        - *aeneas_alex
+        - *debian_alex
         - *saruman_server
         - *vader_server 
   - path_regex: hosts/phantom/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-        - *aeneas_alex
+        - *debian_alex
         - *saruman_server
         - *phantom_server 
   - path_regex: hosts/atreides/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-        - *aeneas_alex
+        - *debian_alex
         - *saruman_server
         - *atreides_server
   - path_regex: hosts/saruman/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
-        - *aeneas_alex
+        - *debian_alex
         - *saruman_server
-  - path_regex: hosts/aeneas/[^/]+\.(yaml|json|env|ini)$
-    key_groups:
-      - age:
-        - *aeneas_alex
-        - *saruman_server
-        - *aeneas_workstation

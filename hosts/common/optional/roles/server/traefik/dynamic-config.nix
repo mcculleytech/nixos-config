@@ -158,15 +158,6 @@ in
 	   				};
 	   				service = "radicale";
 	   			};
-	   			n8n = {
-	   				entryPoints = [ "websecure" ];
-	   				rule = "Host(`n8n.${tr_secrets.traefik.homelab_domain}`)";
-	   				middlewares = [ "https-redirectscheme" ];
-	   				tls =  {
-	   					certResolver = "cloudflare";
-	   				};
-	   				service = "n8n";
-	   			};
 	   			miniflux = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`miniflux.${tr_secrets.traefik.homelab_domain}`)";
@@ -247,6 +238,15 @@ in
 	   					certResolver = "cloudflare";
 	   				};
 	   				service = "stt";
+	   			};
+	   			firecrawl = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`firecrawl.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "firecrawl";
 	   			};
 	   			ollama = {
 	   				entryPoints = [ "websecure" ];
@@ -392,14 +392,6 @@ in
 	   					passHostHeader = "true";
 	   				};
 	   			};
-	   			n8n = {
-	   				loadBalancer = {
-	   					servers = [
-	   						{url = "http://${hosts.saruman.ip}:5678";}
-	   					];
-	   					passHostHeader = "true";
-	   				};
-	   			};
 	   			miniflux = {
 	   				loadBalancer = {
 	   					servers = [
@@ -468,6 +460,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.saruman.ip}:8000";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			firecrawl = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:3002";}
 	   					];
 	   					passHostHeader = "true";
 	   				};

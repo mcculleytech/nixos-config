@@ -85,27 +85,6 @@ in
                   };
                 }
                 {
-                  "Kokoro TTS" = {
-                    icon = "si-chatbot";
-                    href = "https://tts.${tr_secrets.traefik.homelab_domain}/web/";
-                    description = "Text-to-Speech API";
-                  };
-                }
-                {
-                  "Speaches STT" = {
-                    icon = "mdi-microphone";
-                    href = "https://stt.${tr_secrets.traefik.homelab_domain}/";
-                    description = "Speech-to-Text (Whisper)";
-                  };
-                }
-                {
-                  "Ollama" = {
-                    icon = "ollama.png";
-                    href = "https://ollama.${tr_secrets.traefik.homelab_domain}/";
-                    description = "Local LLM API (raw OpenAI-compat)";
-                  };
-                }
-                {
                   "Octoprint" = {
                     icon = "octoprint.png";
                     href = "https://octoprint.${tr_secrets.traefik.homelab_domain}";
@@ -193,13 +172,6 @@ in
                     description = "Azure Services";
                    };
                  }
-                 {
-                    "n8n" = {
-                     icon = "n8n.png";
-                     href = "https://n8n.${tr_secrets.traefik.homelab_domain}";
-                     description = "AI Automation Platform";
-                    };
-                  }
                   {
                   "Grafana" = {
                     icon = "grafana.png";
