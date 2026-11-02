@@ -25,6 +25,14 @@ let
         tools = true;
         reasoning = true;
       };
+      # On trial vs gemma4 QAT for chat (2026-11-02 eval: 27/27, 55 tok/s,
+      # 6.8 GB at 32k). Drop whichever loses.
+      "nemotron-3.5-bolt:e4b" = {
+        name = "Nemotron 3.5 Bolt e4b (chat trial, vision)";
+        limit = { context = 32768; output = 8192; };
+        tools = true;
+        reasoning = true;
+      };
     };
   };
 
