@@ -23,6 +23,7 @@
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPXQH5gI49qNuwiTigLDbZJ8l0NNl4OksmIXV/TRyGi6 alex@saruman"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAD/cB01DFcbp6ZwCPdYw8Ayc0Vd1TOCiuVlWdpMsLBW alex@phone"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKTFEGZs5zK8hle4cjKKhnaZ0ISaHDsoIS+rymzMt8nH alex@debian"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBIazLCZZQ4dApXSsxtt5SXknRj6UoDGcQAuqBsB/Mfw alex@hermes"
       ];
       extraGroups = [ "wheel" "audio" "video" "plugdev" "dialout" "docker" "networkmanager" "adm" ];
     };
@@ -32,6 +33,8 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF5/rm0SfHY4XP/yDT43MTPfCYmsoui53YvawXovlMDF alex@aeneas"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPXQH5gI49qNuwiTigLDbZJ8l0NNl4OksmIXV/TRyGi6 alex@saruman"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKTFEGZs5zK8hle4cjKKhnaZ0ISaHDsoIS+rymzMt8nH alex@debian"
+      # hermes — agent-driven deploys (colmena targetUser = root)
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBIazLCZZQ4dApXSsxtt5SXknRj6UoDGcQAuqBsB/Mfw alex@hermes"
     ];
 
   }
