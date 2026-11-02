@@ -34,9 +34,7 @@ options = {
                 type = "simple";
                 params.keep = "5";
               };
-              devices = [
-                "aeneas"
-              ];
+              devices = [ ];  # was aeneas only (removed 2026-11-02); data kept on disk
             };
             "Pixel-Photos" = {
               id = "pixel_7_pro_rhez-photos";
@@ -46,15 +44,11 @@ options = {
                 params.keep = "5";
               };
               devices = [
-                "aeneas"
                 "pixel"
               ];
             };
           };
           devices = {
-            "aeneas" = {
-              id = "${st_secrets.syncthing.aeneas_id}";
-            };
             "pixel" = {
               id = "${st_secrets.syncthing.pixel_id}";
             };
