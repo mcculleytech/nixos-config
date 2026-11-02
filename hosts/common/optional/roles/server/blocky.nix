@@ -46,7 +46,6 @@ in
       				"octostream.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"syncthing.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"radicale.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
-      				"n8n.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"miniflux.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"paperless.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"grafana.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
@@ -55,6 +54,7 @@ in
       				"ludus.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"tts.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"stt.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
+      				"firecrawl.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ollama.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ntfy.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"otel.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
