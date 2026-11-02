@@ -20,7 +20,6 @@
   gamescope.enable = true;  # GPU-side compositor; host is headless on xorgxrdp
   immich.enable = true;
   open-webui.enable = true;
-  n8n.enable = true;
   paperless.enable = true;
   kde.enable = true;
   bluetooth.enable = true;

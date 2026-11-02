@@ -46,7 +46,6 @@ in
       				"octostream.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"syncthing.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"radicale.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
-      				"n8n.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"miniflux.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"paperless.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"grafana.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;

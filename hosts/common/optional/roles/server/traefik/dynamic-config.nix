@@ -158,15 +158,6 @@ in
 	   				};
 	   				service = "radicale";
 	   			};
-	   			n8n = {
-	   				entryPoints = [ "websecure" ];
-	   				rule = "Host(`n8n.${tr_secrets.traefik.homelab_domain}`)";
-	   				middlewares = [ "https-redirectscheme" ];
-	   				tls =  {
-	   					certResolver = "cloudflare";
-	   				};
-	   				service = "n8n";
-	   			};
 	   			miniflux = {
 	   				entryPoints = [ "websecure" ];
 	   				rule = "Host(`miniflux.${tr_secrets.traefik.homelab_domain}`)";
@@ -397,14 +388,6 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.phantom.ip}:5232/";}
-	   					];
-	   					passHostHeader = "true";
-	   				};
-	   			};
-	   			n8n = {
-	   				loadBalancer = {
-	   					servers = [
-	   						{url = "http://${hosts.saruman.ip}:5678";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
