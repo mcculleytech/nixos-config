@@ -85,6 +85,9 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 - [ ] Mirror nixos-config to Gitea — GitHub remains primary, Gitea pulls as a read-only mirror
 - [x] BorgWarehouse (TrueNAS app, `truenas:30406`) behind Traefik + blocky DNS as `borg.<homelab_domain>` ✅ 2026-08-05
 - [x] Jellyfin in Nix, decom ubuntu docker server ✅ 2024-08-01
+	- [x] NVENC/NVDEC hardware transcoding on the 1080 Ti (declarative `encoding.xml`, `forceEncodingConfig`) ✅ 2026-11-03
+	- [ ] Re-source The Twilight Zone (1959) — 216/256 episodes (all of S02/S03/S05, most of S04, some S01) have **burned-in** captions that can't be turned off; get clean copies with soft subtitle tracks
+	- [ ] ~20 movies have no subtitle track at all — add the OpenSubtitles plugin (needs an opensubtitles.com account) so "Download missing subtitles" actually has a provider
 - [ ] Arion for docker compose configurations
 - [x] RSS feed server (Miniflux on phantom) ✅ 2026-03-12
 - [x] n8n automation platform (native NixOS service, no Docker needed) ✅ 2026-03-17
