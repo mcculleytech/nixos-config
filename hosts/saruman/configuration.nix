@@ -26,6 +26,7 @@
   kokoro.enable = true;
   firecrawl.enable = true;  # self-hosted scrape/crawl API on :3002 (podman stack)
   speaches.enable = true;  # GPU-accelerated Whisper STT (OpenAI-compatible) on tailnet :8000
+  pixiecore.enable = true;  # PXE/ProxyDHCP netboot.xyz menu + ISO store on :8090
   auto-deploy.enable = true;
   tailscale-server.enable = true;
   lab.nas-backups.enable = true;  # NFS-mounted /mnt/nas-backups for off-host backups
