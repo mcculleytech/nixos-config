@@ -131,6 +131,13 @@ in
                   };
                 }
                 {
+                  "netboot.xyz" = {
+                    icon = "mdi-network-outline";
+                    href = "http://10.1.8.6:3000";
+                    description = "PXE boot menus — Debian, NixOS, Windows";
+                  };
+                }
+                {
                    "Ludus" = {
                     icon = "https://ludus.cloud/opengraph-image.png";
                      href = "https://ludus.${tr_secrets.traefik.homelab_domain}";
