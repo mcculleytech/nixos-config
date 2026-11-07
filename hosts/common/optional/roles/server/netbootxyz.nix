@@ -33,8 +33,8 @@
 
     webPort = lib.mkOption {
       type = lib.types.port;
-      default = 3000;
-      description = "netboot.xyz web configuration UI.";
+      default = 3001;
+      description = "netboot.xyz web configuration UI (3000 is taken by gotenberg/paperless).";
     };
 
     httpPort = lib.mkOption {

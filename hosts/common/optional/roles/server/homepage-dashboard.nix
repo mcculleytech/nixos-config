@@ -133,7 +133,7 @@ in
                 {
                   "netboot.xyz" = {
                     icon = "mdi-network-outline";
-                    href = "http://10.1.8.6:3000";
+                    href = "http://10.1.8.6:3001";
                     description = "PXE boot menus — Debian, NixOS, Windows";
                   };
                 }
