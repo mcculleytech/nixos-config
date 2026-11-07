@@ -81,24 +81,10 @@
     # files (see configDir above); persist it across the ephemeral root.
     environment.persistence."/persist".directories = [ config.netbootxyz.configDir ];
 
-    # proxyDHCP: answers PXE requests alongside the router's DHCP without
-    # allocating addresses, so nothing on the router has to change. dnsmasq does
-    # NOT run its own TFTP here — port 69 belongs to the container.
-    services.dnsmasq = {
-      enable = true;
-      settings = {
-        port = 0;                       # no DNS service
-        interface = config.netbootxyz.interface;
-        "bind-interfaces" = true;
-        "log-dhcp" = true;
-        "dhcp-range" = "${config.netbootxyz.subnet},proxy,255.255.255.0";
-        "pxe-service" = [
-          "x86PC,netboot.xyz,netboot.xyz.kpxe,${config.netbootxyz.serverIp}"
-          "X86-64_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
-          "BC_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
-        ];
-      };
-    };
+    # PXE boot info comes from the router's DHCP (Network Boot: server 10.1.8.6,
+    # filename netboot.xyz.efi / .kpxe). dnsmasq proxyDHCP is deliberately NOT
+    # enabled here — two responders on one VLAN hand clients conflicting boot
+    # files. Enable it only if the router ever stops supplying option 66/67.
 
     networking.firewall = {
       allowedTCPPorts = [ config.netbootxyz.webPort config.netbootxyz.httpPort ];
