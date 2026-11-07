@@ -32,7 +32,11 @@
       enable = true;
       openFirewall = true;
       dhcpNoBind = true;
-      kernel = "https://boot.netboot.xyz";
+      # Local HTTP-only chainload script. Pointing this at https://boot.netboot.xyz
+      # does not work from stock pixiecore iPXE: it ships no CA bundle, so the TLS
+      # chain times out (ipxe.org/4c126035) and the guest parks in pixiecore's own
+      # "Boot from local hdd" menu instead of reaching netboot.xyz.
+      kernel = "${config.pixiecore.assetsDir}/boot.ipxe";
     };
 
     # Static HTTP for the asset store: ISOs download directly, and mirrored
