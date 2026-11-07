@@ -7,9 +7,19 @@
       type = lib.types.str;
       default = "/mnt/nas-backups/pixiecore";
       description = ''
-        Storage for the container's /config (menus + web app state) and /assets
-        (boot media, e.g. an extracted Windows ISO). Lives on the NAS because
-        boot media are bulky.
+        Storage for the container's /assets (boot media, e.g. an extracted
+        Windows ISO). Lives on the NAS because boot media are bulky.
+      '';
+    };
+
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/var/lib/netbootxyz";
+      description = ''
+        Container /config (menus + web app state). Must be LOCAL, not NFS: the
+        container's TFTP runs with --tftp-secure, which only serves files owned
+        by its own user (nbxyz, uid 1000). On the NAS export root-squash created
+        them as uid 34, so every client got "No such file or directory".
       '';
     };
 
@@ -58,7 +68,7 @@
         "69:69/udp"
       ];
       volumes = [
-        "${config.netbootxyz.dataDir}/config:/config"
+        "${config.netbootxyz.configDir}:/config"
         "${config.netbootxyz.dataDir}/assets:/assets"
       ];
       environment = {
@@ -66,6 +76,10 @@
         WEB_APP_PORT = "3000";
       };
     };
+
+    # /config lives on local disk so the container owns its own menu/bootloader
+    # files (see configDir above); persist it across the ephemeral root.
+    environment.persistence."/persist".directories = [ config.netbootxyz.configDir ];
 
     # proxyDHCP: answers PXE requests alongside the router's DHCP without
     # allocating addresses, so nothing on the router has to change. dnsmasq does
