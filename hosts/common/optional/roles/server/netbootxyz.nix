@@ -81,14 +81,39 @@
     # files (see configDir above); persist it across the ephemeral root.
     environment.persistence."/persist".directories = [ config.netbootxyz.configDir ];
 
-    # PXE boot info comes from the router's DHCP (Network Boot: server 10.1.8.6,
-    # filename netboot.xyz.efi / .kpxe). dnsmasq proxyDHCP is deliberately NOT
-    # enabled here — two responders on one VLAN hand clients conflicting boot
-    # files. Enable it only if the router ever stops supplying option 66/67.
+    # proxyDHCP: answers PXE requests alongside the router's DHCP without
+    # allocating addresses. The router's own Network Boot options never reach
+    # clients on this VLAN, so this is what actually hands out the bootfile.
+    # dnsmasq does NOT run TFTP here; port 69 belongs to the container.
+    services.dnsmasq = {
+      enable = true;
+      resolveLocalQueries = false;
+      settings = {
+        port = 0;                       # no DNS service
+        interface = config.netbootxyz.interface;
+        "bind-interfaces" = true;
+        "log-dhcp" = true;
+        "dhcp-range" = "${config.netbootxyz.subnet},proxy,255.255.255.0";
+        "dhcp-match" = [
+          "set:bios,option:client-arch,0"
+          "set:efi64,option:client-arch,7"
+          "set:efi64,option:client-arch,9"
+        ];
+        "dhcp-boot" = [
+          "tag:bios,netboot.xyz.kpxe,,${config.netbootxyz.serverIp}"
+          "tag:efi64,netboot.xyz.efi,,${config.netbootxyz.serverIp}"
+        ];
+        "pxe-service" = [
+          "tag:bios,x86PC,netboot.xyz,netboot.xyz.kpxe,${config.netbootxyz.serverIp}"
+          "tag:efi64,X86-64_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
+          "tag:efi64,BC_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
+        ];
+      };
+    };
 
     networking.firewall = {
       allowedTCPPorts = [ config.netbootxyz.webPort config.netbootxyz.httpPort ];
-      allowedUDPPorts = [ 69 ];
+      allowedUDPPorts = [ 67 69 4011 ];  # proxyDHCP, TFTP, PXE boot server
     };
   };
 }
