@@ -29,6 +29,7 @@
     ./ntfy.nix
     ./kokoro.nix
     ./speaches.nix
+    ./pixiecore.nix
     ./firecrawl.nix
     ./auto-deploy.nix
     ./obsidian-headless
