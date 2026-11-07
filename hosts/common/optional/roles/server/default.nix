@@ -29,7 +29,6 @@
     ./ntfy.nix
     ./kokoro.nix
     ./speaches.nix
-    ./pixiecore.nix
     ./netbootxyz.nix
     ./firecrawl.nix
     ./auto-deploy.nix
