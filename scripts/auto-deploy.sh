@@ -75,6 +75,31 @@ host_activated() {
   [ -n "$running" ] && [ "$running" = "$target" ]
 }
 
+# Helper: does the captured colmena log show a BUILD/eval failure rather than a
+# failed activation? On a build failure nothing is ever activated, so every host
+# reports host_activated=false and the failure gets mislabelled "activation did
+# not complete" — which hid a fixed-output hash mismatch for four days (PR #166,
+# opencode-node_modules-2.2.5). Echo a one-line cause and return 0 when a build
+# failure is detected; return 1 otherwise (caller ignores the output then).
+build_failure_detail() {
+  local logf="$1" drv hashes
+  [ -r "$logf" ] || return 1
+  grep -qE "hash mismatch in fixed-output derivation|error: Cannot build|Failed to build" "$logf" 2>/dev/null || return 1
+  drv=$(grep -oE "hash mismatch in fixed-output derivation '[^']+'" "$logf" 2>/dev/null \
+    | head -1 | sed -E "s/.*derivation '//;s/'$//")
+  if [ -n "$drv" ]; then
+    hashes=$(grep -A3 "hash mismatch in fixed-output derivation" "$logf" 2>/dev/null \
+      | grep -oE 'sha256-[A-Za-z0-9+/=]+' | head -2 | tr '\n' '/' | sed 's:/$::')
+    printf 'fixed-output hash mismatch in %s (specified/got %s)' \
+      "${drv##*/}" "${hashes:-unknown}"
+  else
+    drv=$(grep -oE "error: Cannot build '[^']+'" "$logf" 2>/dev/null \
+      | head -1 | sed -E "s/.*Cannot build '//;s/'$//")
+    printf 'build failed for %s' "${drv##*/}"
+  fi
+  return 0
+}
+
 # 1. Pull latest — exit if nothing new since last successful deploy
 git fetch origin
 git checkout master
@@ -126,13 +151,21 @@ if [ "$VM_RC" -ne 0 ]; then
   done
 fi
 if [ "$VM_RC" -ne 0 ] && [ -n "$VM_BAD" ]; then
+  VM_REASON="activation did not complete (colmena rc=$VM_RC)"
+  VM_TITLE="Deploy FAILED"
+  # A build/eval failure means nothing was activated; say so instead of blaming
+  # activation, and name the failing derivation in the alert.
+  if VM_BUILD=$(build_failure_detail "$VM_LOG"); then
+    VM_REASON="BUILD failed, nothing was activated: $VM_BUILD"
+    VM_TITLE="Deploy FAILED (build)"
+  fi
   rm -f "$VM_LOG"
-  logger -t "$LOG_TAG" "VM deploy FAILED: activation did not complete on:${VM_BAD} (colmena rc=$VM_RC)"
+  logger -t "$LOG_TAG" "VM deploy FAILED (${VM_BAD# }): $VM_REASON"
   ROLLED=$(rollback "@vm")
   if [ -n "$ROLLED" ]; then
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): activation did not complete (rc=$VM_RC). Rolled back to $ROLLED." "$NTFY_URL" || true
+    curl -s -H "Title: $VM_TITLE" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): $VM_REASON. Rolled back to $ROLLED." "$NTFY_URL" || true
   else
-    curl -s -H "Title: Deploy FAILED" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): activation did not complete (rc=$VM_RC). No known-good revision to roll back to." "$NTFY_URL" || true
+    curl -s -H "Title: $VM_TITLE" -H "Priority: high" -d "VM deploy failed at $SHORT_REV ($COMMIT_MSG): $VM_REASON. No known-good revision to roll back to." "$NTFY_URL" || true
   fi
   exit 1
 fi
@@ -194,7 +227,11 @@ SARUMAN_REASON=""
 if [ "$SARUMAN_RC" -ne 0 ]; then
   if ! host_activated saruman ""; then
     SARUMAN_OK=0
-    SARUMAN_REASON="activation did not complete (colmena rc=$SARUMAN_RC)"
+    if SARUMAN_BUILD=$(build_failure_detail "$SARUMAN_LOG"); then
+      SARUMAN_REASON="BUILD failed, nothing was activated: $SARUMAN_BUILD"
+    else
+      SARUMAN_REASON="activation did not complete (colmena rc=$SARUMAN_RC)"
+    fi
   else
     logger -t "$LOG_TAG" "colmena rc=$SARUMAN_RC but activation completed — settling 30s before health check"
     sleep 30
