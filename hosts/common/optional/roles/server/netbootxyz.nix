@@ -93,9 +93,9 @@
         "log-dhcp" = true;
         "dhcp-range" = "${config.netbootxyz.subnet},proxy,255.255.255.0";
         "pxe-service" = [
-          "x86PC,netboot.xyz,netboot.xyz.kpxe"
-          "X86-64_EFI,netboot.xyz,netboot.xyz.efi"
-          "BC_EFI,netboot.xyz,netboot.xyz.efi"
+          "x86PC,netboot.xyz,netboot.xyz.kpxe,${config.netbootxyz.serverIp}"
+          "X86-64_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
+          "BC_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
         ];
       };
     };
