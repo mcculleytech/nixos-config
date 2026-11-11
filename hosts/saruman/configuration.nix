@@ -40,6 +40,17 @@
 
   networking.interfaces.enp5s0.wakeOnLan.enable = true;
 
+  # networkmanager.nix masks NetworkManager-wait-online globally because nm-online
+  # can report a spurious exit 4 when NM restarts mid-switch — on the assumption
+  # that "nothing depends on this service". That is no longer true here: saruman
+  # mounts NFS from truenas at boot and dnsmasq binds enp5s0 with
+  # bind-interfaces. With the service masked, network-online.target is reached
+  # milliseconds after network.target, so both raced the link and failed:
+  #   mount.nfs4: Network is unreachable for 10.1.8.4:/mnt/billthepony/backups
+  #   dnsmasq: unknown interface enp5s0
+  # Re-enable it on this host only — the laptops/VMs keep the global setting.
+  systemd.services.NetworkManager-wait-online.enable = lib.mkForce true;
+
   # ─── Headless gaming session ──────────────────────────────────────────────
   # saruman has no monitor, so SDDM parks at the greeter forever and nothing
   # ever renders on the 1080 Ti — games land on the xorgxrdp software
