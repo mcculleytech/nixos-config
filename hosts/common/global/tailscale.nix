@@ -35,12 +35,19 @@
     script = let
       tailscale = config.services.tailscale.package;
     in ''
-      # wait for tailscaled to settle
-      sleep 2
+      # Wait for the daemon to answer rather than a blind `sleep 2` — on a cold
+      # boot tailscaled is still starting, `tailscale status` returns nothing and
+      # the test below then dies with "unary operator expected".
+      tries=0
+      while [ "$tries" -lt 30 ]; do
+        ${tailscale}/bin/tailscale status -json >/dev/null 2>&1 && break
+        sleep 1
+        tries=$((tries + 1))
+      done
 
       # check if we are already authenticated to tailscale
-      status="$(${tailscale}/bin/tailscale status -json | ${pkgs.jq}/bin/jq -r .BackendState)"
-      if [ $status = "Running" ]; then # if so, then do nothing
+      status="$(${tailscale}/bin/tailscale status -json 2>/dev/null | ${pkgs.jq}/bin/jq -r .BackendState 2>/dev/null || echo unknown)"
+      if [ "$status" = "Running" ]; then # if so, then do nothing
         exit 0
       fi
 

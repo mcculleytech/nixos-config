@@ -24,8 +24,8 @@ options = {
       description = "Automatic connection to Tailscale";
 
       # make sure tailscale is running before trying to connect to tailscale
-      after = [ "network-pre.target" "tailscale.service" ];
-      wants = [ "network-pre.target" "tailscale.service" ];
+      after = [ "network-pre.target" "tailscale.service" "network-online.target" ];
+      wants = [ "network-pre.target" "tailscale.service" "network-online.target" ];
       wantedBy = [ "multi-user.target" ];
 
       # set this service as a oneshot job
@@ -33,11 +33,19 @@ options = {
 
       # have the job run this shell script
       script = with pkgs; ''
-        # wait for tailscaled to settle
-        sleep 2
+        # Wait for the daemon to answer instead of a blind `sleep 2`: on a cold
+        # boot tailscaled is still coming up, `tailscale status` returns nothing,
+        # the check below fails, and the unit dies before the route re-assert at
+        # the bottom of this script ever runs.
+        tries=0
+        while [ "$tries" -lt 30 ]; do
+          ${tailscale}/bin/tailscale status -json >/dev/null 2>&1 && break
+          sleep 1
+          tries=$((tries + 1))
+        done
 
         # authenticate if not already
-        status="$(${tailscale}/bin/tailscale status -json | ${jq}/bin/jq -r .BackendState)"
+        status="$(${tailscale}/bin/tailscale status -json 2>/dev/null | ${jq}/bin/jq -r .BackendState 2>/dev/null || echo unknown)"
         if [ "$status" != "Running" ]; then
           ${tailscale}/bin/tailscale up \
             --authkey file:${config.sops.templates."tskey-reusable".path} \
