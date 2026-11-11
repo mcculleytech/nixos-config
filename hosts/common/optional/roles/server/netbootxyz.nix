@@ -81,6 +81,16 @@
     # files (see configDir above); persist it across the ephemeral root.
     environment.persistence."/persist".directories = [ config.netbootxyz.configDir ];
 
+    # The container bind-mounts /assets from the NAS. Without an explicit
+    # dependency it races the NFS automount on a cold boot and podman dies with
+    # "statfs /mnt/nas-backups/pixiecore/assets: no such device" before the
+    # mount is established.
+    systemd.services."podman-netbootxyz" = {
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
+      unitConfig.RequiresMountsFor = "${config.netbootxyz.dataDir}/assets";
+    };
+
     # proxyDHCP: answers PXE requests alongside the router's DHCP without
     # allocating addresses. The router's own Network Boot options never reach
     # clients on this VLAN, so this is what actually hands out the bootfile.
@@ -109,6 +119,15 @@
           "tag:efi64,BC_EFI,netboot.xyz,netboot.xyz.efi,${config.netbootxyz.serverIp}"
         ];
       };
+    };
+
+    # dnsmasq binds a specific interface (bind-interfaces), so it fails hard with
+    # "unknown interface <if>" if it starts before the link exists — which is
+    # exactly what happened on a cold boot. Wait for the network instead of
+    # needing a manual restart after every reboot.
+    systemd.services.dnsmasq = {
+      wants = [ "network-online.target" ];
+      after = [ "network-online.target" ];
     };
 
     networking.firewall = {
