@@ -25,6 +25,7 @@
   bluetooth.enable = true;
   kokoro.enable = true;
   firecrawl.enable = true;  # self-hosted scrape/crawl API on :3002 (podman stack)
+  sysreptor.enable = true;  # self-hosted pentest reporting on :8095 (podman stack)
   speaches.enable = true;  # GPU-accelerated Whisper STT (OpenAI-compatible) on tailnet :8000
   netbootxyz.enable = true;  # PXE/ProxyDHCP netboot.xyz (Debian/NixOS/Windows) + web UI :3000
   auto-deploy.enable = true;

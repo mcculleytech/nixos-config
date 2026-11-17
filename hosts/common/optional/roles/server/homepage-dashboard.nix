@@ -113,6 +113,13 @@ in
                   };
                 }
                 {
+                  "SysReptor" = {
+                    icon = "https://docs.sysreptor.com/images/dino-head.svg";
+                    href = "https://sysreptor.${tr_secrets.traefik.homelab_domain}";
+                    description = "Penetration Test Reporting";
+                  };
+                }
+                {
                   "Proton" = {
                     icon = "proton-mail.svg";
                     href = "https://proton.me";

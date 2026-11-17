@@ -284,6 +284,15 @@ in
 	   				};
 	   				service = "borg";
 	   			};
+	   			sysreptor = {
+	   				entryPoints = [ "websecure" ];
+	   				rule = "Host(`sysreptor.${tr_secrets.traefik.homelab_domain}`)";
+	   				middlewares = [ "default-headers" "https-redirectscheme" ];
+	   				tls =  {
+	   					certResolver = "cloudflare";
+	   				};
+	   				service = "sysreptor";
+	   			};
 	   		};
 	   		services = {
 	   			# begin Services
@@ -493,6 +502,14 @@ in
 	   				loadBalancer = {
 	   					servers = [
 	   						{url = "http://${hosts.truenas.ip}:30406";}
+	   					];
+	   					passHostHeader = "true";
+	   				};
+	   			};
+	   			sysreptor = {
+	   				loadBalancer = {
+	   					servers = [
+	   						{url = "http://${hosts.saruman.ip}:8095";}
 	   					];
 	   					passHostHeader = "true";
 	   				};
