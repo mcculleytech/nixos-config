@@ -13,5 +13,4 @@
   proxmox        = { ip = "10.3.29.2";  role = "infrastructure"; };
   ilo            = { ip = "10.3.29.4";  role = "infrastructure"; };
   ludus          = { ip = "100.105.206.124"; role = "infrastructure"; };
-  prdcoffeeubuntu = { ip = "10.2.1.6";  role = "infrastructure"; };
 }

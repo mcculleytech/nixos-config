@@ -238,4 +238,5 @@ The app image ships a health endpoint used by upstream's own compose healthcheck
   option, so podman does not gate dependents on the app's health endpoint as upstream's
   compose does with `condition: service_healthy`. Startup ordering relies on
   `start.sh` retrying the DB connection.
-- **`unifi`, `ilo`, `prdcoffeeubuntu`** and other unrelated cleanups are out of scope here.
+- **`unifi`, `ilo`** and other unrelated cleanups are out of scope here.
+  (`prdcoffeeubuntu` was cleaned out of `hosts-data.nix` and `blocky.nix` on 2026-11-17.)

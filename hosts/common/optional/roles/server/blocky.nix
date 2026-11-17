@@ -30,7 +30,6 @@ in
       				"phantom.${tr_secrets.traefik.server_domain}" = hosts.phantom.ip;
       				# dmz subnet
       				"vader.${tr_secrets.traefik.dmz_domain}" = hosts.vader.ip;
-      				"prdcoffeeubuntu.${tr_secrets.traefik.dmz_domain}" = hosts.prdcoffeeubuntu.ip;
       				# homelab domain — all reverse-proxied via atreides (traefik)
       				"jellyfin.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
       				"ilo.${tr_secrets.traefik.homelab_domain}" = hosts.atreides.ip;
