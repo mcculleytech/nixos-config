@@ -36,5 +36,6 @@
     ./nas-backups
     ./obsidian-backup
     ./harmonia.nix
+    ./sysreptor.nix
   ];
 }
