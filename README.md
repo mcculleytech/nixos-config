@@ -13,7 +13,7 @@ _One Config to rule them all, One Config to find them; One Config to bring them 
 | **Name** | Purpose                  											  							| Hardware                    |
 | -------- | ---------------------------------------------------------------------------------------------- | --------------------------- |
 | aeneas   | Personal Laptop (now `debian` on the tailnet) — **purged from Nix 2026-11-02** (Debian, not in this repo) | AMD Framework 13in          |
-| saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx 				| AMD Ryzen 5 <br>Nvidia 1080 |
+| saruman  | Local AI Server <br> Octoprint Server <br> Jellyfin Server <br> Paperless-ngx <br> SysReptor Reporting 				| AMD Ryzen 5 <br>Nvidia 1080 |
 | vader    | Test Machine <br> Xonotic Server									  							| Proxmox VM                  |
 | phantom  | Tailscale Subnet Router <br> Syncthing Server <br> Radicale Server <br> Blocky DNS Server  	| Proxmox VM                  |
 | atreides | Blocky DNS Server <br> Homepage-dashboard <br> Traefik Reverse Proxy <br> Prometheus + Grafana | Proxmox VM                  |
