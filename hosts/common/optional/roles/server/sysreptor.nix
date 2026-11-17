@@ -2,10 +2,19 @@
 let
   hosts = config.lab.hosts;
 
+  # Pinned by digest, not tag — the same house standard as firecrawl.nix: an
+  # unattended `podman pull` must not change the running version under a live
+  # project, and `latest` on the app image certainly would.
+  #
+  #   syslifters/sysreptor  :latest     → app version VERSION=2026.102 (from the image Env)
+  #   library/postgres      :14-alpine  → upstream's own compose default
+  #   library/redis         :8.0-alpine
+  # Pinned 2026-11-17. Bump the app and Postgres images TOGETHER, and read the
+  # Postgres major-version section of docs/sysreptor-deployment.md first.
   images = {
-    app   = "docker.io/syslifters/sysreptor:latest";
-    db    = "docker.io/library/postgres:14-alpine";
-    redis = "docker.io/library/redis:8.0-alpine";
+    app   = "docker.io/syslifters/sysreptor@sha256:bddb1b6e1e58ae8462a88fb6d10c24814989804b6e2b9d170b4f1cb69bfdf7e6";
+    db    = "docker.io/library/postgres@sha256:e7d9e6aac7fe3232f7661da103aebc0ce38b04105b46af5e9edd5ef6bc343f20";
+    redis = "docker.io/library/redis@sha256:5f61955be8ab2ccee9372b84ae4d4da2e2b156f87281e3f218544055e7ee04d4";
   };
 
   onNet = alias: [ "--network=sysreptor" "--network-alias=${alias}" ];
@@ -14,7 +23,11 @@ let
   ph = config.sops.placeholder;
   envFile = config.sops.templates."sysreptor.env".path;
 
-  # Only Traefik on atreides may reach the app port (:8095).
+  # Podman publishes ports via DNAT in nat PREROUTING, so traffic never reaches
+  # nixos-fw (INPUT) and allowedTCPPorts cannot restrict it. SysReptor has its own
+  # login, but it has no business being reachable from the LAN, so filter in the
+  # raw table: only Traefik on atreides may reach :8095. dst-type LOCAL leaves
+  # container-to-container traffic on the bridge alone. Same trick as firecrawl.
   dropRule = op: sfx: ''
     iptables -t raw ${op} PREROUTING -p tcp --dport 8095 -m addrtype --dst-type LOCAL ! -s ${hosts.atreides.ip} -j DROP ${sfx}
     ip6tables -t raw ${op} PREROUTING -p tcp --dport 8095 -m addrtype --dst-type LOCAL -j DROP ${sfx}
@@ -37,16 +50,34 @@ in {
       ]
       (_: { sopsFile = ../../../../saruman/secrets.yaml; });
 
+    # Name note, verified against upstream: the *db* container takes
+    # POSTGRES_{DB,USER,PASSWORD}; the *app* container takes
+    # DATABASE_{HOST,PORT,NAME,USER,PASSWORD} (api/src/sysreptor/conf/settings.py —
+    # DATABASE_HOST defaults to the empty string, so the app cannot connect at all
+    # if only POSTGRES_* is set). Both sets live in this one file; each container
+    # ignores the other's.
+    #
+    # ENCRYPTION_KEYS is parsed as a JSON list, not a bare string, so the sops
+    # value must be the entire array, e.g.
+    #   [{"id":"primary","key":"<32-byte base64>","cipher":"AES-GCM","revoked":false}]
+    # matching DEFAULT_ENCRYPTION_KEY_ID.
     sops.templates."sysreptor.env" = {
       content = ''
         SECRET_KEY=${ph.sysreptor_secret_key}
         ENCRYPTION_KEYS=${ph.sysreptor_encryption_keys}
         DEFAULT_ENCRYPTION_KEY_ID=primary
+
         POSTGRES_DB=sysreptor
         POSTGRES_USER=sysreptor
         POSTGRES_PASSWORD=${ph.sysreptor_db_password}
-        POSTGRES_HOST=db
-        POSTGRES_PORT=5432
+
+        DATABASE_HOST=db
+        DATABASE_PORT=5432
+        DATABASE_NAME=sysreptor
+        DATABASE_USER=sysreptor
+        DATABASE_PASSWORD=${ph.sysreptor_db_password}
+
+        REDIS_PASSWORD=${ph.sysreptor_redis_password}
         REDIS_URL=redis://:${ph.sysreptor_redis_password}@redis:6379/0
       '';
       restartUnits = [ "podman-sysreptor-app.service" ];
@@ -62,16 +93,19 @@ in {
     };
 
     virtualisation.oci-containers.containers = {
+
       sysreptor-db = {
         image = images.db;
         environment = {
           POSTGRES_DB = "sysreptor";
           POSTGRES_USER = "sysreptor";
+          # Upstream sets PGDATA=/data and mounts the volume there; the alpine
+          # image's own default is /var/lib/postgresql/data. Match upstream, or a
+          # later image bump can initialise a second, empty datadir.
+          PGDATA = "/data";
         };
         environmentFiles = [ envFile ];
-        volumes = [
-          "/persist/var/lib/sysreptor/db:/var/lib/postgresql/data"
-        ];
+        volumes = [ "/persist/var/lib/sysreptor/db:/data" ];
         extraOptions = onNet "db";
       };
 
@@ -79,9 +113,7 @@ in {
         image = images.redis;
         cmd = [ "sh" "-c" "exec redis-server --requirepass \"$REDIS_PASSWORD\"" ];
         environmentFiles = [ envFile ];
-        volumes = [
-          "/persist/var/lib/sysreptor/redis:/data"
-        ];
+        volumes = [ "/persist/var/lib/sysreptor/redis:/data" ];
         extraOptions = onNet "redis";
       };
 
@@ -91,16 +123,19 @@ in {
         dependsOn = [ "sysreptor-db" "sysreptor-redis" ];
         environmentFiles = [ envFile ];
         environment = {
-          ALLOWED_HOSTS = "sysreptor.${config.lab.homelabDomain},localhost,127.0.0.1,${hosts.saruman.ip}";
+          # Django appends localhost/127.0.0.1/[::1] itself and derives
+          # CSRF_TRUSTED_ORIGINS plus MFA_FIDO2_RP_ID from a single-host value.
+          ALLOWED_HOSTS = "sysreptor.${config.lab.homelabDomain}";
+          # SECURE_PROXY_SSL_HEADER is hardcoded upstream — not an env var.
           USE_X_FORWARDED_HOST = "true";
           USE_X_FORWARDED_PORT = "true";
           SECURE_SSL_REDIRECT = "true";
-          SECURE_PROXY_SSL_HEADER = "HTTP_X_FORWARDED_PROTO,https";
+          DEBUG = "off";
         };
-        volumes = [
-          "/persist/var/lib/sysreptor/data:/data"
-        ];
-        extraOptions = onNet "app";
+        volumes = [ "/persist/var/lib/sysreptor/data:/data" ];
+        # Upstream runs this with init: true — one container supervises gunicorn,
+        # a taskiq worker and headless Chromium.
+        extraOptions = [ "--init" ] ++ onNet "app";
       };
     };
 
