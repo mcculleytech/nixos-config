@@ -102,6 +102,13 @@ service sysreptor  →  http://10.1.8.6:8095
 `<homelab_domain>` has **no public DNS record** — it resolves only through Blocky
 split-DNS, so off-LAN clients need tailnet plus split DNS plus an accepted subnet route.
 
+Blocky resolves that domain from an **explicit per-service mapping**
+(`hosts/common/optional/roles/server/blocky.nix`), not a wildcard, so a new Traefik router is
+unreachable until its name is added there too. This was missed on the first deploy: the
+containers came up healthy and answered `200` from atreides with the right Host header, but
+the name did not resolve at all — which looks exactly like a failed deployment. **Adding a
+service is two files, not one.**
+
 The app trusts the proxy through `USE_X_FORWARDED_HOST`, `USE_X_FORWARDED_PORT` and
 `SECURE_SSL_REDIRECT`. `SECURE_PROXY_SSL_HEADER` is **hardcoded** in `settings.py`, not an
 env var, so it is not set. `ALLOWED_HOSTS` carries the single FQDN; Django appends
@@ -165,24 +172,30 @@ concurrent editing, SSO, audit logs and spell check.
 
 ## Backup and restore
 
-`manage.py backup` emits a **single archive containing both the database export and every
-file under `/data`** — that is the whole state. Redis is ephemeral and is not backed up, and
-there is no search index to rebuild.
+> **`manage.py backup` is a Pro feature.** Verified against the running container:
+> `podman exec sysreptor-app python3 manage.py backup` exits 1 with
+> `CommandError: Professional license required`. The community procedure is a plain
+> `pg_dump` plus a tar of `/data`; between them they are the whole state. Redis is
+> ephemeral and is not backed up, and there is no search index to rebuild.
+
+Community backup, both halves into the same dated directory:
 
 ```
-podman exec sysreptor-app python3 manage.py backup \
-  > /mnt/nas-backups/sysreptor/sysreptor-$(date -I).zip
+D=/mnt/nas-backups/sysreptor/$(date -I); mkdir -p "$D"
+podman exec sysreptor-db pg_dump -U sysreptor sysreptor | gzip > "$D/db.sql.gz"
+podman exec sysreptor-app tar -C / -cf - data | gzip > "$D/data.tar.gz"
 ```
 
-Restore, on the **same SysReptor version**, into empty volumes:
+Restore, on the **same SysReptor version**, into empty volumes, with the app stopped:
 
 ```
-cat backup.zip | podman exec -i sysreptor-app python3 manage.py restorebackup
+gunzip -c "$D/db.sql.gz" | podman exec -i sysreptor-db psql -U sysreptor -d sysreptor
+gunzip -c "$D/data.tar.gz" | podman exec -i sysreptor-app tar -C / -xzf -
 ```
 
-The archive alone is not sufficient: without `sysreptor_encryption_keys` the contents cannot
-be decrypted, so that secret must be preserved separately from the database — it lives in
-the sops file, which is in git.
+Neither half is sufficient on its own: without `sysreptor_encryption_keys` the contents
+cannot be decrypted, so that secret must be preserved separately from the database — it
+lives in the sops file, which is in git.
 
 ## Smoke tests
 
@@ -211,8 +224,9 @@ The app image ships a health endpoint used by upstream's own compose healthcheck
 4. `https://sysreptor.<homelab_domain>` serves the login page with a valid certificate, from
    a LAN client.
 5. `/run/secrets/rendered/sysreptor.env` exists, owned by root, mode 0400.
-6. `manage.py backup` writes a non-empty archive into the NAS dataset, and the archive can
-   be listed.
+6. The Community backup path works: `pg_dump -U sysreptor sysreptor | gzip` returns a
+   non-empty dump (72 tables at first boot) and a tar of `/data` succeeds — see the
+   Pro-only note above, `manage.py backup` is not available here.
 7. Homepage dashboard shows the SysReptor tile and links through.
 
 ## Open items
