@@ -9,8 +9,11 @@ let
   #   syslifters/sysreptor  :latest     → app version VERSION=2026.102 (from the image Env)
   #   library/postgres      :14-alpine  → upstream's own compose default
   #   library/redis         :8.0-alpine
-  # Pinned 2026-11-17. Bump the app and Postgres images TOGETHER, and read the
-  # Postgres major-version section of docs/sysreptor-deployment.md first.
+  # Pinned 2026-11-17. Bump the app and the Postgres image TOGETHER, and treat a
+  # Postgres major-version change as a planned migration — dump, pg_upgrade,
+  # verify — never as an image tag change: the datadir is version-specific and a
+  # new major against an old datadir either refuses to start or, worse, comes up
+  # on an empty one beside it.
   images = {
     app   = "docker.io/syslifters/sysreptor@sha256:bddb1b6e1e58ae8462a88fb6d10c24814989804b6e2b9d170b4f1cb69bfdf7e6";
     db    = "docker.io/library/postgres@sha256:e7d9e6aac7fe3232f7661da103aebc0ce38b04105b46af5e9edd5ef6bc343f20";
